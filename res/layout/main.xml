@@ -1,13 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
->
-    <TextView
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
+    <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Hello World, High-Light"
-    />
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#cccccc">
+            <FrameLayout
+                    android:id="@+id/fragment_main"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+            </FrameLayout>
+        </LinearLayout>
+        <!--此处是下面三个按钮的布局-->
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="110dp"
+                android:layout_weight="1"
+                android:background="#f4f4f4"
+                android:orientation="horizontal">
+            <LinearLayout
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_weight="1">
+                <Button
+                        android:id="@+id/button1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="页面一"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_weight="1">
+                <Button
+                        android:id="@+id/button2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="页面二"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_weight="1">
+                <Button
+                        android:id="@+id/button3"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="页面三"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
-
+        <!-- 主页面 -->
