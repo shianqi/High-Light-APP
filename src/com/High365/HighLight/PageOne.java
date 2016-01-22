@@ -45,7 +45,7 @@ public class PageOne extends Fragment{
      */
     private void init(){
         state=false;
-        changeBrightness(100);
+        changeBrightness(0);
 
         light1=(ImageView)view.findViewById(R.id.light1);
         light1.setOnClickListener(new View.OnClickListener() {
