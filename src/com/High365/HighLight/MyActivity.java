@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
+/**
+ * 这个页面是主页面，负责
+ */
 public class MyActivity extends Activity {
-    /**
-     * Called when the activity is first created.
-     */
+
     private Button button1;
     private Button button2;
     private Button button3;
