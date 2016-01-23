@@ -25,7 +25,7 @@ public class WelcomeActivity extends Activity {
      * 初始化页面
      */
     private void init(){
-        handler.sendEmptyMessageDelayed(GOHOME,DELAY_TIME);
+        handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
     }
 
     /**
@@ -62,7 +62,9 @@ public class WelcomeActivity extends Activity {
      * 切换到登陆界面
      */
     private void login(){
-
+        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+        WelcomeActivity.this.startActivity(intent);
+        WelcomeActivity.this.finish();
     }
 
     /**
