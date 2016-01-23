@@ -28,6 +28,9 @@ public class WelcomeActivity extends Activity {
         handler.sendEmptyMessageDelayed(GOHOME,DELAY_TIME);
     }
 
+    /**
+     * 接受不同的消息请求，做出处理
+     */
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -46,15 +49,24 @@ public class WelcomeActivity extends Activity {
         }
     };
 
+    /**
+     * 切换到主页面
+     */
     private void goHome(){
         Intent intent = new Intent(WelcomeActivity.this, MyActivity.class);
         WelcomeActivity.this.startActivity(intent);
         WelcomeActivity.this.finish();
     }
 
+    /**
+     * 切换到登陆界面
+     */
     private void login(){
 
     }
 
+    /**
+     * 切换到注册界面
+     */
     private void regist(){}
 }
