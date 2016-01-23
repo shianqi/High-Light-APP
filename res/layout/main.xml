@@ -52,6 +52,9 @@
                     android:layout_weight="1">
                 <Button
                         android:id="@+id/button3"
+                        android:layout_margin="0dp"
+                        android:padding="0dp"
+                        
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:text="页面三"/>
