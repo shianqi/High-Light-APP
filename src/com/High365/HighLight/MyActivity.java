@@ -8,17 +8,35 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 /**
- * 这个页面是主页面，负责
+ * 主页面
+ * <p>由三个Fragment构成，分别是录音界面，日志界面，排行榜界面</p>
+ * 录音界面：
+ * @see PageOne
+ * 日志界面：
+ * @see PageTwo
+ * 排行榜界面：
+ * @see PageThree
+ * <br>
  */
 public class MyActivity extends Activity {
 
+    /**
+     * 底部按钮组第一个按钮，录音界面
+     */
     private Button button1;
+    /**
+     * 底部按钮组第二个按钮，日志界面
+     */
     private Button button2;
+    /**
+     * 底部按钮组第三个按钮，排行榜界面
+     */
     private Button button3;
 
     private PageOne pageOne;
     private PageTwo pageTwo;
     private PageThree pageThree;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +54,16 @@ public class MyActivity extends Activity {
         addOnClickListener();
     }
 
+    /**
+     * 按钮功能的绑定
+     */
     private void addOnClickListener(){
+
         button1.setOnClickListener(new View.OnClickListener() {
+            /**
+             * 设置第一个按钮的绑定事件，当这个按钮被点击时：如果这个Fragment不存在，则创建一个。然后切换到这个Fragment
+             * @param v view
+             */
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
@@ -51,6 +77,10 @@ public class MyActivity extends Activity {
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
+            /**
+             * 设置第二个按钮的绑定事件，当这个按钮被点击时：如果这个Fragment不存在，则创建一个。然后切换到这个Fragment
+             * @param v view
+             */
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
@@ -65,6 +95,10 @@ public class MyActivity extends Activity {
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
+            /**
+             * 设置第三个按钮的绑定事件，当这个按钮被点击时：如果这个Fragment不存在，则创建一个。然后切换到这个Fragment
+             * @param v view
+             */
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
@@ -79,6 +113,9 @@ public class MyActivity extends Activity {
         });
     }
 
+    /**
+     * 设置默认Fragment，以录音界面为默认界面
+     */
     private void setDefaultFragment()
     {
         FragmentManager fm = getFragmentManager();

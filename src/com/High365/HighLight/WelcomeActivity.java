@@ -6,11 +6,32 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+/**
+ * <p>程序加载界面</p>
+ * 该段代码负责进入程序时显示欢迎界面，并在2秒后根据用户登陆情况分别
+ * 跳转到不同的页面<br>
+ * 根据用户登陆的不同情况，向Handler类的handleMessage(Message msg)方法传递不同的状态码<br>
+ * handleMessage(Message msg)接收到不同的状态码，从而跳转到不同界面。
+ * @author 史安琪
+ * @version 1.0
+ */
 public class WelcomeActivity extends Activity {
 
+    /**
+     * 跳转等待时间（毫秒）
+     */
     private static final long DELAY_TIME = 2000;
+    /**
+     * 跳转到主页面的状态码
+     */
     private static final int GOHOME = 1000;
+    /**
+     * 跳转到登陆页面的状态码
+     */
     private static final int LOGIN = 1001;
+    /**
+     * 跳转到注册页面的状态码
+     */
     private static final int REGIST = 1002;
 
     @Override
@@ -22,7 +43,7 @@ public class WelcomeActivity extends Activity {
     }
 
     /**
-     * 初始化页面
+     * 初始化页面，此处调用登陆状态判断函数
      */
     private void init(){
         handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
