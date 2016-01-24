@@ -12,9 +12,21 @@ import android.widget.EditText;
  */
 public class RegistActivity extends Activity{
 
+    /**
+     * 用户昵称，长度不超过16位
+     */
     private String nickname;
+    /**
+     * 性别，1为男，0为女
+     */
     private int sex = 1;
+    /**
+     * 用户生日，以8位字符串表示，例如：19900101
+     */
     private String birthday;
+    /**
+     * 用户密码，长度不超过16位
+     */
     private String password;
 
     private EditText nicknameText;
@@ -46,6 +58,7 @@ public class RegistActivity extends Activity{
         sexText.setOnClickListener(new View.OnClickListener() {
             /**
              * 此处点击文本框修改用户性别，方便用户输入
+             * sex  1为男，0为女
              * @param v view
              */
             @Override
@@ -60,13 +73,18 @@ public class RegistActivity extends Activity{
             }
         });
 
-        /**
-         * 注册
-         */
+
         registButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            /**
+             * 注册按钮响应函数
+             * @param v view
+             */
             public void onClick(View v) {
-
+                //此处进行本地检查用户输入是否合法
+                //有不合法内容用Toast告诉用户，此处用我封装的Toast
+                //例如： ToastManager.toast(getApplicationContext(),"昵称输入的不对哦");
+                ToastManager.toast(getApplicationContext(),"昵称输入的不对哦");
             }
         });
     }
