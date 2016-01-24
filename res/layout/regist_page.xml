@@ -115,7 +115,7 @@
 
 
             <Button
-                    android:id="@+id/LoginButton"
+                    android:id="@+id/registButton"
                     android:layout_width="fill_parent"
                     android:layout_height="50.0dip"
                     android:layout_marginLeft="12.0dip"
