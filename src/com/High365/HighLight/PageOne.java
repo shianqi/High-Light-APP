@@ -10,20 +10,22 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 /**
+ * 第一个界面的逻辑代码
  * @author 史安琪
- * 这是第二个页面
  */
 public class PageOne extends Fragment{
 
-    /**
-     * light1: 灯光图片对象
-     * state: 灯光当前亮度
-     */
     private View view;
     private ImageView light1;
     //测试按钮
     private Button cbutton;
+    /**
+     * 灯光亮度
+     */
     private int state;
+    /**
+     * Toast实例，用于对本页出现的所有Toast进行处理
+     */
     private static Toast myToast;
 
 
@@ -56,6 +58,10 @@ public class PageOne extends Fragment{
 
         light1=(ImageView)view.findViewById(R.id.light1);
         light1.setOnClickListener(new View.OnClickListener() {
+            /**
+             *设置发送录音的暂停与开始请求，并更改灯泡亮度
+             * @param v view
+             */
             @Override
             public void onClick(View v) {
                 if (state!=0){
@@ -71,6 +77,12 @@ public class PageOne extends Fragment{
         });
 
         light1.setOnLongClickListener(new View.OnLongClickListener() {
+            /**
+             * 设置长按监听函数，用于处理长按关闭录音。
+             * 判断当前状态，如果出于录音状态则结束录音，否则不进行处理
+             * @param v view
+             * @return 当当前出于录音状态时，返回成功，否则返回失败
+             */
             @Override
             public boolean onLongClick(View v) {
                 if(state!=0){

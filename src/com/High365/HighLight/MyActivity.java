@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class MyActivity extends Activity {
 
         setDefaultFragment();
         addOnClickListener();
+
     }
 
     /**
@@ -123,5 +125,15 @@ public class MyActivity extends Activity {
         pageOne=new PageOne();
         transaction.replace(R.id.fragment_main, pageOne);
         transaction.commit();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+                ToastManager.toast(getApplicationContext(),"再按一次返回");
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

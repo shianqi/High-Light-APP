@@ -67,7 +67,7 @@
                     android:textSize="16.0sp" />
 
             <EditText
-                    android:id="@+id/passwdText"
+                    android:id="@+id/passwordText"
                     android:layout_width="fill_parent"
                     android:layout_height="50.0dip"
                     android:layout_marginBottom="20.0dip"
@@ -90,7 +90,7 @@
                     android:textSize="16.0sp" />
 
             <Button
-                    android:id="@+id/bnLogin"
+                    android:id="@+id/LoginButton"
                     android:layout_width="fill_parent"
                     android:layout_height="50.0dip"
                     android:layout_marginLeft="12.0dip"
