@@ -33,6 +33,14 @@ public class WelcomeActivity extends Activity {
      * 跳转到注册页面的状态码
      */
     private static final int REGIST = 1002;
+    /**
+     * 跳转到图形登陆页面的状态码
+     */
+    private static final int GRAPHLOGIN = 1003;
+    /**
+     * 跳转到设置图形登陆密码页面的状态码
+     */
+    private static final int GRAPHSETPASSWORD = 1004;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,7 @@ public class WelcomeActivity extends Activity {
      * 初始化页面，此处调用登陆状态判断函数
      */
     private void init(){
-        handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
+        handler.sendEmptyMessageDelayed(GRAPHLOGIN,DELAY_TIME);
         //此处进行登陆判断，并跳转。修改第一个参数就好。
         //例如跳转到登陆界面： handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
     }
@@ -66,6 +74,12 @@ public class WelcomeActivity extends Activity {
                     break;
                 case REGIST:
                     regist();
+                    break;
+                case GRAPHLOGIN:
+                    graphLogin();
+                    break;
+                case GRAPHSETPASSWORD:
+                    setGraphPassword();
                     break;
             }
             super.handleMessage(msg);
@@ -95,6 +109,24 @@ public class WelcomeActivity extends Activity {
      */
     private void regist(){
         Intent intent = new Intent(WelcomeActivity.this, RegistActivity.class);
+        WelcomeActivity.this.startActivity(intent);
+        WelcomeActivity.this.finish();
+    }
+
+    /**
+     * 切换到图形登陆界面
+     */
+    private void graphLogin(){
+        Intent intent = new Intent(WelcomeActivity.this, GraphLoginActivity.class);
+        WelcomeActivity.this.startActivity(intent);
+        WelcomeActivity.this.finish();
+    }
+
+    /**
+     * 切换到设置图形登陆密码界面
+     */
+    private void setGraphPassword(){
+        Intent intent = new Intent(WelcomeActivity.this, SetGraphPasswordActivity.class);
         WelcomeActivity.this.startActivity(intent);
         WelcomeActivity.this.finish();
     }
