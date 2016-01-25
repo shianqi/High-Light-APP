@@ -41,7 +41,7 @@ public class UserInfoService {
                 listener.onSuccess();
                 return;
             }else {
-                listener.onFailure("密码错误");
+                listener.onFailure(loginModel.getErrorInfo());
                 return;
             }
         }catch (Exception e){

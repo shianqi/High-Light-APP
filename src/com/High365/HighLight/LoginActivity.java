@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * 登陆页面的处理逻辑
@@ -25,6 +26,11 @@ public class LoginActivity extends Activity {
      */
     private Button loginButton;
 
+    /**
+     * 执行用户登录时的业务逻辑所在的类
+     * */
+    private UserInfoService userInfoService = new UserInfoService();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +41,18 @@ public class LoginActivity extends Activity {
         loginButton=(Button)findViewById(R.id.LoginButton);
 
         inti();
+
+        userInfoService.login(usernameTextView.getText().toString(), passwordTextView.getText().toString(), new Listener() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(LoginActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Toast.makeText(LoginActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+            }
+        }, this);
     }
 
     /**
@@ -54,6 +72,7 @@ public class LoginActivity extends Activity {
             }
         });
     }
+
 
 
 }
