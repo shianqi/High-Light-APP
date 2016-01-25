@@ -2,12 +2,14 @@ package com.High365.HighLight;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -30,8 +32,18 @@ public class LoginActivity extends Activity {
 
     /**
      * 执行用户登录时的业务逻辑所在的类
-     * */
+     */
     private UserInfoService userInfoService;
+
+    /**
+     * 跳转到注册界面
+     */
+    private TextView registLink;
+
+    /**
+     * 忘记密码
+     */
+    private TextView forgetPassword;
 
     /**
      * 定义常量
@@ -47,10 +59,10 @@ public class LoginActivity extends Activity {
         usernameTextView=(EditText)findViewById(R.id.userNameText);
         passwordTextView=(EditText)findViewById(R.id.passwordText);
         loginButton=(Button)findViewById(R.id.LoginButton);
+        forgetPassword=(TextView)findViewById(R.id.forgetPassword);
+        registLink=(TextView)findViewById(R.id.registLink);
 
         init();
-
-
     }
 
     /**
@@ -85,6 +97,30 @@ public class LoginActivity extends Activity {
                     }
                 }, LoginActivity.this);
 
+            }
+        });
+
+        //给两个链接加下划线
+        registLink.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG );
+        forgetPassword.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG );
+
+        registLink.setOnClickListener(new View.OnClickListener() {
+            /**
+             * 给切换到注册界面链接绑定
+             * @param v view
+             */
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegistActivity.class);
+                LoginActivity.this.startActivity(intent);
+                LoginActivity.this.finish();
+            }
+        });
+
+        forgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //do something
             }
         });
     }
