@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -136,4 +138,26 @@ public class MyActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 0, 0, "关于");
+        menu.add(0, 1, 1, "退出");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case 0:
+                ToastManager.toast(getApplicationContext(),"关于");
+                break;
+            case 1:
+                ToastManager.toast(getApplicationContext(),"退出");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
