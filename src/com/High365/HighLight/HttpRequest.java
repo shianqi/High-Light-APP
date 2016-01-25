@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class HttpRequest {
     //服务器IP地址与端口
-    private static final String HOST = "183.175.14.120:8080";
+    private static final String HOST = "183.175.12.160:8888";
     /**
      * 向指定URL发送GET方法的请求
      *
