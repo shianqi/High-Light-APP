@@ -30,7 +30,7 @@
                     android:drawableLeft="@drawable/login_icon_account"
                     android:drawablePadding="15.0dip"
                     android:ems="10"
-                    android:hint="请输入昵称"
+                    android:hint="请输入账号"
                     android:inputType="text"
                     android:paddingBottom="2.0dip"
                     android:paddingLeft="15.0dip"

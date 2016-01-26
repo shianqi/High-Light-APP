@@ -32,19 +32,23 @@ public class UserInfoService extends Thread{
      * */
     public void login(String username,String password,Listener listener,Context context){
         this.listener = listener;
-
+        this.context = context;
         url = "login.action";
         param = "username=" + username + "&password=" + password;
         taskId = 0;
-        this.context = context;
+
         start();
 
     }
 
-
-
-
-
+    public void register(String username,String password,int gender,String birthDay,Context context,Listener listener){
+        this.listener = listener;
+        this.context = context;
+        url= "register.action";
+        param = "username=" + username + "&password=" + password + "&gender=" + gender + "&birthDay=" + birthDay;
+        taskId = 1;
+        start();
+    }
 
     @Override
     public void run() {
@@ -54,8 +58,9 @@ public class UserInfoService extends Thread{
                 try{
                     httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
                     LoginModel loginModel = new Gson().fromJson(httpResponseOutputStreamString,LoginModel.class);
+                    //判断登录结果
                     if (loginModel.getStatus().equals(1)){
-                        SharedPreferences sharedPreferences = context.getSharedPreferences("config",context.MODE_MULTI_PROCESS);
+                        SharedPreferences sharedPreferences = context.getSharedPreferences("config",context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("secretKey",loginModel.getSecretKey());
                         editor.commit();
@@ -63,6 +68,27 @@ public class UserInfoService extends Thread{
                         return;
                     }else {
                         listener.onFailure(loginModel.getErrorInfo());
+                        return;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    listener.onFailure("网络连接失败");
+                    return;
+                }
+            case 1:
+                try{
+                    httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
+                    RegisterModel registerModel = new Gson().fromJson(httpResponseOutputStreamString,RegisterModel.class);
+                    //判断注册结果
+                    if (registerModel.getStatus().equals(1)){
+                        SharedPreferences sharedPreferences = context.getSharedPreferences("config",context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("secretKey",registerModel.getSecretKey());
+                        editor.commit();
+                        listener.onSuccess();
+                        return;
+                    }else{
+                        listener.onFailure(registerModel.getErrorInfo());
                         return;
                     }
                 }catch (Exception e){
@@ -112,5 +138,41 @@ public class UserInfoService extends Thread{
         private  Integer status;
         private String secretKey;
         private String errorInfo;
+    }
+
+    /**
+     * 此内部类为一个JavaBean
+     * 为注册结果Json字符串所对应的bean
+     * */
+    class RegisterModel{
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
+        }
+
+        public String getErrorInfo() {
+            return errorInfo;
+        }
+
+        public void setErrorInfo(String errorInfo) {
+            this.errorInfo = errorInfo;
+        }
+
+        private  Integer status;
+        private String secretKey;
+        private String errorInfo;
+
     }
 }

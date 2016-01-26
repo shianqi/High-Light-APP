@@ -1,10 +1,14 @@
 package com.High365.HighLight;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * 注册界面
@@ -13,9 +17,9 @@ import android.widget.EditText;
 public class RegistActivity extends Activity{
 
     /**
-     * 用户昵称，长度不超过16位
+     * 用户名，长度不超过16位
      */
-    private String nickname;
+    private String username;
     /**
      * 性别，1为男，0为女
      */
@@ -29,19 +33,21 @@ public class RegistActivity extends Activity{
      */
     private String password;
 
-    private EditText nicknameText;
+    private EditText usernameText;
     private EditText sexText;
     private EditText birthdayText;
     private EditText passwordText;
 
     private Button registButton;
 
+    final private int SUCCESS = 1;
+    final private int FAILURE = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.regist_page);
 
-        nicknameText=(EditText)findViewById(R.id.userNameText);
+        usernameText=(EditText)findViewById(R.id.userNameText);
         sexText=(EditText)findViewById(R.id.userSexText);
         birthdayText=(EditText)findViewById(R.id.birthdayText);
         passwordText=(EditText)findViewById(R.id.passwordText);
@@ -84,8 +90,74 @@ public class RegistActivity extends Activity{
                 //此处进行本地检查用户输入是否合法
                 //有不合法内容用Toast告诉用户，此处用我封装的Toast
                 //例如： ToastManager.toast(getApplicationContext(),"昵称输入的不对哦");
-                ToastManager.toast(getApplicationContext(),"昵称输入的不对哦");
+                //ToastManager.toast(getApplicationContext(),"昵称输入的不对哦");
+                //数据格式在服务器端验证
+                username = usernameText.getText().toString();
+                password = passwordText.getText().toString();
+                birthday = birthdayText.getText().toString();
+                //点击后设置按钮不可用,访问重复点击
+                registButton.setEnabled(false);
+                UserInfoService userInfoService = new UserInfoService();
+                userInfoService.register(username, password, sex, birthday, RegistActivity.this, new Listener() {
+                    @Override
+                    public void onSuccess() {
+                        Message message = new Message();
+                        message.what =SUCCESS;
+                        handler.sendMessage(message);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        Message message = new Message();
+                        message.what=FAILURE;
+                        message.obj = "注册失败,原因:" + msg;
+                        handler.sendMessage(message);
+                    }
+                });
             }
         });
+    }
+
+    /**
+     * 线程间的通信,接受不同的消息请求，做出处理,因为网络请求在子线程中完成,而要在主线程UI上显示网络请求的结果必须要经过线程间通信
+     */
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+                case SUCCESS:
+                    onSuccess();
+                    break;
+                case FAILURE:
+                    String msgStr = (String) msg.obj;
+                    onFailure(msgStr);
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    /**
+     * 注册成功时调用此方法
+     * 注册成功后跳转页面
+     * */
+    public void onSuccess(){
+        Intent intent = new Intent(this, MyActivity.class);
+        this.startActivity(intent);
+        this.finish();
+    }
+
+    /**
+     * 注册失败时调用此方法
+     * shi注册按钮可用,并提示
+     * */
+
+    public void onFailure(String msgStr){
+        //设置注册按钮可用,使用户能够修改注册信息后重新注册
+        registButton.setEnabled(true);
+        ToastManager.toast(this,msgStr);
     }
 }

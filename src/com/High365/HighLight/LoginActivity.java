@@ -82,7 +82,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onSuccess() {
                         Message message = new Message();
-                        message.what = 1;
+                        message.what = SUCCESS;
                         message.obj = "登录成功";
                         handler.sendMessage(message);
                     }
@@ -90,7 +90,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onFailure(String msg) {
                         Message message = new Message();
-                        message.what = 0;
+                        message.what = FAILURE;
                         message.obj = "登录失败,失败原因:" + msg;
 
                         handler.sendMessage(message);
@@ -147,15 +147,19 @@ public class LoginActivity extends Activity {
         }
     };
 
+    /**
+     * 登录成功时所做的操作
+     * */
     void onSuccess(){
-        Toast.makeText(LoginActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(LoginActivity.this, MyActivity.class);
         LoginActivity.this.startActivity(intent);
         LoginActivity.this.finish();
     }
-
+    /**
+     * 登录失败时所做的操作
+     * */
     void onFailure(String msg){
-        Toast.makeText(LoginActivity.this,msg,Toast.LENGTH_SHORT).show();
+        ToastManager.toast(this,msg);
         loginButton.setEnabled(true);
     }
 }
