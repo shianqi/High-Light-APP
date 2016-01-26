@@ -3,6 +3,7 @@ package com.High365.HighLight;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -168,7 +169,7 @@ public class MyActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case MYINFORMATION:
-                ToastManager.toast(getApplicationContext(),"关于");
+                toUserInformation();
                 break;
             case EXIT:
                 exit();
@@ -177,6 +178,12 @@ public class MyActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void toUserInformation(){
+        Intent intent = new Intent(MyActivity.this, UserInformation.class);
+        MyActivity.this.startActivity(intent);
+        MyActivity.this.finish();
+    }
 
     /**
      * 退出应用
