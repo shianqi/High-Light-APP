@@ -1,9 +1,12 @@
 package com.High365.HighLight;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import com.google.gson.Gson;
 import android.os.Looper;
+import java.text.SimpleDateFormat;
 
 /**
  * @author hupeng
@@ -24,29 +27,42 @@ public class UserInfoService extends Thread{
     Listener listener;
     Integer taskId;
     Context context;
-
+    UserInfoBean userInfoBean;
     /**
-     * @param username 用户名
+     * @param userID 用户名
      * @param password 密码
      * 成功回调:onSuccess,失败回调:onFailure.
      * */
-    public void login(String username,String password,Listener listener,Context context){
+    public void login(String userID,String password,Listener listener,Context context){
         this.listener = listener;
         this.context = context;
         url = "login.action";
-        param = "username=" + username + "&password=" + password;
+        param = "username=" + userID + "&password=" + password;
         taskId = 0;
-
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this.context);
+        sharedPreferencesManager.writeString("UserID",userID);
         start();
-
     }
 
-    public void register(String username,String password,int gender,String birthDay,Context context,Listener listener){
+    public void register(String userID,String password,int gender,String birthDay,Context context,Listener listener){
         this.listener = listener;
         this.context = context;
         url= "register.action";
-        param = "username=" + username + "&password=" + password + "&gender=" + gender + "&birthDay=" + birthDay;
+        param = "username=" + userID + "&password=" + password + "&gender=" + gender + "&birthDay=" + birthDay;
         taskId = 1;
+        userInfoBean = new UserInfoBean();
+        userInfoBean.setUserID(userID);
+        userInfoBean.setUserPWD(password);
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+            //simpleDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
+            userInfoBean.setUserBirthDay(simpleDateFormat.parse(birthDay));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        userInfoBean.setUserGender(gender);
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this.context);
+        sharedPreferencesManager.writeString("UserID",userID);
         start();
     }
 
@@ -82,10 +98,23 @@ public class UserInfoService extends Thread{
                     RegisterModel registerModel = new Gson().fromJson(httpResponseOutputStreamString,RegisterModel.class);
                     //判断注册结果
                     if (registerModel.getStatus().equals(1)){
-                        SharedPreferences sharedPreferences = context.getSharedPreferences("config",context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("secretKey",registerModel.getSecretKey());
-                        editor.commit();
+                        //写入secetKey到SharePreferences中
+                        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
+                        sharedPreferencesManager.writeString("secretKey",registerModel.getSecretKey());
+                        //写入用户的注册数据到UserInfo表中
+                        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+                        SQLiteDatabase highLightDatabase = sqlLiteManager.getWritableDatabase();
+                        //若原有记录则删除
+                        String sql = "DELETE FROM UserInfo where userID = '"+ userInfoBean.getUserID()+"';";
+                        highLightDatabase.execSQL(sql);
+                        //插入新纪录
+                        ContentValues cv = new ContentValues();
+                        cv.put("UserID",userInfoBean.getUserID());
+                        cv.put("UserPWD",userInfoBean.getUserID());
+                        cv.put("UserGender",userInfoBean.getUserGender());
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        cv.put("UserBirthDay",sdf.format(userInfoBean.getUserBirthDay()));
+                        highLightDatabase.insert("UserInfo",null,cv);
                         listener.onSuccess();
                         return;
                     }else{
