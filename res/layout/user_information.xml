@@ -43,9 +43,13 @@
                         android:layout_height="fill_parent"
                         android:layout_weight="1">
                     <TextView
+                            android:id="@+id/usernameTextView"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:text="加载中..."
+                            android:padding="0dp"
+                            android:layout_margin="0dp"
+                            android:background="#ffffff"
                             android:textSize="16dip"/>
                 </LinearLayout>
 
@@ -75,6 +79,7 @@
                         android:layout_height="fill_parent"
                         android:layout_weight="1">
                     <TextView
+                            android:id="@+id/sexTextView"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:text="加载中..."
@@ -106,9 +111,16 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_weight="1">
-                    <TextView
+                    <EditText
+                            android:id="@+id/birthdayEditText"
+                            android:inputType="number"
+                            android:maxLength="8"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
+                            android:enabled="false"
+                            android:padding="0dp"
+                            android:layout_margin="0dp"
+                            android:background="#ffffff"
                             android:text="加载中..."
                             android:textSize="16dip"/>
                 </LinearLayout>
@@ -138,9 +150,17 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_weight="1">
-                    <TextView
+                    <EditText
+                            android:id="@+id/emailEditText"
+                            android:inputType="textEmailAddress"
+                            android:maxLength="25"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
+                            android:editable="false"
+                            android:focusable="false"
+                            android:padding="0dp"
+                            android:layout_margin="0dp"
+                            android:background="#ffffff"
                             android:text="加载中..."
                             android:textSize="16dip"/>
                 </LinearLayout>
@@ -170,9 +190,17 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_weight="1">
-                    <TextView
+                    <EditText
+                            android:id="@+id/phoneEditText"
+                            android:inputType="phone"
+                            android:maxLength="11"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
+                            android:editable="false"
+                            android:focusable="false"
+                            android:padding="0dp"
+                            android:layout_margin="0dp"
+                            android:background="#ffffff"
                             android:text="加载中..."
                             android:textSize="16dip"/>
                 </LinearLayout>
@@ -190,6 +218,7 @@
                     android:background="#ffffff"
                     android:orientation="horizontal">
                 <Button
+                        android:id="@+id/fixUserInformationButton"
                         android:layout_width="fill_parent"
                         android:layout_height="50.0dip"
                         android:background="#3385ff"
@@ -208,6 +237,7 @@
                     android:background="#ffffff"
                     android:orientation="horizontal">
                 <Button
+                        android:id="@+id/fixPasswordButton"
                         android:layout_width="fill_parent"
                         android:layout_height="50.0dip"
                         android:background="#3385ff"
@@ -225,6 +255,7 @@
                     android:background="#ffffff"
                     android:orientation="horizontal">
                 <Button
+                        android:id="@+id/fixGraphPasswordButton"
                         android:layout_width="fill_parent"
                         android:layout_height="50.0dip"
                         android:background="#3385ff"
@@ -242,6 +273,7 @@
                     android:background="#ffffff"
                     android:orientation="horizontal">
                 <Button
+                        android:id="@+id/logoutButton"
                         android:layout_width="fill_parent"
                         android:layout_height="50.0dip"
                         android:background="#cd361e"

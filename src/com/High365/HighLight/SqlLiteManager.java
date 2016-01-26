@@ -21,7 +21,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE Table user (username varchar(20),password varchar(20));");
+        sqLiteDatabase.execSQL("CREATE Table userEntity (username varchar(20),password varchar(20));");
         sqLiteDatabase.execSQL("CREATE table log (logId integer,text varchar(20))");
     }
 
