@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -160,5 +161,29 @@ public class RegistActivity extends Activity{
         //设置注册按钮可用,使用户能够修改注册信息后重新注册
         registButton.setEnabled(true);
         ToastManager.toast(this,msgStr);
+    }
+
+    /**
+     * 重写返回键，让程序返回登陆界面
+     * @param keyCode keyCode
+     * @param event event
+     * @return 事件是否成功
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            goLoginActivity();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * 回到登陆界面
+     */
+    public void goLoginActivity(){
+        Intent intent = new Intent(RegistActivity.this, LoginActivity.class);
+        RegistActivity.this.startActivity(intent);
+        RegistActivity.this.finish();
     }
 }

@@ -120,10 +120,10 @@
                     android:layout_height="50.0dip"
                     android:layout_marginLeft="12.0dip"
                     android:layout_marginRight="12.0dip"
-                    android:background="#2266ff"
+                    android:background="#3385ff"
                     android:singleLine="true"
                     android:text="注册"
-                    android:textColor="#ffffffff"
+                    android:textColor="#ffffff"
                     android:textSize="18.0sp"/>
         </LinearLayout>
     </LinearLayout>

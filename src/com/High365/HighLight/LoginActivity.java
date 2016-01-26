@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +51,7 @@ public class LoginActivity extends Activity {
      * */
     final private int SUCCESS=1;
     final private int FAILURE=0;
+    private long EXITTIME = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,5 +163,26 @@ public class LoginActivity extends Activity {
     void onFailure(String msg){
         ToastManager.toast(this,msg);
         loginButton.setEnabled(true);
+    }
+
+    /**
+     * 设置双击返回退出程序
+     * @param keyCode keyCode 按键
+     * @param event event 事件
+     * @return true or false
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            if((System.currentTimeMillis()-EXITTIME) > 2000){
+                ToastManager.toast(getApplicationContext(),"再按一次退出程序");
+                EXITTIME = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

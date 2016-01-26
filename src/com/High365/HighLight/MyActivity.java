@@ -40,6 +40,14 @@ public class MyActivity extends Activity {
     private PageTwo pageTwo;
     private PageThree pageThree;
 
+    /**
+     * 退出按键时长
+     */
+    private long EXITTIME = 0;
+
+    private final int MYINFORMATION = 1000;
+    private final int EXIT = 1003;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,9 +139,14 @@ public class MyActivity extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-                ToastManager.toast(getApplicationContext(),"再按一次返回");
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            if((System.currentTimeMillis()-EXITTIME) > 2000){
+                ToastManager.toast(getApplicationContext(),"再按一次退出程序");
+                EXITTIME = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -141,23 +154,34 @@ public class MyActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, 0, 0, "关于");
-        menu.add(0, 1, 1, "退出");
+        menu.add(0, MYINFORMATION, 0, "我的信息");
+        menu.add(0, EXIT, 1, "退出");
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * 设置裁断按钮的功能
+     * @param item item
+     * @return 事件是否成功
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case 0:
+            case MYINFORMATION:
                 ToastManager.toast(getApplicationContext(),"关于");
                 break;
-            case 1:
-                ToastManager.toast(getApplicationContext(),"退出");
+            case EXIT:
+                exit();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
 
+    /**
+     * 退出应用
+     */
+    public void exit(){
+        System.exit(0);
+    }
 }
