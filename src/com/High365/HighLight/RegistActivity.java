@@ -145,6 +145,7 @@ public class RegistActivity extends Activity{
      * 注册成功后跳转页面
      * */
     public void onSuccess(){
+        ToastManager.toast(this,"注册成功");
         Intent intent = new Intent(this, MyActivity.class);
         this.startActivity(intent);
         this.finish();
@@ -152,7 +153,7 @@ public class RegistActivity extends Activity{
 
     /**
      * 注册失败时调用此方法
-     * shi注册按钮可用,并提示
+     * 使注册按钮可用,并提示
      * */
 
     public void onFailure(String msgStr){

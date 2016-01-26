@@ -64,6 +64,7 @@ public class UserInfoService extends Thread{
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("secretKey",loginModel.getSecretKey());
                         editor.commit();
+                        System.out.println(loginModel.getSecretKey());
                         listener.onSuccess();
                         return;
                     }else {

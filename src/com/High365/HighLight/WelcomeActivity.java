@@ -54,7 +54,7 @@ public class WelcomeActivity extends Activity {
      * 初始化页面，此处调用登陆状态判断函数
      */
     private void init(){
-        handler.sendEmptyMessageDelayed(REGIST,DELAY_TIME);
+        handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
         //此处进行登陆判断，并跳转。修改第一个参数就好。
         //例如跳转到登陆界面： handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
     }
