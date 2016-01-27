@@ -84,7 +84,7 @@ public class UserInformationActivity extends Activity {
         fixPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                goFixPasswordPage();
             }
         });
 
@@ -136,6 +136,15 @@ public class UserInformationActivity extends Activity {
             goMainPage();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * 切换到修改密码界面
+     */
+    public void goFixPasswordPage(){
+        Intent intent = new Intent(UserInformationActivity.this, FixPasswordActivity.class);
+        UserInformationActivity.this.startActivity(intent);
+        UserInformationActivity.this.finish();
     }
 
     /**
