@@ -1,6 +1,7 @@
 package com.High365.HighLight;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.view.KeyEvent;
 import android.database.Cursor;
@@ -50,6 +51,11 @@ public class FixPasswordActivity extends Activity{
                     ToastManager.toast(FixPasswordActivity.this,"两次输入的新密码不一致");
                     return;
                 }
+                //检查新密码长度,默认长度必须大于等于6
+                if (newPass1.length()<6){
+                    ToastManager.toast(FixPasswordActivity.this,"新密码长度过短");
+                    return;
+                }
                 //检查输入的旧密码是否正确,跟本地数据库中的数据进行比对
                 SqlLiteManager sqlLiteManager = new SqlLiteManager(FixPasswordActivity.this);
                 SQLiteDatabase highLightDB = sqlLiteManager.getWritableDatabase();
@@ -59,14 +65,20 @@ public class FixPasswordActivity extends Activity{
                 if (cursor.moveToFirst()){
                     currentOldPass = cursor.getString(cursor.getColumnIndex("UserPWD"));
                 }
-                if (!oldPass.equals(currentOldPass)){
-                    ToastManager.toast(FixPasswordActivity.this,"旧密码不正确");
-                }
+                //旧密码是否正确在服务器端进行判断
+//                if (!oldPass.equals(currentOldPass)){
+//                    ToastManager.toast(FixPasswordActivity.this,"旧密码不正确");
+//                    return;
+//                }
                 //发送请求到远程服务器请求更改密码,更改成功后修改本地数据库中的密码
+                //首先暂存新密码,等到密码修改成功后,将暂存的新密码写入数据库
+                SharedPreferencesManager spm = new SharedPreferencesManager(FixPasswordActivity.this);
+                spm.writeString("tempNewPWD",newPass1);
+                //执行网络请求进行数据更新操作
                 UserInfoBean userInfoBean = new UserInfoBean();
-                userInfoBean.setUserPWD(oldPass);
+                userInfoBean.setUserPwd(newPass1);
                 UserInfoService userInfoService = new UserInfoService();
-                userInfoService.update(userInfoBean, FixPasswordActivity.this, new Listener() {
+                userInfoService.updateUserInfo(userInfoBean, FixPasswordActivity.this, new Listener() {
                     @Override
                     public void onSuccess() {
                         Message message = new Message();
@@ -127,6 +139,20 @@ public class FixPasswordActivity extends Activity{
      * */
     void onSuccess(){
         ToastManager.toast(FixPasswordActivity.this,"密码更新成功!");
+        //读出数据
+        SharedPreferencesManager spm = new SharedPreferencesManager(FixPasswordActivity.this);
+        String tempNewPass = spm.readString("tempNewPWD");
+        String userID = spm.readString("UserID");
+        //获得数据库实例,更新数据库中的用户密码
+        SQLiteDatabase highLightDB = new SqlLiteManager(FixPasswordActivity.this).getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("UserPwd",tempNewPass);
+        try{
+            highLightDB.update("userInfo",cv,"userID=?",new String[]{userID});
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     /**
      * 更新失败时所做的操作

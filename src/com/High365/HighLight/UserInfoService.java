@@ -3,9 +3,12 @@ package com.High365.HighLight;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.google.gson.Gson;
 import android.os.Looper;
+import com.google.gson.GsonBuilder;
+
 import java.text.SimpleDateFormat;
 
 /**
@@ -52,7 +55,7 @@ public class UserInfoService extends Thread{
         taskId = 1;
         userInfoBean = new UserInfoBean();
         userInfoBean.setUserID(userID);
-        userInfoBean.setUserPWD(password);
+        userInfoBean.setUserPwd(password);
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
             //simpleDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
@@ -66,7 +69,10 @@ public class UserInfoService extends Thread{
         start();
     }
 
-    public void update(UserInfoBean userInfoBean,Context context,Listener listener){
+    /**
+     * 执行用户信息更新的方法
+     * */
+    public void updateUserInfo(UserInfoBean userInfoBean,Context context,Listener listener){
         this.listener = listener;
         this.context = context;
         SharedPreferencesManager spm = new SharedPreferencesManager(context);
@@ -76,9 +82,24 @@ public class UserInfoService extends Thread{
         start();
     }
 
+    /**
+     * 从服务器端获取用户身份,获得数据后直接将本地数据库中的数据进行更新,由于不需要直接进行UI操作,因此不需要使用监听器
+     * */
+    public void getUserInfo(Context context){
+        this.context = context;
+        SharedPreferencesManager spm = new SharedPreferencesManager(context);
+        url = "getUserInfo.action";
+        param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey");
+        taskId = 3;
+        start();
+    }
+
     @Override
     public void run() {
         Looper.prepare();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd")
+                .create();
         switch (taskId){
             case 0:
                 try{
@@ -120,7 +141,7 @@ public class UserInfoService extends Thread{
                         //插入新纪录
                         ContentValues cv = new ContentValues();
                         cv.put("UserID",userInfoBean.getUserID());
-                        cv.put("UserPWD",userInfoBean.getUserID());
+                        cv.put("UserPWD",userInfoBean.getUserPwd());
                         cv.put("UserGender",userInfoBean.getUserGender());
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                         cv.put("UserBirthDay",sdf.format(userInfoBean.getUserBirthDay()));
@@ -139,6 +160,7 @@ public class UserInfoService extends Thread{
             case 2:
                 try {
                     httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
+                    System.out.println(httpResponseOutputStreamString);
                     UpdateModel updateModel = new Gson().fromJson(httpResponseOutputStreamString,UpdateModel.class);
                     if (updateModel.getStatus() == 1){
                         listener.onSuccess();
@@ -152,6 +174,46 @@ public class UserInfoService extends Thread{
                     listener.onFailure("网络连接失败");
                     break;
                 }
+            case 3:
+                try {
+                    httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
+                    UserInfoBean userInfoBean = gson.fromJson(httpResponseOutputStreamString,UserInfoBean.class);
+                    //判断数据表中是否存在用户原有的数据,若数据不存在则先进行数据插入操作
+                    String userID = new SharedPreferencesManager(context).readString("UserID");
+                    SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+                    SQLiteDatabase highLightDB = sqlLiteManager.getWritableDatabase();
+                    Cursor cursor = highLightDB.rawQuery("select * from userInfo where userID = ?",new String[]{userID});
+                    if (cursor.getCount() == 0){
+                        ContentValues cv = new ContentValues();
+                        cv.put("userID",userID);
+                        highLightDB.insert("userInfo",null,cv);
+                    }
+                    //进行数据更新操作
+                    try{
+                        ContentValues cv = new ContentValues();
+                        //格式化用户数据
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        try{
+                            cv.put("UserBirthDay",sdf.format(userInfoBean.getUserBirthDay()));
+                        }catch (Exception e){}
+                        cv.put("UserName",userInfoBean.getUsername());
+                        cv.put("UserGender",userInfoBean.getUserGender());
+                        cv.put("UserEmail",userInfoBean.getUserEmail());
+                        cv.put("userPhone",userInfoBean.getUserPhoto());
+                        try {
+                            cv.put("userEphysiologicalDay",sdf.format(userInfoBean.getUserEphysiologicalDay()));
+                            cv.put("UserSphysiologicalDay",sdf.format(userInfoBean.getUserSphysiologicalDay()));
+                        }catch (Exception e){}
+
+                        highLightDB.update("userInfo",cv,"userID=?",new String[]{userID});
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    highLightDB.close();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
             default:
                 break;
         }

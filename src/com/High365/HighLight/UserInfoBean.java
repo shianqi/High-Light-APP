@@ -9,27 +9,27 @@ import java.util.Date;
  */
 public class UserInfoBean {
     private String userID;
-    private String userPWD;
-    private String userGesturePWD;
+    private String userPwd;
+    private String userGesturePwd;
     private String username;
     private String userEmail;
     private Date userBirthDay;
     private byte[] userPhoto;
-    private int userGender;
-    private Date userSPhysiologicalDay;
-    private Date userEPhysiologicalDay;
+    private Integer userGender;
+    private Date userSphysiologicalDay;
+    private Date userEphysiologicalDay;
     private String userPhone;
 
     /**
      * 判断用户信息当前是否可修改
      */
-    private boolean fixAble = false;
+    private Boolean fixAble;
 
-    public boolean isFixAble() {
+    public Boolean isFixAble() {
         return fixAble;
     }
 
-    public void setFixAble(boolean fixAble) {
+    public void setFixAble(Boolean fixAble) {
         this.fixAble = fixAble;
     }
 
@@ -41,20 +41,20 @@ public class UserInfoBean {
         this.userID = userID;
     }
 
-    public String getUserPWD() {
-        return userPWD;
+    public String getUserPwd() {
+        return userPwd;
     }
 
-    public void setUserPWD(String userPWD) {
-        this.userPWD = userPWD;
+    public void setUserPwd(String userPwd) {
+        this.userPwd = userPwd;
     }
 
-    public String getUserGesturePWD() {
-        return userGesturePWD;
+    public String getUserGesturePwd() {
+        return userGesturePwd;
     }
 
-    public void setUserGesturePWD(String userGesturePWD) {
-        this.userGesturePWD = userGesturePWD;
+    public void setUserGesturePwd(String userGesturePwd) {
+        this.userGesturePwd = userGesturePwd;
     }
 
     public String getUsername() {
@@ -89,28 +89,28 @@ public class UserInfoBean {
         this.userPhoto = userPhoto;
     }
 
-    public int getUserGender() {
+    public Integer getUserGender() {
         return userGender;
     }
 
-    public void setUserGender(int userGender) {
+    public void setUserGender(Integer userGender) {
         this.userGender = userGender;
     }
 
-    public Date getUserSPhysiologicalDay() {
-        return userSPhysiologicalDay;
+    public Date getUserEphysiologicalDay() {
+        return userEphysiologicalDay;
     }
 
-    public void setUserSPhysiologicalDay(Date userSPhysiologicalDay) {
-        this.userSPhysiologicalDay = userSPhysiologicalDay;
+    public void setUserEphysiologicalDay(Date userEphysiologicalDay) {
+        this.userEphysiologicalDay = userEphysiologicalDay;
     }
 
-    public Date getUserEPhysiologicalDay() {
-        return userEPhysiologicalDay;
+    public Date getUserSphysiologicalDay() {
+        return userSphysiologicalDay;
     }
 
-    public void setUserEPhysiologicalDay(Date userEPhysiologicalDay) {
-        this.userEPhysiologicalDay = userEPhysiologicalDay;
+    public void setUserSphysiologicalDay(Date userSphysiologicalDay) {
+        this.userSphysiologicalDay = userSphysiologicalDay;
     }
 
     public String getUserPhone() {

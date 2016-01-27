@@ -64,7 +64,8 @@ public class MyActivity extends Activity {
 
         setDefaultFragment();
         addOnClickListener();
-
+        UserInfoService userInfoService = new UserInfoService();
+        userInfoService.getUserInfo(MyActivity.this);
     }
 
     /**
