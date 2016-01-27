@@ -66,6 +66,16 @@ public class UserInfoService extends Thread{
         start();
     }
 
+    public void update(UserInfoBean userInfoBean,Context context,Listener listener){
+        this.listener = listener;
+        this.context = context;
+        SharedPreferencesManager spm = new SharedPreferencesManager(context);
+        url = "updateUserInfo.action";
+        param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey") + "&userInfoJson=" + new Gson().toJson(userInfoBean);
+        taskId = 2;
+        start();
+    }
+
     @Override
     public void run() {
         Looper.prepare();
@@ -126,10 +136,25 @@ public class UserInfoService extends Thread{
                     listener.onFailure("网络连接失败");
                     return;
                 }
+            case 2:
+                try {
+                    httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
+                    UpdateModel updateModel = new Gson().fromJson(httpResponseOutputStreamString,UpdateModel.class);
+                    if (updateModel.getStatus() == 1){
+                        listener.onSuccess();
+                        return;
+                    }else{
+                        listener.onFailure(updateModel.getErrorInfo());
+                        return;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    listener.onFailure("网络连接失败");
+                    break;
+                }
             default:
                 break;
         }
-        stop();
     }
 
     /**
@@ -204,5 +229,27 @@ public class UserInfoService extends Thread{
         private String secretKey;
         private String errorInfo;
 
+    }
+
+    /**
+     * 此内部类为一个JavaBean
+     * 为更新用户数据结果的Json对象所对应的bean
+     * */
+
+    class UpdateModel{
+        private Integer status;
+        private String errorInfo;
+        public Integer getStatus() {
+            return status;
+        }
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+        public String getErrorInfo() {
+            return errorInfo;
+        }
+        public void setErrorInfo(String errorInfo) {
+            this.errorInfo = errorInfo;
+        }
     }
 }

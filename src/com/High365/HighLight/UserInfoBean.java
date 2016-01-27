@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * @author HUPENG
  * @version 1.0
- * JavaBean
+ * 这个JavaBean对应本地数据库的UserInfo表
  */
 public class UserInfoBean {
     private String userID;

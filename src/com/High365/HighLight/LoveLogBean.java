@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 /**
  * @author HUPENG
  * @version 1.0
+ * 本JavaBean对应本地数据库的LovaLog表
  */
 public class LoveLogBean {
     private int logID;
