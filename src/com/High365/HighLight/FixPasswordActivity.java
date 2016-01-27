@@ -1,7 +1,9 @@
 package com.High365.HighLight;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,5 +38,19 @@ public class FixPasswordActivity extends Activity{
                 //修改密码
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK&&event.getAction()==KeyEvent.ACTION_DOWN){
+            goUserInformationActivity();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void goUserInformationActivity(){
+        Intent intent = new Intent(FixPasswordActivity.this, UserInformationActivity.class);
+        FixPasswordActivity.this.startActivity(intent);
+        FixPasswordActivity.this.finish();
     }
 }
