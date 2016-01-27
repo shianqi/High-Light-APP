@@ -71,6 +71,45 @@
                     <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
+                            android:text="昵称"
+                            android:textSize="16dip"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1">
+                    <EditText
+                            android:id="@+id/niceNameEditText"
+                            android:inputType="text"
+                            android:maxLength="16"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:enabled="false"
+                            android:padding="0dp"
+                            android:layout_margin="0dp"
+                            android:background="#ffffff"
+                            android:text="加载中..."
+                            android:textSize="16dip"/>
+                </LinearLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dip"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip"
+                    android:paddingTop="15dip"
+                    android:paddingBottom="15dip"
+                    android:layout_marginTop="1dip"
+                    android:background="#ffffff"
+                    android:orientation="horizontal">
+                <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="2">
+                    <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
                             android:text="性别"
                             android:textSize="16dip"/>
                 </LinearLayout>
@@ -156,8 +195,7 @@
                             android:maxLength="25"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:editable="false"
-                            android:focusable="false"
+                            android:enabled="false"
                             android:padding="0dp"
                             android:layout_margin="0dp"
                             android:background="#ffffff"
@@ -196,8 +234,7 @@
                             android:maxLength="11"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:editable="false"
-                            android:focusable="false"
+                            android:enabled="false"
                             android:padding="0dp"
                             android:layout_margin="0dp"
                             android:background="#ffffff"

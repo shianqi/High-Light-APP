@@ -22,7 +22,6 @@ public class UserInfoBean {
 
     /**
      * 判断用户信息当前是否可修改
-
      */
     private boolean fixAble = false;
 

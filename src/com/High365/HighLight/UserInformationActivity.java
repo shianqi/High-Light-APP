@@ -16,6 +16,7 @@ public class UserInformationActivity extends Activity {
     private Button fixGraphPasswordButton;
     private Button logoutButton;
     private TextView usernameTextView;
+    private EditText nicknameEditText;
     private TextView sexTextView;
     private EditText birthdayEditText;
     private EditText emailEditText;
@@ -48,6 +49,7 @@ public class UserInformationActivity extends Activity {
         logoutButton=(Button)findViewById(R.id.logoutButton);
 
         usernameTextView=(TextView)findViewById(R.id.usernameTextView);
+        nicknameEditText=(EditText)findViewById(R.id.niceNameEditText);
         sexTextView=(TextView)findViewById(R.id.sexTextView);
         birthdayEditText=(EditText)findViewById(R.id.birthdayEditText);
         emailEditText=(EditText)findViewById(R.id.emailEditText);
@@ -62,13 +64,19 @@ public class UserInformationActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(userInfoBean.isFixAble()){
-                    //储存编辑后的信息
-                    birthdayEditText.setEnabled(false);
+                    saveFixedUserInformatin();
                     userInfoBean.setFixAble(false);
+                    nicknameEditText.setEnabled(false);
+                    birthdayEditText.setEnabled(false);
+                    emailEditText.setEnabled(false);
+                    phoneEditText.setEnabled(false);
                 }else{
-                    birthdayEditText.setEnabled(true);
                     userInfoBean.setFixAble(true);
-                    //else
+                    nicknameEditText.setEnabled(true);
+                    birthdayEditText.setEnabled(true);
+                    emailEditText.setEnabled(true);
+                    phoneEditText.setEnabled(true);
+                    birthdayEditText.setEnabled(true);
                 }
             }
         });
@@ -83,7 +91,7 @@ public class UserInformationActivity extends Activity {
         fixGraphPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goSetPassword();
+                goFixGraphPasswordActivity();
             }
         });
 
@@ -94,12 +102,32 @@ public class UserInformationActivity extends Activity {
             }
         });
 
+        /**
+         * 设置用户的性别修改
+         * 当此时用户的信息为可修改状态时，单击更改用户性别
+         */
         sexTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (userInfoBean.isFixAble()){
+                    if(sexTextView.getText()=="男"){
+                        sexTextView.setText("女");
+                        userInfoBean.setUserGender(0);
+                    }else{
+                        sexTextView.setText("男");
+                        userInfoBean.setUserGender(1);
+                    }
+                }
             }
         });
+    }
+
+    /**
+     * 先将用户输入的内容提取出来，并初步判断是否合法，
+     * 之后为用户修改信息
+     */
+    public void saveFixedUserInformatin(){
+
     }
 
     @Override
@@ -122,7 +150,7 @@ public class UserInformationActivity extends Activity {
     /**
      * 切换到登陆
      */
-    public void goSetPassword(){
+    public void goFixGraphPasswordActivity(){
         Intent intent = new Intent(UserInformationActivity.this, SetGraphPasswordActivity.class);
         UserInformationActivity.this.startActivity(intent);
         UserInformationActivity.this.finish();
