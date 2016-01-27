@@ -20,6 +20,20 @@ public class UserInfoBean {
     private Date userEPhysiologicalDay;
     private String userPhone;
 
+    /**
+     * 判断用户信息当前是否可修改
+
+     */
+    private boolean fixAble = false;
+
+    public boolean isFixAble() {
+        return fixAble;
+    }
+
+    public void setFixAble(boolean fixAble) {
+        this.fixAble = fixAble;
+    }
+
     public String getUserID() {
         return userID;
     }

@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class UserInformation extends Activity {
+public class UserInformationActivity extends Activity {
     private Button fixUserInformationButton;
     private Button fixPasswordButton;
     private Button fixGraphPasswordButton;
@@ -20,7 +20,7 @@ public class UserInformation extends Activity {
     private EditText birthdayEditText;
     private EditText emailEditText;
     private EditText phoneEditText;
-    public UserEntity userEntity;
+    private UserInfoBean userInfoBean;
 
 
     @Override
@@ -41,7 +41,7 @@ public class UserInformation extends Activity {
      * 绑定id
      */
     private void init(){
-        userEntity=new UserEntity();
+        userInfoBean=new UserInfoBean();
         fixUserInformationButton=(Button)findViewById(R.id.fixUserInformationButton);
         fixPasswordButton=(Button)findViewById(R.id.fixPasswordButton);
         fixGraphPasswordButton=(Button)findViewById(R.id.fixGraphPasswordButton);
@@ -61,13 +61,13 @@ public class UserInformation extends Activity {
         fixUserInformationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userEntity.isFixAble()){
+                if(userInfoBean.isFixAble()){
                     //储存编辑后的信息
                     birthdayEditText.setEnabled(false);
-                    userEntity.setFixAble(false);
+                    userInfoBean.setFixAble(false);
                 }else{
                     birthdayEditText.setEnabled(true);
-                    userEntity.setFixAble(true);
+                    userInfoBean.setFixAble(true);
                     //else
                 }
             }
@@ -114,17 +114,17 @@ public class UserInformation extends Activity {
      * 切换到主界面
      */
     public void goMainPage(){
-        Intent intent = new Intent(UserInformation.this, MyActivity.class);
-        UserInformation.this.startActivity(intent);
-        UserInformation.this.finish();
+        Intent intent = new Intent(UserInformationActivity.this, MyActivity.class);
+        UserInformationActivity.this.startActivity(intent);
+        UserInformationActivity.this.finish();
     }
 
     /**
      * 切换到登陆
      */
     public void goSetPassword(){
-        Intent intent = new Intent(UserInformation.this, SetGraphPasswordActivity.class);
-        UserInformation.this.startActivity(intent);
-        UserInformation.this.finish();
+        Intent intent = new Intent(UserInformationActivity.this, SetGraphPasswordActivity.class);
+        UserInformationActivity.this.startActivity(intent);
+        UserInformationActivity.this.finish();
     }
 }

@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+
 /**
  * 主页面
  * <p>由三个Fragment构成，分别是录音界面，日志界面，排行榜界面</p>
@@ -180,7 +180,7 @@ public class MyActivity extends Activity {
 
 
     public void toUserInformation(){
-        Intent intent = new Intent(MyActivity.this, UserInformation.class);
+        Intent intent = new Intent(MyActivity.this, UserInformationActivity.class);
         MyActivity.this.startActivity(intent);
         MyActivity.this.finish();
     }
