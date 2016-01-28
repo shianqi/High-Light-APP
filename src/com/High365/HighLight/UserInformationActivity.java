@@ -57,7 +57,7 @@ public class UserInformationActivity extends Activity {
     }
 
     /**
-     * 绑定id
+     * 绑定各个元素的id
      */
     private void init(){
         userInfoBean=new UserInfoBean();
@@ -109,6 +109,9 @@ public class UserInformationActivity extends Activity {
             }
         });
 
+        /**
+         * 为修改密码按钮绑定监听
+         */
         fixPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +119,9 @@ public class UserInformationActivity extends Activity {
             }
         });
 
+        /**
+         * 为修改手势密码按钮绑定监听
+         */
         fixGraphPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,6 +129,9 @@ public class UserInformationActivity extends Activity {
             }
         });
 
+        /**
+         * 为修退出登陆码按钮绑定监听
+         */
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,6 +167,12 @@ public class UserInformationActivity extends Activity {
 
     }
 
+    /**
+     * 重写返回键，点击返回键回到主页
+     * @param keyCode 按键编号
+     * @param event 按键响应事件
+     * @return 是否成功
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK&&event.getAction() == KeyEvent.ACTION_DOWN){
@@ -166,6 +181,9 @@ public class UserInformationActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * 显示让用户选择从文件上传照片或者拍照上传照片的对话框
+     */
     public void showDialog(){
         new AlertDialog.Builder(this)
                 .setTitle("设置头像")
@@ -236,6 +254,12 @@ public class UserInformationActivity extends Activity {
         UserInformationActivity.this.finish();
     }
 
+    /**
+     * Activity之间通信
+     * @param requestCode 请求码
+     * @param resultCode 结果码
+     * @param data 传输数据
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //结果码不等于取消时候
@@ -269,8 +293,7 @@ public class UserInformationActivity extends Activity {
 
     /**
      * 裁剪图片方法实现
-     *
-     * @param uri
+     * @param uri 文件路径
      */
     public void startPhotoZoom(Uri uri) {
 

@@ -16,22 +16,6 @@
                     android:paddingRight="20dip"
                     android:paddingTop="15dip"
                     android:paddingBottom="15dip"
-                    android:background="#ffffff">
-                <ImageView
-                        android:id="@+id/userPhoto"
-                        android:layout_width="42dip"
-                        android:layout_height="42dip"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10dip"
-                        android:src="@drawable/mini_avatar" />
-            </LinearLayout>
-            <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="55dip"
-                    android:paddingLeft="20dip"
-                    android:paddingRight="20dip"
-                    android:paddingTop="15dip"
-                    android:paddingBottom="15dip"
                     android:layout_marginTop="1dip"
                     android:background="#ffffff"
                     android:orientation="horizontal">
@@ -39,11 +23,11 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_weight="2">
-                    <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:text="用户名"
-                            android:textSize="16dip"/>
+                    <ImageView
+                            android:id="@+id/userPhoto"
+                            android:layout_width="60dip"
+                            android:layout_height="60dip"
+                            android:src="@drawable/mini_avatar" />
                 </LinearLayout>
                 <LinearLayout
                         android:layout_width="fill_parent"
