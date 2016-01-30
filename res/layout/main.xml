@@ -8,17 +8,27 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
-        <LinearLayout
+        <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:background="#cccccc">
             <FrameLayout
-                    android:id="@+id/fragment_main"
+                    android:id="@+id/fragment_main1"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
             </FrameLayout>
-        </LinearLayout>
+            <FrameLayout
+                    android:id="@+id/fragment_main2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+            </FrameLayout>
+            <FrameLayout
+                    android:id="@+id/fragment_main3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+            </FrameLayout>
+        </RelativeLayout >
         <!--此处是下面三个按钮的布局-->
         <LinearLayout
                 android:layout_width="fill_parent"

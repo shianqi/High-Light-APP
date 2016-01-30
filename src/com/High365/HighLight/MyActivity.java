@@ -71,6 +71,8 @@ public class MyActivity extends Activity {
     /**
      * 按钮功能的绑定
      */
+    private View.OnClickListener onClickListener;
+
     private void addOnClickListener(){
 
         button1.setOnClickListener(new View.OnClickListener() {
@@ -83,10 +85,9 @@ public class MyActivity extends Activity {
                 FragmentManager fm = getFragmentManager();
                 // 开启Fragment事务
                 FragmentTransaction transaction = fm.beginTransaction();
-                if (pageOne==null){
-                    pageOne=new PageOne();
-                }
-                transaction.replace(R.id.fragment_main, pageOne);
+                transaction.show(pageOne);
+                transaction.hide(pageTwo);
+                transaction.hide(pageThree);
                 transaction.commit();
             }
         });
@@ -101,10 +102,9 @@ public class MyActivity extends Activity {
                 // 开启Fragment事务
                 FragmentTransaction transaction = fm.beginTransaction();
 
-                if (pageTwo==null){
-                    pageTwo=new PageTwo();
-                }
-                transaction.replace(R.id.fragment_main, pageTwo);
+                transaction.show(pageTwo);
+                transaction.hide(pageOne);
+                transaction.hide(pageThree);
                 transaction.commit();
             }
         });
@@ -118,10 +118,10 @@ public class MyActivity extends Activity {
                 FragmentManager fm = getFragmentManager();
                 // 开启Fragment事务
                 FragmentTransaction transaction = fm.beginTransaction();
-                if (pageThree==null){
-                    pageThree=new PageThree();
-                }
-                transaction.replace(R.id.fragment_main, pageThree);
+
+                transaction.show(pageThree);
+                transaction.hide(pageTwo);
+                transaction.hide(pageOne);
                 transaction.commit();
             }
         });
@@ -135,7 +135,13 @@ public class MyActivity extends Activity {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         pageOne=new PageOne();
-        transaction.replace(R.id.fragment_main, pageOne);
+        pageTwo=new PageTwo();
+        pageThree=new PageThree();
+        transaction.replace(R.id.fragment_main1, pageOne);
+        transaction.replace(R.id.fragment_main2, pageTwo);
+        transaction.replace(R.id.fragment_main3, pageThree);
+        transaction.hide(pageTwo);
+        transaction.hide(pageThree);
         transaction.commit();
     }
 
