@@ -2,6 +2,8 @@ package com.High365.HighLight;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,7 @@ public class PageOne extends Fragment{
      */
     private static Toast myToast;
 
+    private AudioRecorder audioRecorder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,8 +99,29 @@ public class PageOne extends Fragment{
 
             }
         });
-
+        audioRecorder = new AudioRecorder();
+        audioRecorder.getNoiseLevel(new AudioRecorderListener() {
+            @Override
+            public void onSuccess(double level) {
+                Message message = new Message();
+                message.obj = level;
+                handler.sendMessage(message);
+            }
+        });
     }
+
+    /**
+     * 线程间的通信,接收消息,刷新主线程UI
+     */
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            double volLevel = (Double)msg.obj;
+            int lightLevel = ((int)(volLevel/100*254))>254?254:((int)(volLevel/100*254));
+            changeBrightness(lightLevel);
+            super.handleMessage(msg);
+        }
+    };
 
     /**
      * 调整灯泡的亮度

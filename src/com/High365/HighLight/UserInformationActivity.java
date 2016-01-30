@@ -2,21 +2,31 @@ package com.High365.HighLight;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.DialogPreference;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.*;
 import com.High365.util.SdUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 
@@ -24,6 +34,8 @@ public class UserInformationActivity extends Activity {
     private static final int IMAGE_REQUEST_CODE = 0;
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int RESULT_REQUEST_CODE = 2;
+    final private int SUCCESS = 1;
+    final private int FAILURE = 0;
     private static final String IMAGE_FILE_NAME = "faceImage.jpg";
 
     private ImageView userPhoto;
@@ -54,6 +66,48 @@ public class UserInformationActivity extends Activity {
 
     private void getUserInformation() {
         //获取用户信息后替换输入框中的“加载中”
+        //从本地数据库中读取数据
+        SqlLiteManager sqlLiteManager = new SqlLiteManager(UserInformationActivity.this);
+        SQLiteDatabase highLightDB = sqlLiteManager.getWritableDatabase();
+        try{
+            String sql = "select * from userInfo where UserID=?";
+            Cursor cursor = highLightDB.rawQuery(sql,new String[]{new SharedPreferencesManager(UserInformationActivity.this).readString("UserID")});
+            usernameTextView.setText(new SharedPreferencesManager(UserInformationActivity.this).readString("UserID"));
+            if (cursor.getCount() > 0){
+                cursor.moveToFirst();
+                if (cursor.getString(cursor.getColumnIndex("UserName"))!=null){
+                    nicknameEditText.setText(cursor.getString(cursor.getColumnIndex("UserName")));
+                }else{
+                    nicknameEditText.setText("");
+                }
+                if (cursor.getString(cursor.getColumnIndex("UserBirthDay"))!=null){
+                    String userBirthDayStr = cursor.getString(cursor.getColumnIndex("UserBirthDay"));
+                    userBirthDayStr = userBirthDayStr.replaceAll("-","");
+                    birthdayEditText.setText(userBirthDayStr);
+                }else{
+                    birthdayEditText.setText("");
+                }
+                if (cursor.getString(cursor.getColumnIndex("UserEmail"))!=null){
+                    emailEditText.setText(cursor.getString(cursor.getColumnIndex("UserEmail")));
+                }else{
+                    emailEditText.setText("");
+                }
+                if (cursor.getString(cursor.getColumnIndex("UserPhone"))!=null){
+                    phoneEditText.setText(cursor.getString(cursor.getColumnIndex("UserPhone")));
+                }else{
+                    phoneEditText.setText("");
+                }
+                try{
+                    String sexStr = new SharedPreferencesManager(UserInformationActivity.this).readString("sex");
+                    if (sexStr!=null){
+                        sexTextView.setText(sexStr);
+                    }
+                }catch (Exception e){e.printStackTrace();}
+                String base64 = new SharedPreferencesManager(UserInformationActivity.this).readString("userPhotoBase64");
+                base64 = "";
+                userPhoto.setImageDrawable(new BitmapDrawable(ImageEncodeUtil.base64ToBitmap(new SharedPreferencesManager(UserInformationActivity.this).readString("userPhotoBase64"))));
+            }
+        }catch (Exception e){ e.printStackTrace();}
     }
 
     /**
@@ -61,6 +115,7 @@ public class UserInformationActivity extends Activity {
      */
     private void init(){
         userInfoBean=new UserInfoBean();
+        userInfoBean.setFixAble(false);
         userPhoto=(ImageView)findViewById(R.id.userPhoto);
         fixUserInformationButton=(Button)findViewById(R.id.fixUserInformationButton);
         fixPasswordButton=(Button)findViewById(R.id.fixPasswordButton);
@@ -73,6 +128,14 @@ public class UserInformationActivity extends Activity {
         birthdayEditText=(EditText)findViewById(R.id.birthdayEditText);
         emailEditText=(EditText)findViewById(R.id.emailEditText);
         phoneEditText=(EditText)findViewById(R.id.phoneEditText);
+        nicknameEditText.setEnabled(true);
+        nicknameEditText.setTextColor(Color.BLACK);
+        //birthdayEditText.setEnabled(true);
+        birthdayEditText.setTextColor(Color.BLACK);
+        emailEditText.setEnabled(true);
+        emailEditText.setTextColor(Color.BLACK);
+        phoneEditText.setEnabled(true);
+        phoneEditText.setTextColor(Color.BLACK);
 
         /**
          * 点击图片选择相册或者拍照图片
@@ -91,21 +154,31 @@ public class UserInformationActivity extends Activity {
         fixUserInformationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userInfoBean.isFixAble()){
-                    saveFixedUserInformatin();
-                    userInfoBean.setFixAble(false);
-                    nicknameEditText.setEnabled(false);
-                    birthdayEditText.setEnabled(false);
-                    emailEditText.setEnabled(false);
-                    phoneEditText.setEnabled(false);
-                }else{
-                    userInfoBean.setFixAble(true);
-                    nicknameEditText.setEnabled(true);
-                    birthdayEditText.setEnabled(true);
-                    emailEditText.setEnabled(true);
-                    phoneEditText.setEnabled(true);
-                    birthdayEditText.setEnabled(true);
-                }
+                Bitmap bitmap = ((BitmapDrawable)userPhoto.getDrawable()).getBitmap();
+                SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(UserInformationActivity.this);
+//                sharedPreferencesManager.writeString("userPhotoBase64",ImageEncodeUtil.bitmapToBase64(bitmap));
+//                userPhoto.setImageDrawable(new BitmapDrawable(ImageEncodeUtil.base64ToBitmap(new SharedPreferencesManager(UserInformationActivity.this).readString("userPhotoBase64"))));
+                UserInfoService userInfoService = new UserInfoService();
+                userInfoBean.setUsername(nicknameEditText.getText().toString());
+                userInfoBean.setUserEmail(emailEditText.getText().toString());
+                userInfoBean.setUserPhone(phoneEditText.getText().toString());
+                userInfoBean.setUserPhoto(ImageEncodeUtil.bitmapToBase64(bitmap));
+                userInfoService.updateUserInfo(userInfoBean, UserInformationActivity.this, new Listener() {
+                    @Override
+                    public void onSuccess() {
+                        Message message = new Message();
+                        message.what = SUCCESS;
+                        handler.sendMessage(message);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        Message message = new Message();
+                        message.what = FAILURE;
+                        message.obj = "数据更新失败,原因:" + msg;
+                        handler.sendMessage(message);
+                    }
+                });
             }
         });
 
@@ -146,15 +219,6 @@ public class UserInformationActivity extends Activity {
         sexTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (userInfoBean.isFixAble()){
-                    if(sexTextView.getText()=="男"){
-                        sexTextView.setText("女");
-                        userInfoBean.setUserGender(0);
-                    }else{
-                        sexTextView.setText("男");
-                        userInfoBean.setUserGender(1);
-                    }
-                }
             }
         });
     }
@@ -322,6 +386,60 @@ public class UserInformationActivity extends Activity {
             //此photo为用户
             Drawable drawable = new BitmapDrawable(photo);
             userPhoto.setImageDrawable(drawable);
+
         }
+    }
+
+    /**
+     * 线程间的通信,接受不同的消息请求，做出处理,因为网络请求在子线程中完成,而要在主线程UI上显示网络请求的结果必须要经过线程间通信
+     */
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+                case SUCCESS:
+                    onSuccess();
+                    break;
+                case FAILURE:
+                    String msgStr = (String) msg.obj;
+                    onFailure(msgStr);
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    /**
+     * 更新成功时所做的操作
+     * */
+    void onSuccess(){
+        ToastManager.toast(UserInformationActivity.this,"信息更新成功!");
+        //读出数据
+        SharedPreferencesManager spm = new SharedPreferencesManager(UserInformationActivity.this);
+        String tempNewPass = spm.readString("tempNewPWD");
+        String userID = spm.readString("UserID");
+        //获得数据库实例,更新数据库中的用户密码
+        SQLiteDatabase highLightDB = new SqlLiteManager(UserInformationActivity.this).getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("UserPwd",tempNewPass);
+        cv.put("UserName",nicknameEditText.getText().toString());
+        cv.put("UserPhone",phoneEditText.getText().toString());
+        cv.put("UserEmail",emailEditText.getText().toString());
+        try{
+            highLightDB.update("userInfo",cv,"userID=?",new String[]{userID});
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+    /**
+     * 更新失败时所做的操作
+     * 提示更新失败
+     * */
+    void onFailure(String msg){
+        ToastManager.toast(UserInformationActivity.this,msg);
     }
 }

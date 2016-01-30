@@ -14,12 +14,12 @@ public class UserInfoBean {
     private String username;
     private String userEmail;
     private Date userBirthDay;
-    private byte[] userPhoto;
+    private String userPhoto;
     private Integer userGender;
     private Date userSphysiologicalDay;
     private Date userEphysiologicalDay;
     private String userPhone;
-
+    private String userPhotoBase64;
     /**
      * 判断用户信息当前是否可修改
      */
@@ -81,11 +81,11 @@ public class UserInfoBean {
         this.userBirthDay = userBirthDay;
     }
 
-    public byte[] getUserPhoto() {
+    public String getUserPhoto() {
         return userPhoto;
     }
 
-    public void setUserPhoto(byte[] userPhoto) {
+    public void setUserPhoto(String userPhoto) {
         this.userPhoto = userPhoto;
     }
 
@@ -119,5 +119,13 @@ public class UserInfoBean {
 
     public void setUserPhone(String userPhone) {
         this.userPhone = userPhone;
+    }
+
+    public String getUserPhotoBase64() {
+        return userPhotoBase64;
+    }
+
+    public void setUserPhotoBase64(String userPhotoBase64) {
+        this.userPhotoBase64 = userPhotoBase64;
     }
 }

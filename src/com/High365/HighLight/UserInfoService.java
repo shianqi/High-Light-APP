@@ -77,7 +77,7 @@ public class UserInfoService extends Thread{
         this.context = context;
         SharedPreferencesManager spm = new SharedPreferencesManager(context);
         url = "updateUserInfo.action";
-        param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey") + "&userInfoJson=" + new Gson().toJson(userInfoBean);
+        param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey") + "&userInfoJson=" + new GsonBuilder().disableHtmlEscaping().create().toJson(userInfoBean);
         taskId = 2;
         start();
     }
@@ -178,6 +178,9 @@ public class UserInfoService extends Thread{
                 try {
                     httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
                     UserInfoBean userInfoBean = gson.fromJson(httpResponseOutputStreamString,UserInfoBean.class);
+                    if (userInfoBean==null){
+
+                    }
                     //判断数据表中是否存在用户原有的数据,若数据不存在则先进行数据插入操作
                     String userID = new SharedPreferencesManager(context).readString("UserID");
                     SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
@@ -198,8 +201,20 @@ public class UserInfoService extends Thread{
                         }catch (Exception e){}
                         cv.put("UserName",userInfoBean.getUsername());
                         cv.put("UserGender",userInfoBean.getUserGender());
+                        if (userInfoBean.getUserGender()!=null ){
+                            if (userInfoBean.getUserGender()==1){
+                                new SharedPreferencesManager(context).writeString("sex","男");
+                            }else{
+                                new SharedPreferencesManager(context).writeString("sex","女");
+                            }
+                        }
+                        if (userInfoBean.getUserPhoto()!=null || !userInfoBean.getUserPhoto().equals("")){
+                            new SharedPreferencesManager(context).writeString("userPhotoBase64",userInfoBean.getUserPhoto().replaceAll(" ","+"));
+                        }
+
+
                         cv.put("UserEmail",userInfoBean.getUserEmail());
-                        cv.put("userPhone",userInfoBean.getUserPhoto());
+                        cv.put("userPhone",userInfoBean.getUserPhone());
                         try {
                             cv.put("userEphysiologicalDay",sdf.format(userInfoBean.getUserEphysiologicalDay()));
                             cv.put("UserSphysiologicalDay",sdf.format(userInfoBean.getUserSphysiologicalDay()));
