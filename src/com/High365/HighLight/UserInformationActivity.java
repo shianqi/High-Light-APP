@@ -128,13 +128,15 @@ public class UserInformationActivity extends Activity {
         birthdayEditText=(EditText)findViewById(R.id.birthdayEditText);
         emailEditText=(EditText)findViewById(R.id.emailEditText);
         phoneEditText=(EditText)findViewById(R.id.phoneEditText);
-        nicknameEditText.setEnabled(true);
+
+        sexTextView.setTextColor(Color.BLACK);
+        nicknameEditText.setEnabled(false);
         nicknameEditText.setTextColor(Color.BLACK);
-        //birthdayEditText.setEnabled(true);
+        birthdayEditText.setEnabled(false);
         birthdayEditText.setTextColor(Color.BLACK);
-        emailEditText.setEnabled(true);
+        emailEditText.setEnabled(false);
         emailEditText.setTextColor(Color.BLACK);
-        phoneEditText.setEnabled(true);
+        phoneEditText.setEnabled(false);
         phoneEditText.setTextColor(Color.BLACK);
 
         /**
@@ -154,33 +156,28 @@ public class UserInformationActivity extends Activity {
         fixUserInformationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap bitmap = ((BitmapDrawable)userPhoto.getDrawable()).getBitmap();
-                SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(UserInformationActivity.this);
-//                sharedPreferencesManager.writeString("userPhotoBase64",ImageEncodeUtil.bitmapToBase64(bitmap));
-//                userPhoto.setImageDrawable(new BitmapDrawable(ImageEncodeUtil.base64ToBitmap(new SharedPreferencesManager(UserInformationActivity.this).readString("userPhotoBase64"))));
-                UserInfoService userInfoService = new UserInfoService();
-                userInfoBean.setUsername(nicknameEditText.getText().toString());
-                userInfoBean.setUserEmail(emailEditText.getText().toString());
-                userInfoBean.setUserPhone(phoneEditText.getText().toString());
-                userInfoBean.setUserPhoto(ImageEncodeUtil.bitmapToBase64(bitmap));
-                userInfoService.updateUserInfo(userInfoBean, UserInformationActivity.this, new Listener() {
-                    @Override
-                    public void onSuccess() {
-                        Message message = new Message();
-                        message.what = SUCCESS;
-                        handler.sendMessage(message);
-                    }
+                if(userInfoBean.isFixAble()){
+                    saveFixedUserInformatin();
+                    userInfoBean.setFixAble(false);
+                    nicknameEditText.setEnabled(false);
+                    birthdayEditText.setEnabled(false);
+                    emailEditText.setEnabled(false);
+                    phoneEditText.setEnabled(false);
+                    fixUserInformationButton.setText("修改信息");
+                    saveFixedUserInformatin();
+                }else{
+                    userInfoBean.setFixAble(true);
+                    nicknameEditText.setEnabled(true);
+                    birthdayEditText.setEnabled(true);
+                    emailEditText.setEnabled(true);
+                    phoneEditText.setEnabled(true);
+                    birthdayEditText.setEnabled(true);
+                    fixUserInformationButton.setText("确认修改");
+                }
 
-                    @Override
-                    public void onFailure(String msg) {
-                        Message message = new Message();
-                        message.what = FAILURE;
-                        message.obj = "数据更新失败,原因:" + msg;
-                        handler.sendMessage(message);
-                    }
-                });
             }
         });
+
 
         /**
          * 为修改密码按钮绑定监听
@@ -228,7 +225,31 @@ public class UserInformationActivity extends Activity {
      * 之后为用户修改信息
      */
     public void saveFixedUserInformatin(){
+        Bitmap bitmap = ((BitmapDrawable)userPhoto.getDrawable()).getBitmap();
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(UserInformationActivity.this);
+//                sharedPreferencesManager.writeString("userPhotoBase64",ImageEncodeUtil.bitmapToBase64(bitmap));
+//                userPhoto.setImageDrawable(new BitmapDrawable(ImageEncodeUtil.base64ToBitmap(new SharedPreferencesManager(UserInformationActivity.this).readString("userPhotoBase64"))));
+        UserInfoService userInfoService = new UserInfoService();
+        userInfoBean.setUsername(nicknameEditText.getText().toString());
+        userInfoBean.setUserEmail(emailEditText.getText().toString());
+        userInfoBean.setUserPhone(phoneEditText.getText().toString());
+        userInfoBean.setUserPhoto(ImageEncodeUtil.bitmapToBase64(bitmap));
+        userInfoService.updateUserInfo(userInfoBean, UserInformationActivity.this, new Listener() {
+            @Override
+            public void onSuccess() {
+                Message message = new Message();
+                message.what = SUCCESS;
+                handler.sendMessage(message);
+            }
 
+            @Override
+            public void onFailure(String msg) {
+                Message message = new Message();
+                message.what = FAILURE;
+                message.obj = "数据更新失败,原因:" + msg;
+                handler.sendMessage(message);
+            }
+        });
     }
 
     /**
