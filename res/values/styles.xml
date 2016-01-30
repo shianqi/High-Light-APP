@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="title_bg" parent="android:Theme">
+        <item name="android:windowTitleBackgroundStyle">@style/Titleground</item>
+    </style>
+    <style name="Titleground">
+        <item name="android:background">#ff8f26</item>
+    </style>
+</resources>
