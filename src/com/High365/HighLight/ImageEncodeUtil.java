@@ -52,12 +52,10 @@ public class ImageEncodeUtil {
      * */
     public static Bitmap base64ToBitmap(String base64String){
         byte[] bytes;
+        //消除在网络传输的过程中可能出现的+变成空格的错误
+        base64String = base64String.replaceAll(" ","+");
         bytes = Base64.decode(base64String, Base64.NO_CLOSE);
         Bitmap bitmap= BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         return bitmap;
     }
-
-
-
-
 }
