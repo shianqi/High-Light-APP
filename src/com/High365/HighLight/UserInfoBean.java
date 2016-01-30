@@ -19,7 +19,6 @@ public class UserInfoBean {
     private Date userSphysiologicalDay;
     private Date userEphysiologicalDay;
     private String userPhone;
-    private String userPhotoBase64;
     /**
      * 判断用户信息当前是否可修改
      */
@@ -121,11 +120,8 @@ public class UserInfoBean {
         this.userPhone = userPhone;
     }
 
-    public String getUserPhotoBase64() {
-        return userPhotoBase64;
+    public UserInfoBean(){
+        userGender = -1;
     }
 
-    public void setUserPhotoBase64(String userPhotoBase64) {
-        this.userPhotoBase64 = userPhotoBase64;
-    }
 }

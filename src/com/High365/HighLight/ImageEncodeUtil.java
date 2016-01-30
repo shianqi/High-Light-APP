@@ -12,7 +12,11 @@ import java.io.IOException;
  *  将图片与base64相互装换的工具类
  */
 public class ImageEncodeUtil {
-
+    /**
+     * bitmap装base64,能将二进制转换成可见的ascII码
+     * @param bitmap 图像资源对象
+     * @return base64编码
+     * */
     public static String bitmapToBase64(Bitmap bitmap){
         String result="";
         ByteArrayOutputStream bos=null;
@@ -40,9 +44,12 @@ public class ImageEncodeUtil {
         }
         return result;
     }
-    /*
-     *bitmap转base64
-     */
+
+    /**
+     * base64转Bitmap对象
+     * @param base64String Base64字符串
+     * @return bitmap 对象
+     * */
     public static Bitmap base64ToBitmap(String base64String){
         byte[] bytes;
         bytes = Base64.decode(base64String, Base64.NO_CLOSE);
