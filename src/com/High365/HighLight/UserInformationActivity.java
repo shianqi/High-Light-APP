@@ -129,6 +129,8 @@ public class UserInformationActivity extends Activity {
         emailEditText=(EditText)findViewById(R.id.emailEditText);
         phoneEditText=(EditText)findViewById(R.id.phoneEditText);
 
+
+
         sexTextView.setTextColor(Color.BLACK);
         nicknameEditText.setEnabled(false);
         nicknameEditText.setTextColor(Color.BLACK);
@@ -164,6 +166,7 @@ public class UserInformationActivity extends Activity {
                     emailEditText.setEnabled(false);
                     phoneEditText.setEnabled(false);
                     fixUserInformationButton.setText("修改信息");
+                    fixUserInformationButton.setBackgroundColor(0xff3385ff);
                     saveFixedUserInformatin();
                 }else{
                     userInfoBean.setFixAble(true);
@@ -172,7 +175,9 @@ public class UserInformationActivity extends Activity {
                     emailEditText.setEnabled(true);
                     phoneEditText.setEnabled(true);
                     birthdayEditText.setEnabled(true);
+                    fixUserInformationButton.setBackgroundColor(0xffaddb18);
                     fixUserInformationButton.setText("确认修改");
+                    ToastManager.toast(getApplicationContext(),"信息已可修改");
                 }
 
             }
@@ -206,16 +211,6 @@ public class UserInformationActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-            }
-        });
-
-        /**
-         * 设置用户的性别修改
-         * 当此时用户的信息为可修改状态时，单击更改用户性别
-         */
-        sexTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
             }
         });
     }

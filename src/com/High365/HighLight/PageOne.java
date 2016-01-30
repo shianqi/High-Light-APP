@@ -19,8 +19,7 @@ public class PageOne extends Fragment{
 
     private View view;
     private ImageView light1;
-    //测试按钮
-    private Button cbutton;
+
     /**
      * 灯光亮度
      */
@@ -36,18 +35,6 @@ public class PageOne extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frist_fragment, container, false);
         init();
-
-        /**
-         * 此函数为测试使用
-         */
-        cbutton=(Button)view.findViewById(R.id.change);
-        cbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeBrightness(200);
-            }
-        });
-
 
         return view;
     }
