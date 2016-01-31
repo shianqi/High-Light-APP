@@ -305,8 +305,8 @@ public class UserInformationActivity extends Activity {
      * 切换到主界面
      */
     public void goMainPage(){
-        Intent intent = new Intent(UserInformationActivity.this, MyActivity.class);
-        UserInformationActivity.this.startActivity(intent);
+//        Intent intent = new Intent(UserInformationActivity.this, MyActivity.class);
+//        UserInformationActivity.this.startActivity(intent);
         UserInformationActivity.this.finish();
     }
 

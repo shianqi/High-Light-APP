@@ -189,7 +189,7 @@ public class MyActivity extends Activity {
     public void toUserInformation(){
         Intent intent = new Intent(MyActivity.this, UserInformationActivity.class);
         MyActivity.this.startActivity(intent);
-        MyActivity.this.finish();
+        //MyActivity.this.finish();
     }
 
     /**
