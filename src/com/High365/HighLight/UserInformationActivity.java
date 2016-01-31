@@ -85,6 +85,7 @@ public class UserInformationActivity extends Activity {
 
 
         //初始化控件属性
+        usernameTextView.setTextColor(Color.WHITE);
         sexTextView.setTextColor(Color.BLACK);
         nicknameEditText.setEnabled(false);
         nicknameEditText.setTextColor(Color.BLACK);

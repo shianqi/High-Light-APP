@@ -7,7 +7,6 @@
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#00FFFF"
             android:gravity="center"
             android:text="页面三"
             android:textSize="20sp"
