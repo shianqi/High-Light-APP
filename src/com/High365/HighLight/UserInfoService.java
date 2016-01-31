@@ -45,7 +45,7 @@ public class UserInfoService extends Thread{
         SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
         userInfoBean = sqlLiteManager.findUserInfoById(userID);
         if (userInfoBean!=null){
-            if (userInfoBean.getUserPwd().equals(new MD5().encryptPassword(password))){
+            if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(new MD5().encryptPassword(password))){
                 listener.onSuccess();
                 return;
             }
