@@ -37,8 +37,20 @@ public class UserInfoService extends Thread{
      * 成功回调:onSuccess,失败回调:onFailure.
      * */
     public void login(String userID,String password,Listener listener,Context context){
+
         this.listener = listener;
         this.context = context;
+
+        //首先,判断用户名密码是否在本地数据库中,若在,判断密码的一致性,则直接登录成功
+        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+        userInfoBean = sqlLiteManager.findUserInfoById(userID);
+        if (userInfoBean!=null){
+            if (userInfoBean.getUserPwd().equals(new MD5().encryptPassword(password))){
+                listener.onSuccess();
+                return;
+            }
+        }
+        //执行网络请求,在线判断密码的正确与否
         url = "login.action";
         param = "username=" + userID + "&password=" + password;
         taskId = 0;
@@ -47,6 +59,9 @@ public class UserInfoService extends Thread{
         start();
     }
 
+    /**
+     * 注册方法,必须联网才能注册
+     * */
     public void register(String userID,String password,int gender,String birthDay,Context context,Listener listener){
         this.listener = listener;
         this.context = context;
@@ -58,7 +73,6 @@ public class UserInfoService extends Thread{
         userInfoBean.setUserPwd(password);
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-            //simpleDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
             userInfoBean.setUserBirthDay(simpleDateFormat.parse(birthDay));
         }catch (Exception e){
             e.printStackTrace();
@@ -79,6 +93,7 @@ public class UserInfoService extends Thread{
         url = "updateUserInfo.action";
         param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey") + "&userInfoJson=" + new GsonBuilder().disableHtmlEscaping().create().toJson(userInfoBean);
         taskId = 2;
+        new SqlLiteManager(context).saveOrupdateUserInfo(userInfoBean);
         start();
     }
 
@@ -102,6 +117,7 @@ public class UserInfoService extends Thread{
                 .create();
         switch (taskId){
             case 0:
+                //login
                 try{
                     httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
                     LoginModel loginModel = new Gson().fromJson(httpResponseOutputStreamString,LoginModel.class);
@@ -124,6 +140,7 @@ public class UserInfoService extends Thread{
                     return;
                 }
             case 1:
+                //Register
                 try{
                     httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
                     RegisterModel registerModel = new Gson().fromJson(httpResponseOutputStreamString,RegisterModel.class);
@@ -158,6 +175,7 @@ public class UserInfoService extends Thread{
                     return;
                 }
             case 2:
+                //Update
                 try {
                     httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
                     System.out.println(httpResponseOutputStreamString);
@@ -175,56 +193,14 @@ public class UserInfoService extends Thread{
                     break;
                 }
             case 3:
+                //getUserInfo
                 try {
                     httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
                     UserInfoBean userInfoBean = gson.fromJson(httpResponseOutputStreamString,UserInfoBean.class);
                     if (userInfoBean==null){
-
+                        return;
                     }
-                    //判断数据表中是否存在用户原有的数据,若数据不存在则先进行数据插入操作
-                    String userID = new SharedPreferencesManager(context).readString("UserID");
-                    SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
-                    SQLiteDatabase highLightDB = sqlLiteManager.getWritableDatabase();
-                    Cursor cursor = highLightDB.rawQuery("select * from userInfo where userID = ?",new String[]{userID});
-                    if (cursor.getCount() == 0){
-                        ContentValues cv = new ContentValues();
-                        cv.put("userID",userID);
-                        highLightDB.insert("userInfo",null,cv);
-                    }
-                    //进行数据更新操作
-                    try{
-                        ContentValues cv = new ContentValues();
-                        //格式化用户数据
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        try{
-                            cv.put("UserBirthDay",sdf.format(userInfoBean.getUserBirthDay()));
-                        }catch (Exception e){}
-                        cv.put("UserName",userInfoBean.getUsername());
-                        cv.put("UserGender",userInfoBean.getUserGender());
-                        if (userInfoBean.getUserGender()!=null ){
-                            if (userInfoBean.getUserGender()==1){
-                                new SharedPreferencesManager(context).writeString("sex","男");
-                            }else{
-                                new SharedPreferencesManager(context).writeString("sex","女");
-                            }
-                        }
-                        if (userInfoBean.getUserPhoto()!=null || !userInfoBean.getUserPhoto().equals("")){
-                            new SharedPreferencesManager(context).writeString("userPhotoBase64",userInfoBean.getUserPhoto().replaceAll(" ","+"));
-                        }
 
-
-                        cv.put("UserEmail",userInfoBean.getUserEmail());
-                        cv.put("userPhone",userInfoBean.getUserPhone());
-                        try {
-                            cv.put("userEphysiologicalDay",sdf.format(userInfoBean.getUserEphysiologicalDay()));
-                            cv.put("UserSphysiologicalDay",sdf.format(userInfoBean.getUserSphysiologicalDay()));
-                        }catch (Exception e){}
-
-                        highLightDB.update("userInfo",cv,"userID=?",new String[]{userID});
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    highLightDB.close();
                 }catch (Exception e){
                     e.printStackTrace();
                 }

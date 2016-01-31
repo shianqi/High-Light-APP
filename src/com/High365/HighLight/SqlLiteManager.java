@@ -38,7 +38,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
     /**
      * 以UserID在本地数据库中寻找UserInfoBean对象
      * */
-    public UserInfoBean findUserInfoByIdFromUserInfo(String userID){
+    public UserInfoBean findUserInfoById(String userID){
         //构造要返回的对象
         UserInfoBean userInfoBean = new UserInfoBean();
         //构造数据库对象
@@ -118,6 +118,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         }
         SQLiteDatabase highLightDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        cv.put("UserID",userInfoBean.getUserID());
         if (userInfoBean.getUserPwd() != null){
             cv.put("UserPWD",userInfoBean.getUserPwd());
         }

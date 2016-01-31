@@ -28,6 +28,7 @@ import com.High365.util.SdUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
 
 
 public class UserInformationActivity extends Activity {
@@ -130,7 +131,7 @@ public class UserInformationActivity extends Activity {
         phoneEditText=(EditText)findViewById(R.id.phoneEditText);
 
 
-
+        //初始化控件属性
         sexTextView.setTextColor(Color.BLACK);
         nicknameEditText.setEnabled(false);
         nicknameEditText.setTextColor(Color.BLACK);
@@ -140,6 +141,8 @@ public class UserInformationActivity extends Activity {
         emailEditText.setTextColor(Color.BLACK);
         phoneEditText.setEnabled(false);
         phoneEditText.setTextColor(Color.BLACK);
+
+        //初始化控件值
 
         /**
          * 点击图片选择相册或者拍照图片
@@ -220,15 +223,22 @@ public class UserInformationActivity extends Activity {
      * 之后为用户修改信息
      */
     public void saveFixedUserInformatin(){
-        Bitmap bitmap = ((BitmapDrawable)userPhoto.getDrawable()).getBitmap();
-        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(UserInformationActivity.this);
-//                sharedPreferencesManager.writeString("userPhotoBase64",ImageEncodeUtil.bitmapToBase64(bitmap));
-//                userPhoto.setImageDrawable(new BitmapDrawable(ImageEncodeUtil.base64ToBitmap(new SharedPreferencesManager(UserInformationActivity.this).readString("userPhotoBase64"))));
-        UserInfoService userInfoService = new UserInfoService();
+        //创建UserInfoBean对象
+        UserInfoBean userInfoBean = new UserInfoBean();
+        userInfoBean.setUserID(new SharedPreferencesManager(UserInformationActivity.this).readString("UserID"));
+        try{
+            userInfoBean.setUserPhoto(ImageEncodeUtil.bitmapToBase64(((BitmapDrawable) (userPhoto.getDrawable())).getBitmap()));
+        }catch (Exception e){}
         userInfoBean.setUsername(nicknameEditText.getText().toString());
-        userInfoBean.setUserEmail(emailEditText.getText().toString());
         userInfoBean.setUserPhone(phoneEditText.getText().toString());
-        userInfoBean.setUserPhoto(ImageEncodeUtil.bitmapToBase64(bitmap));
+        try{
+            userInfoBean.setUserBirthDay(new SimpleDateFormat("yyyyMMdd").parse(birthdayEditText.getText().toString()));
+        }catch (Exception e){
+            ToastManager.toast(UserInformationActivity.this,"生日不合法");
+            return;
+        }
+        userInfoBean.setUserEmail(emailEditText.getText().toString());
+        UserInfoService userInfoService = new UserInfoService();
         userInfoService.updateUserInfo(userInfoBean, UserInformationActivity.this, new Listener() {
             @Override
             public void onSuccess() {
@@ -241,7 +251,7 @@ public class UserInformationActivity extends Activity {
             public void onFailure(String msg) {
                 Message message = new Message();
                 message.what = FAILURE;
-                message.obj = "数据更新失败,原因:" + msg;
+                message.obj = "数据未更新至服务器,原因:" + msg;
                 handler.sendMessage(message);
             }
         });
