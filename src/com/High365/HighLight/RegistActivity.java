@@ -96,7 +96,7 @@ public class RegistActivity extends Activity{
                 username = usernameText.getText().toString();
                 password = passwordText.getText().toString();
                 birthday = birthdayText.getText().toString();
-                //点击后设置按钮不可用,访问重复点击
+                //点击后设置按钮不可用,防止重复点击
                 registButton.setEnabled(false);
                 UserInfoService userInfoService = new UserInfoService();
                 userInfoService.register(username, password, sex, birthday, RegistActivity.this, new Listener() {

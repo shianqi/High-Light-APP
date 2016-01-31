@@ -8,7 +8,7 @@ import java.util.Date;
  * 这个JavaBean对应本地数据库的UserInfo表
  */
 public class UserInfoBean {
-    private String userID;
+    private String userId;
     private String userPwd;
     private String userGesturePwd;
     private String username;
@@ -32,12 +32,12 @@ public class UserInfoBean {
         this.fixAble = fixAble;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUserPwd() {

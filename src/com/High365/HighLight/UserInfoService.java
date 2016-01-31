@@ -69,7 +69,7 @@ public class UserInfoService extends Thread{
         param = "username=" + userID + "&password=" + password + "&gender=" + gender + "&birthDay=" + birthDay;
         taskId = 1;
         userInfoBean = new UserInfoBean();
-        userInfoBean.setUserID(userID);
+        userInfoBean.setUserId(userID);
         userInfoBean.setUserPwd(password);
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -91,7 +91,7 @@ public class UserInfoService extends Thread{
         this.context = context;
         SharedPreferencesManager spm = new SharedPreferencesManager(context);
         url = "updateUserInfo.action";
-        param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey") + "&userInfoJson=" + new GsonBuilder().disableHtmlEscaping().create().toJson(userInfoBean);
+        param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey") + "&userInfoJson=" + new GsonBuilder().setDateFormat("yyyy-MM-dd").disableHtmlEscaping().create().toJson(userInfoBean);
         taskId = 2;
         new SqlLiteManager(context).saveOrupdateUserInfo(userInfoBean);
         start();
@@ -153,11 +153,11 @@ public class UserInfoService extends Thread{
                         SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
                         SQLiteDatabase highLightDatabase = sqlLiteManager.getWritableDatabase();
                         //若原有记录则删除
-                        String sql = "DELETE FROM UserInfo where userID = '"+ userInfoBean.getUserID()+"';";
+                        String sql = "DELETE FROM UserInfo where userID = '"+ userInfoBean.getUserId()+"';";
                         highLightDatabase.execSQL(sql);
                         //插入新纪录
                         ContentValues cv = new ContentValues();
-                        cv.put("UserID",userInfoBean.getUserID());
+                        cv.put("UserID",userInfoBean.getUserId());
                         cv.put("UserPWD",userInfoBean.getUserPwd());
                         cv.put("UserGender",userInfoBean.getUserGender());
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -179,7 +179,7 @@ public class UserInfoService extends Thread{
                 try {
                     httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
                     System.out.println(httpResponseOutputStreamString);
-                    UpdateModel updateModel = new Gson().fromJson(httpResponseOutputStreamString,UpdateModel.class);
+                    UpdateModel updateModel = new GsonBuilder().setDateFormat("yyyy-MM-dd").create().fromJson(httpResponseOutputStreamString,UpdateModel.class);
                     if (updateModel.getStatus() == 1){
                         listener.onSuccess();
                         return;
@@ -200,7 +200,8 @@ public class UserInfoService extends Thread{
                     if (userInfoBean==null){
                         return;
                     }
-
+                    SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+                    sqlLiteManager.saveOrupdateUserInfo(userInfoBean);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

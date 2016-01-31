@@ -39,8 +39,12 @@ public class SqlLiteManager extends SQLiteOpenHelper {
      * 以UserID在本地数据库中寻找UserInfoBean对象
      * */
     public UserInfoBean findUserInfoById(String userID){
-        //构造要返回的对象
+        //构造要返回的对象,并且赋初值
         UserInfoBean userInfoBean = new UserInfoBean();
+        userInfoBean.setUserGender(1);
+        userInfoBean.setUserPhone("");
+        userInfoBean.setUserEmail("");
+        userInfoBean.setUsername("");
         //构造数据库对象
         SQLiteDatabase highLightDB = this.getReadableDatabase();
         //构造数据库查询语句
@@ -50,8 +54,9 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         if (cursor.getCount() == 0){
             return null;
         }
+        cursor.moveToFirst();
         //开始赋值
-        userInfoBean.setUserID(userID);
+        userInfoBean.setUserId(userID);
         userInfoBean.setUserPwd(cursor.getString(cursor.getColumnIndex("UserPWD")));
         //若可能为NULL,则返回空字符串
         userInfoBean.setUserGesturePwd(cursor.getString(cursor.getColumnIndex("UserGesturePWD"))==null?"":cursor.getString(cursor.getColumnIndex("UserGesturePWD")));
@@ -61,16 +66,20 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         String userBirthDayString = cursor.getString(cursor.getColumnIndex("UserBirthDay"))==null?"":cursor.getString(cursor.getColumnIndex("UserBirthDay"));
         userInfoBean.setUserBirthDay(createDateFromString(userBirthDayString));
 
-        userInfoBean.setUserPhoto(cursor.getString(cursor.getColumnIndex("UserBirthDay"))==null?"":cursor.getString(cursor.getColumnIndex("UserBirthDay")));
+        userInfoBean.setUserPhoto(cursor.getString(cursor.getColumnIndex("UserPhoto"))==null?"":cursor.getString(cursor.getColumnIndex("UserPhoto")));
         userInfoBean.setUserGender(cursor.getInt(cursor.getColumnIndex("UserGender")));
 
-        //从字符串构建date对象
-        String userSPhysiologicalDayStr = cursor.getString(cursor.getColumnIndex("UserSPhysiologicalDay"))==null?"":cursor.getString(cursor.getColumnIndex("UserSPhysiologicalDay"));
-        userInfoBean.setUserSphysiologicalDay(createDateFromString(userSPhysiologicalDayStr));
 
-        //从字符串构建date对象
-        String userEPhysiologicalDayStr = cursor.getString(cursor.getColumnIndex("UserEPhysiologicalDay"))==null?"":cursor.getString(cursor.getColumnIndex("UserEPhysiologicalDay"));
-        userInfoBean.setUserEphysiologicalDay(createDateFromString(userEPhysiologicalDayStr));
+        try {
+            //从字符串构建date对象
+            String userSPhysiologicalDayStr = cursor.getString(cursor.getColumnIndex("UserSPhysiologicalDay"))==null?"":cursor.getString(cursor.getColumnIndex("UserSPhysiologicalDay"));
+            userInfoBean.setUserSphysiologicalDay(createDateFromString(userSPhysiologicalDayStr));
+
+            //从字符串构建date对象
+            String userEPhysiologicalDayStr = cursor.getString(cursor.getColumnIndex("UserEPhysiologicalDay"))==null?"":cursor.getString(cursor.getColumnIndex("UserEPhysiologicalDay"));
+            userInfoBean.setUserEphysiologicalDay(createDateFromString(userEPhysiologicalDayStr));
+
+        }catch (Exception e){}
 
         userInfoBean.setUserPhone(cursor.getString(cursor.getColumnIndex("UserPhone"))==null?"":cursor.getString(cursor.getColumnIndex("UserPhone")));
         highLightDB.close();
@@ -113,12 +122,12 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         if (userInfoBean == null){
             return;
         }
-        if (userInfoBean.getUserID() == null || userInfoBean.getUserID().equals("")){
+        if (userInfoBean.getUserId() == null || userInfoBean.getUserId().equals("")){
             return;
         }
         SQLiteDatabase highLightDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("UserID",userInfoBean.getUserID());
+        cv.put("UserID",userInfoBean.getUserId());
         if (userInfoBean.getUserPwd() != null){
             cv.put("UserPWD",userInfoBean.getUserPwd());
         }
@@ -150,14 +159,14 @@ public class SqlLiteManager extends SQLiteOpenHelper {
             cv.put("UserPhone",userInfoBean.getUserPhone());
         }
         //判断数据库中是否原有数据,有则update,没有则insert
-        String userID = userInfoBean.getUserID();
+        String userID = userInfoBean.getUserId();
         String sql = "SELECT * FROM UserInfo WHERE UserId = ?;" ;
         Cursor cursor = highLightDB.rawQuery(sql,new String[]{userID});
         if (cursor.getCount() == 0){
             //插入
             highLightDB.insert("userInfo",null,cv);
         }else {
-            highLightDB.update("userInfo",cv,"where UserID = ?",new String[]{userID});
+            highLightDB.update("userInfo",cv,"UserID = ?",new String[]{userID});
         }
         highLightDB.close();
     }

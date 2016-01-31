@@ -61,58 +61,11 @@ public class UserInformationActivity extends Activity {
         setContentView(R.layout.user_information);
 
         init();
-        //此处获取用户信息
-        getUserInformation();
     }
 
-    private void getUserInformation() {
-        //获取用户信息后替换输入框中的“加载中”
-        //从本地数据库中读取数据
-        SqlLiteManager sqlLiteManager = new SqlLiteManager(UserInformationActivity.this);
-        SQLiteDatabase highLightDB = sqlLiteManager.getWritableDatabase();
-        try{
-            String sql = "select * from userInfo where UserID=?";
-            Cursor cursor = highLightDB.rawQuery(sql,new String[]{new SharedPreferencesManager(UserInformationActivity.this).readString("UserID")});
-            usernameTextView.setText(new SharedPreferencesManager(UserInformationActivity.this).readString("UserID"));
-            if (cursor.getCount() > 0){
-                cursor.moveToFirst();
-                if (cursor.getString(cursor.getColumnIndex("UserName"))!=null){
-                    nicknameEditText.setText(cursor.getString(cursor.getColumnIndex("UserName")));
-                }else{
-                    nicknameEditText.setText("");
-                }
-                if (cursor.getString(cursor.getColumnIndex("UserBirthDay"))!=null){
-                    String userBirthDayStr = cursor.getString(cursor.getColumnIndex("UserBirthDay"));
-                    userBirthDayStr = userBirthDayStr.replaceAll("-","");
-                    birthdayEditText.setText(userBirthDayStr);
-                }else{
-                    birthdayEditText.setText("");
-                }
-                if (cursor.getString(cursor.getColumnIndex("UserEmail"))!=null){
-                    emailEditText.setText(cursor.getString(cursor.getColumnIndex("UserEmail")));
-                }else{
-                    emailEditText.setText("");
-                }
-                if (cursor.getString(cursor.getColumnIndex("UserPhone"))!=null){
-                    phoneEditText.setText(cursor.getString(cursor.getColumnIndex("UserPhone")));
-                }else{
-                    phoneEditText.setText("");
-                }
-                try{
-                    String sexStr = new SharedPreferencesManager(UserInformationActivity.this).readString("sex");
-                    if (sexStr!=null){
-                        sexTextView.setText(sexStr);
-                    }
-                }catch (Exception e){e.printStackTrace();}
-                String base64 = new SharedPreferencesManager(UserInformationActivity.this).readString("userPhotoBase64");
-                base64 = "";
-                userPhoto.setImageDrawable(new BitmapDrawable(ImageEncodeUtil.base64ToBitmap(new SharedPreferencesManager(UserInformationActivity.this).readString("userPhotoBase64"))));
-            }
-        }catch (Exception e){ e.printStackTrace();}
-    }
 
     /**
-     * 绑定各个元素的id
+     * 绑定各个元素的id,初始化控件属性,初始化控件值
      */
     private void init(){
         userInfoBean=new UserInfoBean();
@@ -143,7 +96,28 @@ public class UserInformationActivity extends Activity {
         phoneEditText.setTextColor(Color.BLACK);
 
         //初始化控件值
-
+        String userID = new SharedPreferencesManager(UserInformationActivity.this).readString("UserID");
+        if (userID==null){
+            return;
+        }
+        userInfoBean = new SqlLiteManager(UserInformationActivity.this).findUserInfoById(userID);
+        if (userInfoBean!= null && userInfoBean.getUserGender()==0){
+            sexTextView.setText("女");
+        }else {
+            sexTextView.setText("男");
+        }
+        nicknameEditText.setText(userInfoBean.getUsername());
+        usernameTextView.setText(userInfoBean.getUserId());
+        birthdayEditText.setText(new SimpleDateFormat("yyyyMMdd").format(userInfoBean.getUserBirthDay()));
+        emailEditText.setText(userInfoBean.getUserEmail());
+        phoneEditText.setText(userInfoBean.getUserPhone());
+        try{
+            Bitmap bitmap = ImageEncodeUtil.base64ToBitmap(userInfoBean.getUserPhoto());
+            userPhoto.setImageDrawable(new BitmapDrawable(bitmap));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        userInfoBean.setFixAble(false);
         /**
          * 点击图片选择相册或者拍照图片
          */
@@ -225,7 +199,7 @@ public class UserInformationActivity extends Activity {
     public void saveFixedUserInformatin(){
         //创建UserInfoBean对象
         UserInfoBean userInfoBean = new UserInfoBean();
-        userInfoBean.setUserID(new SharedPreferencesManager(UserInformationActivity.this).readString("UserID"));
+        userInfoBean.setUserId(new SharedPreferencesManager(UserInformationActivity.this).readString("UserID"));
         try{
             userInfoBean.setUserPhoto(ImageEncodeUtil.bitmapToBase64(((BitmapDrawable) (userPhoto.getDrawable())).getBitmap()));
         }catch (Exception e){}
@@ -442,24 +416,7 @@ public class UserInformationActivity extends Activity {
      * 更新成功时所做的操作
      * */
     void onSuccess(){
-        ToastManager.toast(UserInformationActivity.this,"信息更新成功!");
-        //读出数据
-        SharedPreferencesManager spm = new SharedPreferencesManager(UserInformationActivity.this);
-        String tempNewPass = spm.readString("tempNewPWD");
-        String userID = spm.readString("UserID");
-        //获得数据库实例,更新数据库中的用户密码
-        SQLiteDatabase highLightDB = new SqlLiteManager(UserInformationActivity.this).getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("UserPwd",tempNewPass);
-        cv.put("UserName",nicknameEditText.getText().toString());
-        cv.put("UserPhone",phoneEditText.getText().toString());
-        cv.put("UserEmail",emailEditText.getText().toString());
-        try{
-            highLightDB.update("userInfo",cv,"userID=?",new String[]{userID});
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+        ToastManager.toast(UserInformationActivity.this,"信息同步成功!");
     }
     /**
      * 更新失败时所做的操作

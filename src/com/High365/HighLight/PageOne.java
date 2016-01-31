@@ -105,6 +105,7 @@ public class PageOne extends Fragment{
         public void handleMessage(Message msg) {
             double volLevel = (Double)msg.obj;
             int lightLevel = ((int)(volLevel/100*254))>254?254:((int)(volLevel/100*254));
+            System.out.println(lightLevel);
             changeBrightness(lightLevel);
             super.handleMessage(msg);
         }
