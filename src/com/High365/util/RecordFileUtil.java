@@ -48,7 +48,7 @@ public class RecordFileUtil {
     public void writeBuffer(short buffer){
         if (dos==null){
             try {
-                audioFile = File.createTempFile(loveLogID+"", ".pcm", fpath);
+                audioFile = File.createTempFile("file_" + loveLogID+"", ".pcm", fpath);
                 dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(audioFile)));
             }catch (Exception e){
                 e.printStackTrace();

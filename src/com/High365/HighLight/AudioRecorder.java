@@ -64,7 +64,7 @@ public class AudioRecorder {
                     //Log.d(TAG,"能量数据:" + mean);
                     double volume = 10 * Math.log10(mean);
                     audioRecorderListener.onSuccess(volume);
-                    Log.d(TAG, "分贝值:" + volume);
+                    //Log.d(TAG, "分贝值:" + volume);
                     // 大概一秒二十次
                     synchronized (mLock) {
                         try {

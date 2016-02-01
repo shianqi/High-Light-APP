@@ -1,5 +1,7 @@
 package com.High365.HighLight;
 
+import android.content.Intent;
+
 import java.sql.Timestamp;
 
 /**
@@ -8,21 +10,23 @@ import java.sql.Timestamp;
  * 本JavaBean对应本地数据库的LovaLog表
  */
 public class LoveLogBean {
-    private int logID;
+    private Integer logID;
     private String userID;
     private Timestamp sexStartTime;
     private Timestamp sexEndTime;
     private Timestamp sexTime;
     private Timestamp sexHighTime;
-    private int sexSubjectiveScore;
-    private int sexObjectiveScore;
+    private Integer sexSubjectiveScore;
+    private Integer sexObjectiveScore;
     private String sexFrameState;
+    private String recordFileName;
+    private Integer updateFlag;
 
-    public int getLogID() {
+    public Integer getLogID() {
         return logID;
     }
 
-    public void setLogID(int logID) {
+    public void setLogID(Integer logID) {
         this.logID = logID;
     }
 
@@ -66,19 +70,19 @@ public class LoveLogBean {
         this.sexHighTime = sexHighTime;
     }
 
-    public int getSexSubjectiveScore() {
+    public Integer getSexSubjectiveScore() {
         return sexSubjectiveScore;
     }
 
-    public void setSexSubjectiveScore(int sexSubjectiveScore) {
+    public void setSexSubjectiveScore(Integer sexSubjectiveScore) {
         this.sexSubjectiveScore = sexSubjectiveScore;
     }
 
-    public int getSexObjectiveScore() {
+    public Integer getSexObjectiveScore() {
         return sexObjectiveScore;
     }
 
-    public void setSexObjectiveScore(int sexObjectiveScore) {
+    public void setSexObjectiveScore(Integer sexObjectiveScore) {
         this.sexObjectiveScore = sexObjectiveScore;
     }
 
@@ -88,5 +92,21 @@ public class LoveLogBean {
 
     public void setSexFrameState(String sexFrameState) {
         this.sexFrameState = sexFrameState;
+    }
+
+    public String getRecordFileName() {
+        return recordFileName;
+    }
+
+    public void setRecordFileName(String recordFileName) {
+        this.recordFileName = recordFileName;
+    }
+
+    public Integer getUpdateFlag() {
+        return updateFlag;
+    }
+
+    public void setUpdateFlag(Integer updateFlag) {
+        this.updateFlag = updateFlag;
     }
 }

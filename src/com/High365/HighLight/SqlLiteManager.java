@@ -8,9 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 此类用于android端本地数据库的管理
@@ -21,12 +24,11 @@ public class SqlLiteManager extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     public SqlLiteManager(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE UserInfo (UserID varchar(100),UserPWD varchar(20),UserGesturePWD varchar(20),UserName varchar(20),UserEmail varchar(100),UserBirthDay Date,UserPhoto varchar(1000000),UserGender Int,UserSPhysiologicalDay Date,UserEPhysiologicalDay Date,UserPhone varchar(20))");
-        sqLiteDatabase.execSQL("CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000))");
+        sqLiteDatabase.execSQL("CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000)),RecordFileName varchar(100),UpdateFlag integer");
     }
 
     @Override
@@ -169,5 +171,112 @@ public class SqlLiteManager extends SQLiteOpenHelper {
             highLightDB.update("userInfo",cv,"UserID = ?",new String[]{userID});
         }
         highLightDB.close();
+    }
+    /**
+     * CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),
+     * SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,
+     * SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000)),
+     * RecordFileName varchar(100),UpdateFlag integer
+     * */
+    public LoveLogBean getLoveLogByLogID(int logID){
+        LoveLogBean loveLogBean = new LoveLogBean();
+        String sql = "select * from loveLog where LogID = ?;";
+        SQLiteDatabase highLightDB = getReadableDatabase();
+        Cursor cursor = highLightDB.rawQuery(sql,new String[]{logID+""});
+        if (cursor.getCount() == 0){
+            return null;
+        }
+        cursor.moveToFirst();
+
+        loveLogBean.setLogID(cursor.getInt(cursor.getColumnIndex("LogID")));
+        loveLogBean.setUserID(cursor.getString(cursor.getColumnIndex("UserID")));
+
+        if (cursor.getLong(cursor.getColumnIndex("SexStartTime"))!=0){
+            loveLogBean.setSexStartTime(new Timestamp(cursor.getLong(cursor.getColumnIndex("SexStartTime"))));
+        }
+        if (cursor.getLong(cursor.getColumnIndex("SexEndTime"))!=0){
+            loveLogBean.setSexEndTime(new Timestamp(cursor.getLong(cursor.getColumnIndex("SexEndTime"))));
+        }
+        if (cursor.getLong(cursor.getColumnIndex("SexTime"))!=0){
+            loveLogBean.setSexTime(new Timestamp(cursor.getLong(cursor.getColumnIndex("SexTime"))));
+        }
+        if (cursor.getLong(cursor.getColumnIndex("SexHighTime"))!=0){
+            loveLogBean.setSexHighTime(new Timestamp(cursor.getLong(cursor.getColumnIndex("SexHighTime"))));
+        }
+        if (cursor.getInt(cursor.getColumnIndex("SexSubjectiveScore"))!=0){
+            loveLogBean.setSexSubjectiveScore(cursor.getInt(cursor.getColumnIndex("SexSubjectiveScore")));
+        }
+        if (cursor.getInt(cursor.getColumnIndex("SexObjectiveScore"))!=0){
+            loveLogBean.setSexObjectiveScore(cursor.getInt(cursor.getColumnIndex("SexObjectiveScore")));
+        }
+        loveLogBean.setSexFrameState(cursor.getString(cursor.getColumnIndex("SexFrameState")));
+        loveLogBean.setRecordFileName(cursor.getString(cursor.getColumnIndex("RecordFileName")));
+        loveLogBean.setUpdateFlag(cursor.getInt(cursor.getColumnIndex("UpdateFlag")));
+        highLightDB.close();
+        return loveLogBean;
+    }
+
+    public List<LoveLogBean> getLoveLogsByUserID(String userID){
+        List<LoveLogBean> list = new ArrayList<LoveLogBean>();
+        SQLiteDatabase highLightDB = getReadableDatabase();
+        String sql = "select * from LoveLog where userID = ?;";
+        Cursor cursor = highLightDB.rawQuery(sql,new String[]{userID});
+        int count = cursor.getCount();
+        while (cursor.moveToNext()){
+            int logID = cursor.getInt(cursor.getColumnIndex("LogID"));
+            list.add(getLoveLogByLogID(logID));
+        }
+        highLightDB.close();
+        return list;
+    }
+
+    /**
+     * CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),
+     * SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,
+     * SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000)),
+     * RecordFileName varchar(100),UpdateFlag integer
+     * */
+    public void updateOrInsertLoveLog(LoveLogBean loveLogBean){
+        if (loveLogBean==null)
+            return;
+        ContentValues cv = new ContentValues();
+        if (loveLogBean.getUserID()!=null){
+            cv.put("UserID",loveLogBean.getUserID());
+        }
+        if (loveLogBean.getSexStartTime()!=null){
+            cv.put("SexStartTime",loveLogBean.getSexStartTime().getTime());
+        }
+        if (loveLogBean.getSexEndTime()!=null){
+            cv.put("SexEndTime",loveLogBean.getSexEndTime().getTime());
+        }
+        if (loveLogBean.getSexTime()!=null){
+            cv.put("SexTime",loveLogBean.getSexTime().getTime());
+        }
+        if (loveLogBean.getSexHighTime()!=null){
+            cv.put("SexHighTime",loveLogBean.getSexHighTime().getTime());
+        }
+        if (loveLogBean.getSexObjectiveScore()!=null){
+            cv.put("SexObjectiveScore",loveLogBean.getSexObjectiveScore());
+        }
+        if (loveLogBean.getSexSubjectiveScore()!=null){
+            cv.put("SexSubjectiveScore",loveLogBean.getSexSubjectiveScore());
+        }
+        if (loveLogBean.getSexFrameState()!=null){
+            cv.put("SexFrameState",loveLogBean.getSexFrameState());
+        }
+        if (loveLogBean.getRecordFileName()!=null){
+            cv.put("RecordFileName",loveLogBean.getRecordFileName());
+        }
+        if (loveLogBean.getUpdateFlag()!=null){
+            cv.put("UpdateFlag",loveLogBean.getUpdateFlag());
+        }
+        SQLiteDatabase highLightDB = getWritableDatabase();
+        if (loveLogBean.getLogID()!=null){
+            //update
+            highLightDB.update("LoveLog",cv,"LogID=?",new String[]{loveLogBean.getLogID()+""});
+        }else{
+            //insert
+            highLightDB.insert("LoveLog",null,cv);
+        }
     }
 }
