@@ -86,7 +86,7 @@ public class PageOne extends Fragment{
 
             }
         });
-        audioRecorder = new AudioRecorder();
+        audioRecorder = new AudioRecorder(0);
         audioRecorder.getNoiseLevel(new AudioRecorderListener() {
             @Override
             public void onSuccess(double level) {
