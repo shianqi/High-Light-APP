@@ -1,14 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical" >
-
-    <TextView
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
+    <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:gravity="center"
-            android:text="页面二"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-</LinearLayout>
+            android:orientation="vertical">
+        <LinearLayout
+                android:id="@+id/chartLinear"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="#cccccc">
+            <ListView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/ListView"/>
+        </LinearLayout>
+        <!--<LinearLayout-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="#f4f4f4">-->
+            <!--<LinearLayout-->
+                    <!--android:layout_height="fill_parent"-->
+                    <!--android:layout_width="fill_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:orientation="vertical">-->
+                <!--<RelativeLayout-->
+                        <!--android:layout_height="fill_parent"-->
+                        <!--android:layout_width="fill_parent">-->
+                    <!--<LinearLayout-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_centerVertical="true"-->
+                            <!--android:orientation="horizontal">-->
+                        <!--<TextView-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_marginLeft="15dp"-->
+                                <!--android:textSize="16dp"-->
+                                <!--android:text="总:"/>-->
+                        <!--<TextView-->
+                                <!--android:id="@+id/heartMoney"-->
+                                <!--android:layout_marginLeft="10dp"-->
+                                <!--android:textSize="16dp"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_width="wrap_content"/>-->
+                    <!--</LinearLayout>-->
+                <!--</RelativeLayout>-->
+            <!--</LinearLayout>-->
+            <!--<LinearLayout-->
+                    <!--android:layout_height="fill_parent"-->
+                    <!--android:layout_width="fill_parent"-->
+                    <!--android:layout_weight="2">-->
+                <!--<Button-->
+                        <!--android:id="@+id/addList"-->
+                        <!--android:layout_height="fill_parent"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:textColor="#ffffff"-->
+                        <!--android:layout_width="fill_parent"-->
+                        <!--android:background="@drawable/button_red"-->
+                        <!--android:text="添加"/>-->
+            <!--</LinearLayout>-->
+        <!--</LinearLayout>-->
+    </LinearLayout>
+</RelativeLayout>

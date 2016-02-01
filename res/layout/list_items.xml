@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    	android:id="@+id/RelativeLayout01" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content" 
+        android:paddingBottom="4dip" 
+        android:paddingLeft="12dip"
+        android:background="@drawable/list_items"
+        android:paddingRight="12dip">
+	<TextView
+			android:id="@+id/secondText"
+			android:layout_width="fill_parent"
+			android:layout_height="160dip"/>
+</RelativeLayout>
