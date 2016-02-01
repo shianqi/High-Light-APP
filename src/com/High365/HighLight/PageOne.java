@@ -4,12 +4,16 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.sql.Timestamp;
 
 /**
  * 第一个界面的逻辑代码
@@ -19,6 +23,9 @@ public class PageOne extends Fragment{
 
     private View view;
     private ImageView light1;
+
+
+    private String sexFrameState = "";
 
     /**
      * 灯光亮度
@@ -30,12 +37,13 @@ public class PageOne extends Fragment{
     private static Toast myToast;
 
     private AudioRecorder audioRecorder;
-
+    private LoveLogBean loveLogBean;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frist_fragment, container, false);
         init();
-
+        audioRecorder = new AudioRecorder(0);
+        loveLogBean = new LoveLogBean();
         return view;
     }
 
@@ -47,6 +55,8 @@ public class PageOne extends Fragment{
         changeBrightness(0);
 
         light1=(ImageView)view.findViewById(R.id.light1);
+
+        //点击
         light1.setOnClickListener(new View.OnClickListener() {
             /**
              *设置发送录音的暂停与开始请求，并更改灯泡亮度
@@ -58,14 +68,39 @@ public class PageOne extends Fragment{
                     state=0;
                     changeBrightness(0);
                     myToast(view,"录音暂停中");
+                    audioRecorder.isGetVoiceRun = false;
                 }else{
                     state=255;
                     changeBrightness(255);
                     myToast(view,"录音已开始");
+                    loveLogBean.setSexStartTime(new Timestamp(System.currentTimeMillis()/1000));
+                    audioRecorder.isGetVoiceRun = false;
+                    audioRecorder.getNoiseLevel(new AudioRecorderListener() {
+                        @Override
+                        public void onSuccess(double level) {
+                            Message message = new Message();
+                            message.obj = level;
+                            Log.d("out",""+level);
+                            handler.sendMessage(message);
+                            int voice = (int)level;
+                            Log.d("voice",voice+"");
+                            if (voice<10){
+                                sexFrameState += "0" + voice;
+                            }else{
+                                if (voice>=100){
+                                    sexFrameState += "99";
+                                }else {
+                                    sexFrameState += voice;
+                                }
+                            }
+                            Log.d("sexFrame",sexFrameState);
+                        }
+                    });
                 }
             }
         });
 
+        //长按
         light1.setOnLongClickListener(new View.OnLongClickListener() {
             /**
              * 设置长按监听函数，用于处理长按关闭录音。
@@ -78,7 +113,19 @@ public class PageOne extends Fragment{
                 if(state!=0){
                     state=0;
                     changeBrightness(0);
+                    audioRecorder.stopRecord();
                     myToast(view,"录音已结束");
+                    loveLogBean.setSexEndTime(new Timestamp(System.currentTimeMillis()/1000));
+                    loveLogBean.setUserID(new SharedPreferencesManager(getActivity()).readString("UserID"));
+                    loveLogBean.setRecordFileName(audioRecorder.recordFileName);
+                    loveLogBean.setUpdateFlag(0);
+                    loveLogBean.setSexFrameState(sexFrameState);
+                    loveLogBean.setSexTime(new Timestamp(loveLogBean.getSexEndTime().getTime()-loveLogBean.getSexStartTime().getTime()));
+                    loveLogBean.setSexHighTime(new Timestamp(0));
+                    loveLogBean.setSexSubjectiveScore(0);
+                    loveLogBean.setSexObjectiveScore(0);
+                    SqlLiteManager sqlLiteManager = new SqlLiteManager(getActivity());
+                    sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
                     return true;
                 }else {
                     return false;
@@ -86,15 +133,7 @@ public class PageOne extends Fragment{
 
             }
         });
-        audioRecorder = new AudioRecorder(0);
-        audioRecorder.getNoiseLevel(new AudioRecorderListener() {
-            @Override
-            public void onSuccess(double level) {
-                Message message = new Message();
-                message.obj = level;
-                handler.sendMessage(message);
-            }
-        });
+
     }
 
     /**

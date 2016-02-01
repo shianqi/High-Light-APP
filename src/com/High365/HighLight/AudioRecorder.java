@@ -27,6 +27,7 @@ public class AudioRecorder {
     boolean isGetVoiceRun;
     Object mLock;
     RecordFileUtil recordFileUtil = null;
+    public String recordFileName;
     public AudioRecorder(int loveLogID) {
         mLock = new Object();
         recordFileUtil = new RecordFileUtil(loveLogID);
@@ -85,5 +86,6 @@ public class AudioRecorder {
     public void stopRecord(){
         isGetVoiceRun = false;
         recordFileUtil.stopWriteBuffer();
+        recordFileName = recordFileUtil.getFileName();
     }
 }

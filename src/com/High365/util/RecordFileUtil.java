@@ -22,6 +22,9 @@ public class RecordFileUtil {
     //流对象
     private DataOutputStream dos = null;
 
+    //文件名
+    private String fileName;
+
     //录音文件对象
     private File audioFile;
 
@@ -50,6 +53,7 @@ public class RecordFileUtil {
             try {
                 audioFile = File.createTempFile("file_" + loveLogID+"", ".pcm", fpath);
                 dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(audioFile)));
+                fileName = audioFile.getName();
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -68,6 +72,7 @@ public class RecordFileUtil {
         if (dos!=null){
             try{
                 dos.close();
+                dos = null;
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -78,5 +83,12 @@ public class RecordFileUtil {
     protected void finalize() throws Throwable {
         stopWriteBuffer();
         super.finalize();
+    }
+
+    /**
+     * 得到文件名
+     * */
+    public String getFileName(){
+        return fileName;
     }
 }
