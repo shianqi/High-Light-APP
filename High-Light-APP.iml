@@ -4,6 +4,9 @@
     <facet type="android" name="Android">
       <configuration />
     </facet>
+    <facet type="android" name="Android2">
+      <configuration />
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -17,6 +20,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/gson-2.3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/graphview-3.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
