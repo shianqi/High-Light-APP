@@ -2,6 +2,9 @@ package com.High365.HighLight;
 
 import android.content.Context;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 /**
  * @author hupeng
@@ -16,6 +19,7 @@ import com.google.gson.Gson;
 public class LoveLogService extends Thread{
     private Context context;
     private Listener listener;
+    private GetRankListener getRankListener;
     private Integer taskId;
     private String url;
     private String param;
@@ -35,6 +39,13 @@ public class LoveLogService extends Thread{
         taskId = 0;
     }
 
+    public void getRankModelList(Context context,GetRankListener listener){
+
+        url = "getRank.action";
+        param = "";
+        taskId = 1;
+    }
+
     @Override
     public void run() {
         switch (taskId){
@@ -52,6 +63,14 @@ public class LoveLogService extends Thread{
                     }
                 }catch (Exception e){
                     e.printStackTrace();
+                }
+            case 1:
+                try {
+                    httpResponseStr = HttpRequest.sendPost(url,param);
+                    List<RankModel> list = new Gson().fromJson(httpResponseStr,new TypeToken<List<RankModel>>() {}.getType());
+                    getRankListener.onSuccess(list);
+                }catch (Exception e){
+                    getRankListener.onFailure("获取信息失败");
                 }
                 break;
             default:
@@ -77,6 +96,40 @@ public class LoveLogService extends Thread{
         }
         public void setErrorInfo(String errorInfo) {
             this.errorInfo = errorInfo;
+        }
+    }
+
+    /**
+     * 排名model
+     * */
+
+    class RankModel{
+        private String userID;
+        private Integer sexSubjectiveScore;
+        private Integer sexObjectiveScore;
+
+        public String getUserID() {
+            return userID;
+        }
+
+        public void setUserID(String userID) {
+            this.userID = userID;
+        }
+
+        public Integer getSexSubjectiveScore() {
+            return sexSubjectiveScore;
+        }
+
+        public void setSexSubjectiveScore(Integer sexSubjectiveScore) {
+            this.sexSubjectiveScore = sexSubjectiveScore;
+        }
+
+        public Integer getSexObjectiveScore() {
+            return sexObjectiveScore;
+        }
+
+        public void setSexObjectiveScore(Integer sexObjectiveScore) {
+            this.sexObjectiveScore = sexObjectiveScore;
         }
     }
 }
