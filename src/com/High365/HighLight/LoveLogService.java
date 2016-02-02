@@ -1,0 +1,82 @@
+package com.High365.HighLight;
+
+import android.content.Context;
+import com.google.gson.Gson;
+
+/**
+ * @author hupeng
+ * 这个类主要负责LoveLog的业务逻辑的处理和本地数据库的访问
+ *
+ * 此类继承于线程类
+ * url:服务器的url地址的一部分,IP地址与端口号在HttpRequest类中定义,这样做只需要修改那边的HOST的值就可以方便的更换服务器的地址与参数
+ * param:参数
+ * httpResponseStr:服务器所返回的json字符串
+ * 由于Android的网络通信模块必须放在子线程中,若放在主线程中会导致阻塞主线程.
+ */
+public class LoveLogService extends Thread{
+    private Context context;
+    private Listener listener;
+    private Integer taskId;
+    private String url;
+    private String param;
+    private String httpResponseStr;
+    private LoveLogBean loveLogBean;
+
+    public void update(LoveLogBean loveLogBean,Context context){
+        this.context = context;
+        this.loveLogBean = loveLogBean;
+
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
+        String userID = sharedPreferencesManager.readString("UserID");
+        String secretKey = sharedPreferencesManager.readString("secretKey");
+
+        url = "updateLoveLog.action";
+        param = "userID=" + userID + "&secretKey=" + secretKey + "&jsonString=" + new Gson().toJson(loveLogBean);
+        taskId = 0;
+    }
+
+    @Override
+    public void run() {
+        switch (taskId){
+            case 0:
+                try{
+                    httpResponseStr = HttpRequest.sendPost(url,param);
+                    UpdateModel updateModel = new Gson().fromJson(httpResponseStr, UpdateModel.class);
+                    if (updateModel!=null){
+                        if (updateModel.getStatus() == 1){
+                            //当更新成功时,更新本地数据库中的updateFlag值,值为1时则已经成功上传到远程服务器
+                            loveLogBean.setUpdateFlag(1);
+                            SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+                            sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            default:
+        }
+    }
+
+    /**
+     * 此内部类为一个JavaBean
+     * 为更新用户数据结果的Json对象所对应的bean
+     * */
+
+    class UpdateModel{
+        private Integer status;
+        private String errorInfo;
+        public Integer getStatus() {
+            return status;
+        }
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+        public String getErrorInfo() {
+            return errorInfo;
+        }
+        public void setErrorInfo(String errorInfo) {
+            this.errorInfo = errorInfo;
+        }
+    }
+}
