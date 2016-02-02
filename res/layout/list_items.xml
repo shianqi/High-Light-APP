@@ -17,7 +17,6 @@
             android:background="@drawable/list_items">
         <TextView
                 android:id="@+id/list_item_title"
-                android:text="测试"
                 android:layout_width="fill_parent"
                 android:layout_height="160dip"/>
     </LinearLayout>

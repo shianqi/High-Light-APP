@@ -1,6 +1,9 @@
 package com.High365.HighLight;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.sql.Timestamp;
@@ -126,6 +130,7 @@ public class PageOne extends Fragment{
                     loveLogBean.setSexObjectiveScore(0);
                     SqlLiteManager sqlLiteManager = new SqlLiteManager(getActivity());
                     sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
+                    showDialog();
                     return true;
                 }else {
                     return false;
@@ -175,4 +180,52 @@ public class PageOne extends Fragment{
         myToast.show();
     }
 
+    /**
+     * 是否保存Dialog显示
+     */
+    public void showDialog(){
+        new AlertDialog.Builder(getActivity())
+                .setTitle("是否记录本次录音")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //上传数据
+                        evaluateDialog();
+                    }
+                })
+                .show();
+    }
+
+    /**
+     * 用户打分Dialog显示
+     */
+    public void evaluateDialog(){
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        final View evaluateDialogView = inflater.inflate(R.layout.evaluate_dialog,null);
+        final SeekBar seekBar = (SeekBar)evaluateDialogView.findViewById(R.id.evaluate_dialog_seekBar);
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle("自我评价")
+                .setView(evaluateDialogView)
+                .setNegativeButton("跳过",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
 }
