@@ -3,15 +3,17 @@ package com.High365.HighLight;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
+import android.widget.*;
+import com.jjoe64.graphview.BarGraphView;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.LineGraphView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,8 +22,8 @@ import java.util.Objects;
 
 
 /**
- * @author 史安琪
- * 这是第二个页面
+ * @author shianqi@imudges.com
+ * 日志页面
  */
 public class PageTwo extends Fragment{
 
@@ -41,7 +43,6 @@ public class PageTwo extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-
         init();
     }
 
@@ -86,13 +87,22 @@ public class PageTwo extends Fragment{
 
         listItem = getListItem();
         getItemInformation();
+        paintGraph();
         list.setAdapter(simpleAdapter);
+
+        /**
+         * 设置点击事件
+         */
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ToastManager.toast(getActivity(),"点击第:"+position+"个");
             }
         });
+
+        /**
+         * 设置长按响应事件
+         */
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -120,6 +130,30 @@ public class PageTwo extends Fragment{
                 return false;
             }
         });
+    }
+
+    public void paintGraph(){
+        int num = 1000;
+        GraphView.GraphViewData[] data = new GraphView.GraphViewData[num];
+        double v=0;
+        GraphView graphView;
+        for (int i=0; i<num; i++) {
+            v += 0.2;
+            data[i] = new GraphView.GraphViewData(i, Math.sin(Math.random()*v));
+        }
+        // graph with dynamically genereated horizontal and vertical labels
+
+        graphView = new BarGraphView(getActivity(), "GraphViewDemo");
+
+        // add data
+        graphView.addSeries(new GraphViewSeries(data));
+        // set view port, start=2, size=10
+        graphView.setViewPort(4, 10);
+        graphView.setScalable(true);
+        // set manual Y axis bounds
+        graphView.setManualYAxisBounds(2, -1);
+        LinearLayout layout = (LinearLayout)getActivity().findViewById(R.id.graph2);
+        layout.addView(graphView);
     }
 
     /**

@@ -14,10 +14,11 @@
             android:paddingRight="15dip"
             android:paddingTop="5dip"
             android:paddingBottom="5dip"
+            android:orientation="vertical"
             android:background="@drawable/list_items">
         <TextView
                 android:id="@+id/list_item_title"
                 android:layout_width="fill_parent"
-                android:layout_height="160dip"/>
+                android:layout_height="30dip"/>
     </LinearLayout>
 </RelativeLayout>
