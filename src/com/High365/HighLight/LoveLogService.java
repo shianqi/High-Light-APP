@@ -4,6 +4,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,12 +39,27 @@ public class LoveLogService extends Thread{
         param = "userID=" + userID + "&secretKey=" + secretKey + "&jsonString=" + new Gson().toJson(loveLogBean);
         taskId = 0;
     }
-
-    public void getRankModelList(Context context,GetRankListener listener){
+    /**
+     * oper
+     * 0:周排名
+     * 1.月排名
+     * 2.年排名
+     * 3.自我排名
+     * */
+    public void getRankModelList(int oper,Context context,GetRankListener listener){
 
         url = "getRank.action";
         param = "";
         taskId = 1;
+        List<RankModel> list = new ArrayList<RankModel>();
+        for (int i=0;i<10;i++){
+            RankModel rankModel = new RankModel();
+            rankModel.setUserID("admin");
+            rankModel.setSexSubjectiveScore(i*10);
+            rankModel.setSexObjectiveScore(i*10);
+            list.add(rankModel);
+        }
+        listener.onSuccess(list);
     }
 
     @Override
