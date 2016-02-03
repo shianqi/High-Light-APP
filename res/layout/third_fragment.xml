@@ -2,13 +2,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical" >
-
-    <TextView
+              android:orientation="vertical">
+    <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:orientation="horizontal">
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="周排名"
+                android:layout_weight="1"
+                android:id="@+id/radioButton1"
+                android:layout_gravity="center_horizontal"/>
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="月排名"
+                android:layout_weight="1"
+                android:id="@+id/radioButton2"
+                android:layout_gravity="center_horizontal"/>
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="年排名"
+                android:layout_weight="1"
+                android:id="@+id/radioButton3"
+                android:layout_gravity="center_horizontal"/>
+    </RadioGroup>
+    <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:gravity="center"
-            android:text="页面三"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:orientation="vertical">
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
+            <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/rankMe"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
+            <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/rankWorld"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

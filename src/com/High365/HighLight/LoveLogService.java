@@ -39,13 +39,18 @@ public class LoveLogService extends Thread{
         param = "userID=" + userID + "&secretKey=" + secretKey + "&jsonString=" + new Gson().toJson(loveLogBean);
         taskId = 0;
     }
+
     /**
-     * oper
-     * 0:周排名
-     * 1.月排名
-     * 2.年排名
-     * 3.自我排名
-     * */
+     * @param oper 获取oper的值不同，获取的数据类别
+     * @param context context
+     * @param listener 是否成功监听
+     * oper=11:个人周排行榜
+     * oper=12:个人月排行榜
+     * oper=13:个人年排行榜
+     * oper=21:全部用户周排行榜
+     * oper=22:全部用户月排行榜
+     * oper=23:全部用户年排行榜
+     */
     public void getRankModelList(int oper,Context context,GetRankListener listener){
 
         url = "getRank.action";
@@ -118,7 +123,6 @@ public class LoveLogService extends Thread{
     /**
      * 排名model
      * */
-
     class RankModel{
         private String userID;
         private Integer sexSubjectiveScore;

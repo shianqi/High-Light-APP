@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +22,6 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -33,10 +31,7 @@ import java.util.List;
  */
 public class PageTwo extends Fragment{
 
-    private ListView list;
     private List<LoveLogBean> listItem;
-    private SimpleAdapter simpleAdapter;
-    private ArrayList<HashMap<String,Object>> itemArrayList;
     private SharedPreferencesManager sharedPreferencesManager;
     private String UserID;
     private SqlLiteManager sqlLiteManager;
@@ -63,84 +58,17 @@ public class PageTwo extends Fragment{
     }
 
     /**
-     * 获得每一个Item的信息
-     */
-    public void getItemInformation(){
-        HashMap<String,Object> map = new HashMap<String,Object>();
-        map.put("TIME","2016-01-10");
-        for(int i=0;i<10;i++){
-            itemArrayList.add(map);
-        }
-
-    }
-
-    /**
      * 初始化过程，负责类的实例化和组件的绑定
      */
     public void init(){
+        sharedPreferencesManager=new SharedPreferencesManager(getActivity());
+        sqlLiteManager = new SqlLiteManager(getActivity());
+        listItem = getListItem();
         paintGraph();
-//        itemArrayList = new ArrayList<HashMap<String, Object>>();
-//        sharedPreferencesManager=new SharedPreferencesManager(getActivity());
-//        sqlLiteManager = new SqlLiteManager(getActivity());
-//        list = (ListView)getActivity().findViewById(R.id.ListView);
-//        /**
-//         * 适配器
-//         */
-//        simpleAdapter = new SimpleAdapter(getActivity(),
-//                itemArrayList,
-//                R.layout.list_items,
-//                new String[]{"TIME"},
-//                new int[]{R.id.list_item_title});
-//
-//        listItem = getListItem();
-//        getItemInformation();
-//        paintGraph();
-//        list.setAdapter(simpleAdapter);
-//
-//        /**
-//         * 设置点击事件
-//         */
-//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                ToastManager.toast(getActivity(),"点击第:"+position+"个");
-//            }
-//        });
-//
-//        /**
-//         * 设置长按响应事件
-//         */
-//        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                new AlertDialog.Builder(getActivity())
-//                        .setTitle("操作")
-//                        .setNegativeButton("取消", new DialogInterface.OnClickListener(){
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//
-//                            }
-//                        })
-//                        .setNeutralButton("删除", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//
-//                            }
-//                        })
-//                        .setPositiveButton("分享", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//
-//                            }
-//                        })
-//                        .show();
-//                return false;
-//            }
-//        });
     }
 
     public void paintGraph(){
-        ListView lv = (ListView)getActivity().findViewById(R.id.ListView);
+        ListView listView = (ListView)getActivity().findViewById(R.id.ListView);
 
         ArrayList<BarData> list = new ArrayList<BarData>();
 
@@ -150,7 +78,48 @@ public class PageTwo extends Fragment{
         }
 
         ChartDataAdapter cda = new ChartDataAdapter(getActivity(), list);
-        lv.setAdapter(cda);
+        listView.setAdapter(cda);
+
+        /**
+         * 设置点击事件
+         */
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ToastManager.toast(getActivity(),"点击第:"+position+"个");
+            }
+        });
+
+        /**
+         * 设置长按响应事件
+         */
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("操作")
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setNeutralButton("删除", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setPositiveButton("分享", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                return false;
+            }
+        });
     }
 
     /**
@@ -164,13 +133,8 @@ public class PageTwo extends Fragment{
     }
 
     private class ChartDataAdapter extends ArrayAdapter<BarData> {
-
-        private Typeface mTf;
-
         public ChartDataAdapter(Context context, List<BarData> objects) {
             super(context, 0, objects);
-
-//            mTf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
         }
 
         @Override
@@ -195,23 +159,19 @@ public class PageTwo extends Fragment{
             }
 
             // apply styling
-//            data.setValueTypeface(mTf);
             data.setValueTextColor(Color.BLACK);
             holder.chart.setDescription("");
             holder.chart.setDrawGridBackground(false);
 
             XAxis xAxis = holder.chart.getXAxis();
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//            xAxis.setTypeface(mTf);
             xAxis.setDrawGridLines(false);
 
             YAxis leftAxis = holder.chart.getAxisLeft();
-//            leftAxis.setTypeface(mTf);
             leftAxis.setLabelCount(5, false);
             leftAxis.setSpaceTop(15f);
 
             YAxis rightAxis = holder.chart.getAxisRight();
-//            rightAxis.setTypeface(mTf);
             rightAxis.setLabelCount(5, false);
             rightAxis.setSpaceTop(15f);
 
