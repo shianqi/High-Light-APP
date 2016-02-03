@@ -43,7 +43,7 @@ public class LoveLogService extends Thread{
     /**
      * @param oper 获取oper的值不同，获取的数据类别
      * @param context context
-     * @param listener 是否成功监听
+     * @param listener 回调是否成功
      * oper=11:个人周排行榜
      * oper=12:个人月排行榜
      * oper=13:个人年排行榜

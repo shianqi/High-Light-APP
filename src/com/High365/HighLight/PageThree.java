@@ -2,6 +2,8 @@ package com.High365.HighLight;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import io.realm.Case;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author 史安琪
@@ -29,6 +32,9 @@ public class PageThree extends Fragment{
     private BarChart rankWorld;
     private RadioGroup radioGroup;
     private LoveLogService loveLogService;
+
+    final private int SUCCESS=1;
+    final private int FAILURE=0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -117,6 +123,26 @@ public class PageThree extends Fragment{
      * 从LoveLogService中获取各种用户排行榜的数量
      */
     public void setData(){
+        //未完成
+        List<LoveLogService.RankModel> rankList =new ArrayList<LoveLogService.RankModel>();
+        loveLogService.getRankModelList(11, getActivity(), new GetRankListener() {
+            @Override
+            public void onSuccess(List list) {
+                Message message = new Message();
+                message.what=SUCCESS;
+                message.obj="获取成功";
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Message message = new Message();
+                message.what=FAILURE;
+                message.obj="获取失败，失败原因："+msg;
+                handler.sendMessage(message);
+            }
+        });
+
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
 
         for (int i = 0; i < 10; i++) {
@@ -145,4 +171,17 @@ public class PageThree extends Fragment{
         rankWorld.setData(data);
         rankWorld.invalidate();
     }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case SUCCESS:
+                    break;
+                case FAILURE:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 }
