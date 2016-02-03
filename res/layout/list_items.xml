@@ -20,5 +20,9 @@
                 android:id="@+id/list_item_title"
                 android:layout_width="fill_parent"
                 android:layout_height="30dip"/>
+        <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
     </LinearLayout>
 </RelativeLayout>

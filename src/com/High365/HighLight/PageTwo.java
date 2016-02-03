@@ -2,23 +2,29 @@ package com.High365.HighLight;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.jjoe64.graphview.BarGraphView;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GraphViewSeries;
-import com.jjoe64.graphview.LineGraphView;
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -72,88 +78,79 @@ public class PageTwo extends Fragment{
      * 初始化过程，负责类的实例化和组件的绑定
      */
     public void init(){
-        itemArrayList = new ArrayList<HashMap<String, Object>>();
-        sharedPreferencesManager=new SharedPreferencesManager(getActivity());
-        sqlLiteManager = new SqlLiteManager(getActivity());
-        list = (ListView)getActivity().findViewById(R.id.ListView);
-        /**
-         * 适配器
-         */
-        simpleAdapter = new SimpleAdapter(getActivity(),
-                itemArrayList,
-                R.layout.list_items,
-                new String[]{"TIME"},
-                new int[]{R.id.list_item_title});
-
-        listItem = getListItem();
-        getItemInformation();
         paintGraph();
-        list.setAdapter(simpleAdapter);
-
-        /**
-         * 设置点击事件
-         */
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastManager.toast(getActivity(),"点击第:"+position+"个");
-            }
-        });
-
-        /**
-         * 设置长按响应事件
-         */
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("操作")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setNeutralButton("删除", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setPositiveButton("分享", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .show();
-                return false;
-            }
-        });
+//        itemArrayList = new ArrayList<HashMap<String, Object>>();
+//        sharedPreferencesManager=new SharedPreferencesManager(getActivity());
+//        sqlLiteManager = new SqlLiteManager(getActivity());
+//        list = (ListView)getActivity().findViewById(R.id.ListView);
+//        /**
+//         * 适配器
+//         */
+//        simpleAdapter = new SimpleAdapter(getActivity(),
+//                itemArrayList,
+//                R.layout.list_items,
+//                new String[]{"TIME"},
+//                new int[]{R.id.list_item_title});
+//
+//        listItem = getListItem();
+//        getItemInformation();
+//        paintGraph();
+//        list.setAdapter(simpleAdapter);
+//
+//        /**
+//         * 设置点击事件
+//         */
+//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                ToastManager.toast(getActivity(),"点击第:"+position+"个");
+//            }
+//        });
+//
+//        /**
+//         * 设置长按响应事件
+//         */
+//        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                new AlertDialog.Builder(getActivity())
+//                        .setTitle("操作")
+//                        .setNegativeButton("取消", new DialogInterface.OnClickListener(){
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                            }
+//                        })
+//                        .setNeutralButton("删除", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                            }
+//                        })
+//                        .setPositiveButton("分享", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                            }
+//                        })
+//                        .show();
+//                return false;
+//            }
+//        });
     }
 
     public void paintGraph(){
-        int num = 1000;
-        GraphView.GraphViewData[] data = new GraphView.GraphViewData[num];
-        double v=0;
-        GraphView graphView;
-        for (int i=0; i<num; i++) {
-            v += 0.2;
-            data[i] = new GraphView.GraphViewData(i, Math.sin(Math.random()*v));
+        ListView lv = (ListView)getActivity().findViewById(R.id.ListView);
+
+        ArrayList<BarData> list = new ArrayList<BarData>();
+
+        // 20 items
+        for (int i = 0; i < 20; i++) {
+            list.add(generateData(i + 1));
         }
-        // graph with dynamically genereated horizontal and vertical labels
 
-        graphView = new BarGraphView(getActivity(), "GraphViewDemo");
-
-        // add data
-        graphView.addSeries(new GraphViewSeries(data));
-        // set view port, start=2, size=10
-        graphView.setViewPort(4, 10);
-        graphView.setScalable(true);
-        // set manual Y axis bounds
-        graphView.setManualYAxisBounds(2, -1);
-        LinearLayout layout = (LinearLayout)getActivity().findViewById(R.id.graph2);
-        layout.addView(graphView);
+        ChartDataAdapter cda = new ChartDataAdapter(getActivity(), list);
+        lv.setAdapter(cda);
     }
 
     /**
@@ -164,5 +161,117 @@ public class PageTwo extends Fragment{
         UserID = sharedPreferencesManager.readString("UserID");
         Log.i("UserID:", ""+UserID);
         return sqlLiteManager.getLoveLogsByUserID(UserID);
+    }
+
+    private class ChartDataAdapter extends ArrayAdapter<BarData> {
+
+        private Typeface mTf;
+
+        public ChartDataAdapter(Context context, List<BarData> objects) {
+            super(context, 0, objects);
+
+//            mTf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            BarData data = getItem(position);
+
+            ViewHolder holder = null;
+
+            if (convertView == null) {
+
+                holder = new ViewHolder();
+
+                convertView = LayoutInflater.from(getContext()).inflate(
+                        R.layout.list_items, null);
+                holder.chart = (BarChart) convertView.findViewById(R.id.chart);
+
+                convertView.setTag(holder);
+
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            // apply styling
+//            data.setValueTypeface(mTf);
+            data.setValueTextColor(Color.BLACK);
+            holder.chart.setDescription("");
+            holder.chart.setDrawGridBackground(false);
+
+            XAxis xAxis = holder.chart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//            xAxis.setTypeface(mTf);
+            xAxis.setDrawGridLines(false);
+
+            YAxis leftAxis = holder.chart.getAxisLeft();
+//            leftAxis.setTypeface(mTf);
+            leftAxis.setLabelCount(5, false);
+            leftAxis.setSpaceTop(15f);
+
+            YAxis rightAxis = holder.chart.getAxisRight();
+//            rightAxis.setTypeface(mTf);
+            rightAxis.setLabelCount(5, false);
+            rightAxis.setSpaceTop(15f);
+
+            // set data
+            holder.chart.setData(data);
+
+            // do not forget to refresh the chart
+//            holder.chart.invalidate();
+            holder.chart.animateY(700, Easing.EasingOption.EaseInCubic);
+
+            return convertView;
+        }
+
+        private class ViewHolder {
+
+            BarChart chart;
+        }
+    }
+
+    /**
+     * generates a random ChartData object with just one DataSet
+     *
+     * @return
+     */
+    private BarData generateData(int cnt) {
+
+        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+
+        for (int i = 0; i < 12; i++) {
+            entries.add(new BarEntry((int) (Math.random() * 70) + 30, i));
+        }
+
+        BarDataSet d = new BarDataSet(entries, "New DataSet " + cnt);
+        d.setBarSpacePercent(20f);
+        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        d.setBarShadowColor(Color.rgb(203, 203, 203));
+
+        ArrayList<IBarDataSet> sets = new ArrayList<IBarDataSet>();
+        sets.add(d);
+
+        BarData cd = new BarData(getMonths(), sets);
+        return cd;
+    }
+
+    private ArrayList<String> getMonths() {
+
+        ArrayList<String> m = new ArrayList<String>();
+        m.add("Jan");
+        m.add("Feb");
+        m.add("Mar");
+        m.add("Apr");
+        m.add("May");
+        m.add("Jun");
+        m.add("Jul");
+        m.add("Aug");
+        m.add("Sep");
+        m.add("Okt");
+        m.add("Nov");
+        m.add("Dec");
+
+        return m;
     }
 }

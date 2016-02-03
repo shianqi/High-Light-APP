@@ -4,9 +4,6 @@
     <facet type="android" name="Android">
       <configuration />
     </facet>
-    <facet type="android" name="Android2">
-      <configuration />
-    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -28,7 +25,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/graphview-3.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/MPChartLib.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
