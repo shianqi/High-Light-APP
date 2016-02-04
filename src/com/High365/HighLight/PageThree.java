@@ -24,17 +24,19 @@ import java.util.List;
 
 /**
  * @author 史安琪
- * 此处为排行榜页面
+ *         此处为排行榜页面
  */
-public class PageThree extends Fragment{
+public class PageThree extends Fragment {
 
     private BarChart rankMe;
     private BarChart rankWorld;
     private RadioGroup radioGroup;
     private LoveLogService loveLogService;
+    private ArrayList<BarEntry> yVals1;
+    private ArrayList<String> xVals;
 
-    final private int SUCCESS=1;
-    final private int FAILURE=0;
+    final private int SUCCESS = 1;
+    final private int FAILURE = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,40 +46,47 @@ public class PageThree extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-
         init();
     }
 
     /**
      * 初始化各个组件
      */
-    public void init(){
-        rankMe = (BarChart)getActivity().findViewById(R.id.rankMe);
-        rankWorld = (BarChart)getActivity().findViewById(R.id.rankWorld);
-        radioGroup =(RadioGroup)getActivity().findViewById(R.id.radioGroup);
+    public void init() {
+        rankMe = (BarChart) getActivity().findViewById(R.id.rankMe);
+        rankWorld = (BarChart) getActivity().findViewById(R.id.rankWorld);
+        radioGroup = (RadioGroup) getActivity().findViewById(R.id.radioGroup);
+        loveLogService = new LoveLogService();
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.radioButton1:
+                        getData(11);
+                        getData(21);
                         break;
                     case R.id.radioButton2:
+                        getData(12);
+                        getData(22);
                         break;
                     case R.id.radioButton3:
+                        getData(13);
+                        getData(23);
                         break;
                 }
             }
         });
 
         setPattern();
-        setData();
+        getData(11);
+        getData(21);
     }
 
     /**
      * 设置排行榜图表样式
      */
-    public void setPattern(){
+    public void setPattern() {
         //添加描述
         rankMe.setDescription("我的排行");
         //设置最大可见数量
@@ -97,11 +106,8 @@ public class PageThree extends Fragment{
         rankMe.getLegend().setEnabled(false);
 
 
-        /**
-         * 榜单top10
-         */
         //添加描述
-        rankWorld.setDescription("我的排行");
+        rankWorld.setDescription("全国排行");
         //设置最大可见数量
         rankWorld.setMaxVisibleValueCount(60);
         rankWorld.setPinchZoom(false);
@@ -121,41 +127,54 @@ public class PageThree extends Fragment{
 
     /**
      * 从LoveLogService中获取各种用户排行榜的数量
+     *
+     * @param oper 获取值的类型
      */
-    public void setData(){
-        //未完成
-        List<LoveLogService.RankModel> rankList =new ArrayList<LoveLogService.RankModel>();
-        loveLogService.getRankModelList(11, getActivity(), new GetRankListener() {
+    public void getData(int oper) {
+        loveLogService.getRankModelList(oper, getActivity(), new GetRankListener() {
             @Override
             public void onSuccess(List list) {
                 Message message = new Message();
-                message.what=SUCCESS;
-                message.obj="获取成功";
+
+                yVals1 = new ArrayList<BarEntry>();
+                for (int i = 0; i < list.size(); i++) {
+                    LoveLogService.RankModel model = (LoveLogService.RankModel)list.get(i);
+                    int num = model.getSexObjectiveScore();
+                    yVals1.add(new BarEntry(num, i));
+                }
+
+                xVals = new ArrayList<String>();
+                for (int i = 0; i < list.size(); i++) {
+                    LoveLogService.RankModel model = (LoveLogService.RankModel)list.get(i);
+                    String name = model.getUserID();
+                    xVals.add(name);
+                }
+
+                if (oper < 20) {
+                    message.arg1 = 1;
+                } else {
+                    message.arg1 = 2;
+                }
+                message.what = SUCCESS;
+                message.obj = "获取成功";
                 handler.sendMessage(message);
             }
 
             @Override
             public void onFailure(String msg) {
                 Message message = new Message();
-                message.what=FAILURE;
-                message.obj="获取失败，失败原因："+msg;
+                message.what = FAILURE;
+                message.obj = "获取失败，失败原因：" + msg;
                 handler.sendMessage(message);
             }
         });
+    }
 
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-
-        for (int i = 0; i < 10; i++) {
-            float mult = (10);
-            float val1 = (float) (Math.random() * mult) + mult / 3;
-            yVals1.add(new BarEntry((int) val1, i));
-        }
-
-        ArrayList<String> xVals = new ArrayList<String>();
-        for (int i = 0; i < 10; i++) {
-            xVals.add((int) yVals1.get(i).getVal() + "");
-        }
-
+    /**
+     * 刷新UI
+     * @param oper 刷新部分
+     */
+    private void RefreshUI(int oper) {
         BarDataSet set1 = new BarDataSet(yVals1, "Data Set");
         set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
         set1.setDrawValues(false);
@@ -165,18 +184,24 @@ public class PageThree extends Fragment{
 
         BarData data = new BarData(xVals, dataSets);
 
-        rankMe.setData(data);
-        rankMe.invalidate();
+        if (oper == 1) {
+            rankMe.setData(data);
+            rankMe.invalidate();
+            rankMe.animateY(3000);
 
-        rankWorld.setData(data);
-        rankWorld.invalidate();
+        } else {
+            rankWorld.setData(data);
+            rankWorld.invalidate();
+            rankWorld.animateY(3000);
+        }
     }
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case SUCCESS:
+                    RefreshUI(msg.arg1);
                     break;
                 case FAILURE:
                     break;
