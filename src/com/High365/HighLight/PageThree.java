@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -17,25 +15,52 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import io.realm.Case;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author 史安琪
- *         此处为排行榜页面
+ * @author shianqi@imudges.com
+ * 排行榜页面，用于展示当前用户和所有用户一段时间内的最好成绩
+ * 这是一个Fragment页面
  */
 public class PageThree extends Fragment {
 
+    /**
+     * 当前用户排行榜,此处使用的控件为GitHub开源图表库MPAndroidChart<br>
+     * 详见<a href="https://github.com/PhilJay/MPAndroidChart">MPAndroidChart</a>
+     */
     private BarChart rankMe;
+    /**
+     * 所有用户总排行榜,此处使用的控件为GitHub开源图表库MPAndroidChart<br>
+     * 详见<a href="https://github.com/PhilJay/MPAndroidChart">MPAndroidChart</a>
+     */
     private BarChart rankWorld;
+    /**
+     * 一个按钮组，用于让用户选择查看什么时间段的排名
+     */
     private RadioGroup radioGroup;
+    /**
+     * 获取排行榜数据服务的实例
+     * @see LoveLogService
+     */
     private LoveLogService loveLogService;
+    /**
+     * 图像y轴数据
+     */
     private ArrayList<BarEntry> yVals1;
+    /**
+     * 图像x轴数据
+     */
     private ArrayList<String> xVals;
 
+    /**
+     * 状态码，表示成功
+     */
     final private int SUCCESS = 1;
+    /**
+     * 状态码，表示失败
+     */
     final private int FAILURE = 0;
 
     @Override
@@ -85,6 +110,7 @@ public class PageThree extends Fragment {
 
     /**
      * 设置排行榜图表样式
+     * 详见<a href="https://github.com/PhilJay/MPAndroidChart">MPAndroidChart</a>
      */
     public void setPattern() {
         //添加描述
@@ -126,9 +152,14 @@ public class PageThree extends Fragment {
     }
 
     /**
-     * 从LoveLogService中获取各种用户排行榜的数量
-     *
-     * @param oper 获取值的类型
+     * 从LoveLogService中获取各种用户排行榜的数量,并处理数据
+     * @param oper 获取数据的类型
+     * oper=11:个人周排行榜
+     * oper=12:个人月排行榜
+     * oper=13:个人年排行榜
+     * oper=21:全部用户周排行榜
+     * oper=22:全部用户月排行榜
+     * oper=23:全部用户年排行榜
      */
     public void getData(int oper) {
         loveLogService.getRankModelList(oper, getActivity(), new GetRankListener() {
@@ -171,7 +202,7 @@ public class PageThree extends Fragment {
     }
 
     /**
-     * 刷新UI
+     * 将数据绑定到图像上，并刷新UI
      * @param oper 刷新部分
      */
     private void RefreshUI(int oper) {
@@ -187,6 +218,7 @@ public class PageThree extends Fragment {
         if (oper == 1) {
             rankMe.setData(data);
             rankMe.invalidate();
+            //在Y轴上产生动画
             rankMe.animateY(3000);
 
         } else {
@@ -196,6 +228,9 @@ public class PageThree extends Fragment {
         }
     }
 
+    /**
+     * 线程间的通信,接受不同的消息请求，做出处理,因为网络请求在子线程中完成,而要在主线程UI上显示网络请求的结果必须要经过线程间通信
+     */
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
