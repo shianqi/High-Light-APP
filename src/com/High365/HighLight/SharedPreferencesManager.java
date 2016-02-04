@@ -43,8 +43,4 @@ public class SharedPreferencesManager {
     public int readInteger(String key){
         return sharedPreferences.getInt(key,-1);
     }
-
-    public void clear(){
-        editor.clear().commit();
-    }
 }
