@@ -1,6 +1,7 @@
 package com.High365.HighLight;
 
 import android.content.Context;
+import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -56,6 +57,7 @@ public class LoveLogService extends Thread{
         url = "getRank.action";
         param = "userID=" + userID + "&oper=" + oper;
         taskId = 1;
+        this.getRankListener = listener;
         start();
     }
 
@@ -87,6 +89,7 @@ public class LoveLogService extends Thread{
                 List<RankModel> list = new ArrayList<RankModel>();
                 try {
                     httpResponseStr = HttpRequest.sendPost(url,param);
+                    Log.d("***",httpResponseStr);
                     list = new Gson().fromJson(httpResponseStr,new TypeToken<List<RankModel>>() {}.getType());
                     getRankListener.onSuccess(list);
                 }catch (Exception e){
