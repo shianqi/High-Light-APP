@@ -51,20 +51,18 @@ public class LoveLogService extends Thread{
      * oper=22:全部用户月排行榜
      * oper=23:全部用户年排行榜
      */
-    public void getRankModelList(int oper,Context context,GetRankListener listener){
-
+    public void getRankModelList(int oper,Context context,GetRankListener listener) {
+        String userID = new SharedPreferencesManager(context).readString("UserID");
         url = "getRank.action";
-        param = "";
+        param = "userID=" + userID + "&oper=" + oper;
         taskId = 1;
-        List<RankModel> list = new ArrayList<RankModel>();
-        for (int i=0;i<10;i++){
-            RankModel rankModel = new RankModel();
-            rankModel.setUserID("admin");
-            rankModel.setSexSubjectiveScore(i*10);
-            rankModel.setSexObjectiveScore(i*10);
-            list.add(rankModel);
-        }
-        listener.onSuccess(list);
+        start();
+    }
+
+    public List<LoveLogBean>getLoveLogListByUserID(String userID,Context context){
+        this.context = context;
+        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+        return sqlLiteManager.getLoveLogsByUserID(userID);
     }
 
     @Override
@@ -86,9 +84,10 @@ public class LoveLogService extends Thread{
                     e.printStackTrace();
                 }
             case 1:
+                List<RankModel> list = new ArrayList<RankModel>();
                 try {
                     httpResponseStr = HttpRequest.sendPost(url,param);
-                    List<RankModel> list = new Gson().fromJson(httpResponseStr,new TypeToken<List<RankModel>>() {}.getType());
+                    list = new Gson().fromJson(httpResponseStr,new TypeToken<List<RankModel>>() {}.getType());
                     getRankListener.onSuccess(list);
                 }catch (Exception e){
                     getRankListener.onFailure("获取信息失败");
@@ -152,4 +151,6 @@ public class LoveLogService extends Thread{
             this.sexObjectiveScore = sexObjectiveScore;
         }
     }
+
+
 }
