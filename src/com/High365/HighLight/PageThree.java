@@ -44,7 +44,7 @@ public class PageThree extends Fragment {
      * 获取排行榜数据服务的实例
      * @see LoveLogService
      */
-    private LoveLogService loveLogService;
+    //private LoveLogService loveLogService;
     /**
      * 图像y轴数据
      */
@@ -81,7 +81,7 @@ public class PageThree extends Fragment {
         rankMe = (BarChart) getActivity().findViewById(R.id.rankMe);
         rankWorld = (BarChart) getActivity().findViewById(R.id.rankWorld);
         radioGroup = (RadioGroup) getActivity().findViewById(R.id.radioGroup);
-        loveLogService = new LoveLogService();
+        //loveLogService = new LoveLogService();
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -162,6 +162,7 @@ public class PageThree extends Fragment {
      * oper=23:全部用户年排行榜
      */
     public void getData(final int oper) {
+        LoveLogService loveLogService = new LoveLogService();
         loveLogService.getRankModelList(oper, getActivity(), new GetRankListener() {
             @Override
             public void onSuccess(List list) {
