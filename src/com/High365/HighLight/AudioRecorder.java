@@ -9,7 +9,6 @@ import com.High365.util.RecordFileUtil;
 /**
  * @author HUPENG
  * @version 1.0
- * 录音类
  */
 public class AudioRecorder {
     /**
@@ -21,10 +20,9 @@ public class AudioRecorder {
      * 5、BufferSize:录制缓冲大小：可以通过getMinBufferSize来获取
      * */
     private static final String TAG = "AudioRecord";
-    static final int SAMPLE_RATE_IN_HZ = 16000;//一秒钟菜16000个点
-//    static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ,
-//            AudioFormat.CHANNEL_IN_DEFAULT, AudioFormat.ENCODING_PCM_16BIT);
-    static final int BUFFER_SIZE = 1024;
+    static final int SAMPLE_RATE_IN_HZ = 8000;
+    static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ,
+            AudioFormat.CHANNEL_IN_DEFAULT, AudioFormat.ENCODING_PCM_16BIT);
     AudioRecord mAudioRecord;
     boolean isGetVoiceRun;
     Object mLock;
@@ -34,6 +32,7 @@ public class AudioRecorder {
         mLock = new Object();
         recordFileUtil = new RecordFileUtil(loveLogID);
     }
+
     public void getNoiseLevel(final AudioRecorderListener audioRecorderListener) {
         if (isGetVoiceRun) {
             Log.e(TAG, "还在录着呢");

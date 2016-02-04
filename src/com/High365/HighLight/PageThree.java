@@ -161,7 +161,7 @@ public class PageThree extends Fragment {
      * oper=22:全部用户月排行榜
      * oper=23:全部用户年排行榜
      */
-    public void getData(final int oper) {
+    public void getData(int oper) {
         loveLogService.getRankModelList(oper, getActivity(), new GetRankListener() {
             @Override
             public void onSuccess(List list) {

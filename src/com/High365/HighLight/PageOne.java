@@ -77,7 +77,7 @@ public class PageOne extends Fragment{
                     state=255;
                     changeBrightness(255);
                     myToast(view,"录音已开始");
-                    loveLogBean.setSexStartTime(new Timestamp(System.currentTimeMillis()));
+                    loveLogBean.setSexStartTime(new Timestamp(System.currentTimeMillis()/1000));
                     audioRecorder.isGetVoiceRun = false;
                     audioRecorder.getNoiseLevel(new AudioRecorderListener() {
                         @Override
@@ -119,7 +119,7 @@ public class PageOne extends Fragment{
                     changeBrightness(0);
                     audioRecorder.stopRecord();
                     myToast(view,"录音已结束");
-                    loveLogBean.setSexEndTime(new Timestamp(System.currentTimeMillis()));
+                    loveLogBean.setSexEndTime(new Timestamp(System.currentTimeMillis()/1000));
                     loveLogBean.setUserID(new SharedPreferencesManager(getActivity()).readString("UserID"));
                     loveLogBean.setRecordFileName(audioRecorder.recordFileName);
                     loveLogBean.setUpdateFlag(0);
