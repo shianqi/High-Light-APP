@@ -51,12 +51,26 @@ public class WelcomeActivity extends Activity {
     }
 
     /**
-     * 初始化页面，此处调用登陆状态判断函数
+     * 初始化页面，此处调用登陆状态判断函数<br>
+     * 首先先在SharedPreferences中查找是否有上次用户登陆过的账号和密码(经过加密)，
+     * 有就用这个账号密码和数据库里面的账号密码对应，相同就跳转到图形界面上。
+     * 密码不相同，或者没有就切换到正常登陆。
      */
     private void init(){
-        handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
-        //此处进行登陆判断，并跳转。修改第一个参数就好。
-        //例如跳转到登陆界面： handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
+        //handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(getApplication());
+        if(sharedPreferencesManager.readString("UserID")!=null&&sharedPreferencesManager.readString("WP")!=null){
+            SqlLiteManager sqlLiteManager = new SqlLiteManager(getApplication());
+            UserInfoBean userInfoBean = sqlLiteManager.findUserInfoById(sharedPreferencesManager.readString("UserID"));
+            if (userInfoBean!=null){
+                if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(sharedPreferencesManager.readString("WP"))){
+                    handler.sendEmptyMessageDelayed(GRAPHLOGIN,DELAY_TIME);
+                }
+            }
+        }else{
+            handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
+        }
+
     }
 
     /**

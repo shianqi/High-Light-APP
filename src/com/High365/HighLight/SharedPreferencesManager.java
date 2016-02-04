@@ -45,6 +45,8 @@ public class SharedPreferencesManager {
     }
 
     public void logout(){
-
+        editor.putString("UserID",null);
+        editor.putString("WP",null);
+        editor.commit();
     }
 }

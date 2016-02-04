@@ -24,7 +24,6 @@ public class SetGraphPasswordActivity extends Activity {
         } else {
             toast.setText(message);
         }
-
         toast.show();
     }
 
@@ -61,7 +60,7 @@ public class SetGraphPasswordActivity extends Activity {
                             lpwv.clearPassword();
                             showToast("密码修改成功,请记住密码.");
                             startActivity(new Intent(SetGraphPasswordActivity.this,
-                                    LoginActivity.class));
+                                    MyActivity.class));
                             finish();
                         } else {
                             lpwv.clearPassword();

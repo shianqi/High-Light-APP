@@ -26,6 +26,7 @@ public class UserInfoService extends Thread{
 
     String url;
     String param;
+    private String WP;
     String httpResponseOutputStreamString;
     Listener listener;
     Integer taskId;
@@ -40,12 +41,15 @@ public class UserInfoService extends Thread{
 
         this.listener = listener;
         this.context = context;
+        WP = new MD5().encryptPassword(password);
+
+        //登陆操作前首先判断
 
         //首先,判断用户名密码是否在本地数据库中,若在,判断密码的一致性,则直接登录成功
         SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
         userInfoBean = sqlLiteManager.findUserInfoById(userID);
         if (userInfoBean!=null){
-            if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(new MD5().encryptPassword(password))){
+            if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(WP)){
                 listener.onSuccess();
                 return;
             }
@@ -127,7 +131,12 @@ public class UserInfoService extends Thread{
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("secretKey",loginModel.getSecretKey());
                         editor.commit();
+
+                        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this.context);
+                        sharedPreferencesManager.writeString("WP",WP);
+
                         System.out.println(loginModel.getSecretKey());
+
                         listener.onSuccess();
                         return;
                     }else {

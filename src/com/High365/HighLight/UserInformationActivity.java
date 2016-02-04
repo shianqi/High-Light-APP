@@ -188,7 +188,9 @@ public class UserInformationActivity extends Activity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(getApplication());
+                sharedPreferencesManager.logout();
+                goLoginActivity();
             }
         });
     }
@@ -311,10 +313,19 @@ public class UserInformationActivity extends Activity {
     }
 
     /**
-     * 切换到登陆
+     * 切换到修改图形密码界面
      */
     public void goFixGraphPasswordActivity(){
         Intent intent = new Intent(UserInformationActivity.this, SetGraphPasswordActivity.class);
+        UserInformationActivity.this.startActivity(intent);
+        UserInformationActivity.this.finish();
+    }
+
+    /**
+     * 切换到修改图形密码界面
+     */
+    public void goLoginActivity(){
+        Intent intent = new Intent(UserInformationActivity.this, LoginActivity.class);
         UserInformationActivity.this.startActivity(intent);
         UserInformationActivity.this.finish();
     }
