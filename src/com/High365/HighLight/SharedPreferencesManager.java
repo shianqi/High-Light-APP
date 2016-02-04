@@ -44,7 +44,7 @@ public class SharedPreferencesManager {
         return sharedPreferences.getInt(key,-1);
     }
 
-    public void clear(){
-        editor.clear().commit();
+    public void logout(){
+
     }
 }
