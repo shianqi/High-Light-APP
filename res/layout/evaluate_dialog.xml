@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <SeekBar
-            android:layout_width="match_parent"
+    <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/evaluate_dialog_seekBar"
-            android:max="100"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_weight="1">
+        <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/evaluate_dialog_seekBar"
+                android:max="100"
+                android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="4">
+        <TextView
+                android:id="@+id/sexSubjectiveScore"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="20dip"/>
+    </LinearLayout>
+
 </LinearLayout>

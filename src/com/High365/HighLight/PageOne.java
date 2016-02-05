@@ -12,10 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.Toast;
+import android.widget.*;
 
 import java.sql.Timestamp;
 
@@ -220,6 +217,7 @@ public class PageOne extends Fragment{
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View evaluateDialogView = inflater.inflate(R.layout.evaluate_dialog,null);
         final SeekBar seekBar = (SeekBar)evaluateDialogView.findViewById(R.id.evaluate_dialog_seekBar);
+        final TextView sexSubjectiveScore = (TextView)evaluateDialogView.findViewById(R.id.sexSubjectiveScore);
 
         new AlertDialog.Builder(getActivity())
                 .setTitle("自我评价")
@@ -233,10 +231,28 @@ public class PageOne extends Fragment{
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        ToastManager.toast(getActivity(),sexSubjectiveScore.getText()+"");
                         loveLogBean.setSexSubjectiveScore(which);
                         loveLogService.update(loveLogBean,getActivity());
                     }
                 })
                 .show();
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                sexSubjectiveScore.setText(progress+"");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 }
