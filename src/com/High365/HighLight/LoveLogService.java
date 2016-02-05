@@ -39,6 +39,7 @@ public class LoveLogService extends Thread{
         url = "updateLoveLog.action";
         param = "userID=" + userID + "&secretKey=" + secretKey + "&jsonString=" + new Gson().toJson(loveLogBean);
         taskId = 0;
+        start();
     }
 
     /**
@@ -85,6 +86,7 @@ public class LoveLogService extends Thread{
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                break;
             case 1:
                 List<RankModel> list = new ArrayList<RankModel>();
                 try {

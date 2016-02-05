@@ -189,7 +189,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         loveLogBean.setLogID(cursor.getInt(cursor.getColumnIndex("LogID")));
-        loveLogBean.setUserID(cursor.getString(cursor.getColumnIndex("UserID")));
+        loveLogBean.setUserId(cursor.getString(cursor.getColumnIndex("UserID")));
 
         if (cursor.getLong(cursor.getColumnIndex("SexStartTime"))!=0){
             loveLogBean.setSexStartTime(new Timestamp(cursor.getLong(cursor.getColumnIndex("SexStartTime"))));
@@ -240,8 +240,8 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         if (loveLogBean==null)
             return;
         ContentValues cv = new ContentValues();
-        if (loveLogBean.getUserID()!=null){
-            cv.put("UserID",loveLogBean.getUserID());
+        if (loveLogBean.getUserId()!=null){
+            cv.put("UserID",loveLogBean.getUserId());
         }
         if (loveLogBean.getSexStartTime()!=null){
             cv.put("SexStartTime",loveLogBean.getSexStartTime().getTime());

@@ -22,9 +22,9 @@ public class AudioRecorder {
      * */
     private static final String TAG = "AudioRecord";
     static final int SAMPLE_RATE_IN_HZ = 16000;//一秒钟菜16000个点
-//    static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ,
-//            AudioFormat.CHANNEL_IN_DEFAULT, AudioFormat.ENCODING_PCM_16BIT);
-    static final int BUFFER_SIZE = 1024;
+    static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ,
+            AudioFormat.CHANNEL_IN_DEFAULT, AudioFormat.ENCODING_PCM_16BIT);
+    //static final int BUFFER_SIZE = 1024;
     AudioRecord mAudioRecord;
     boolean isGetVoiceRun;
     Object mLock;

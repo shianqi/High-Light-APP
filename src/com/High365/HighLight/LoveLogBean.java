@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  */
 public class LoveLogBean {
     private Integer logID;
-    private String userID;
+    private String userId;
     private Timestamp sexStartTime;
     private Timestamp sexEndTime;
     private Timestamp sexTime;
@@ -30,12 +30,12 @@ public class LoveLogBean {
         this.logID = logID;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Timestamp getSexStartTime() {

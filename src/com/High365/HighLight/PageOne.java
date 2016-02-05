@@ -28,8 +28,16 @@ public class PageOne extends Fragment{
     private View view;
     private ImageView light1;
 
-
+    /**
+     * 性的状态帧
+     * */
     private String sexFrameState = "";
+
+    /**
+     * loveLog的服务类
+     * */
+
+    private LoveLogService loveLogService;
 
     /**
      * 灯光亮度
@@ -57,7 +65,7 @@ public class PageOne extends Fragment{
     private void init(){
         state=0;
         changeBrightness(0);
-
+        loveLogService = new LoveLogService();
         light1=(ImageView)view.findViewById(R.id.light1);
 
         //点击
@@ -120,7 +128,7 @@ public class PageOne extends Fragment{
                     audioRecorder.stopRecord();
                     myToast(view,"录音已结束");
                     loveLogBean.setSexEndTime(new Timestamp(System.currentTimeMillis()));
-                    loveLogBean.setUserID(new SharedPreferencesManager(getActivity()).readString("UserID"));
+                    loveLogBean.setUserId(new SharedPreferencesManager(getActivity()).readString("UserID"));
                     loveLogBean.setRecordFileName(audioRecorder.recordFileName);
                     loveLogBean.setUpdateFlag(0);
                     loveLogBean.setSexFrameState(sexFrameState);
@@ -130,6 +138,7 @@ public class PageOne extends Fragment{
                     loveLogBean.setSexObjectiveScore(0);
                     SqlLiteManager sqlLiteManager = new SqlLiteManager(getActivity());
                     sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
+
                     showDialog();
                     return true;
                 }else {
@@ -198,6 +207,7 @@ public class PageOne extends Fragment{
                     public void onClick(DialogInterface dialog, int which) {
                         //上传数据
                         evaluateDialog();
+
                     }
                 })
                 .show();
@@ -223,7 +233,8 @@ public class PageOne extends Fragment{
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        loveLogBean.setSexSubjectiveScore(which);
+                        loveLogService.update(loveLogBean,getActivity());
                     }
                 })
                 .show();
