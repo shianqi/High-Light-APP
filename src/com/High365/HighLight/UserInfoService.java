@@ -50,6 +50,8 @@ public class UserInfoService extends Thread{
         userInfoBean = sqlLiteManager.findUserInfoById(userID);
         if (userInfoBean!=null){
             if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(WP)){
+                SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
+                sharedPreferencesManager.writeString("UserID",userID);
                 listener.onSuccess();
                 return;
             }

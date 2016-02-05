@@ -1,6 +1,8 @@
 package com.High365.HighLight;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -178,8 +180,8 @@ public class LoginActivity extends Activity {
                 ToastManager.toast(getApplicationContext(),"再按一次退出程序");
                 EXITTIME = System.currentTimeMillis();
             } else {
-                finish();
-                System.exit(0);
+                ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                manager.restartPackage(getPackageName());
             }
             return true;
         }

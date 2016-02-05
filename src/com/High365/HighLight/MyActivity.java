@@ -1,8 +1,10 @@
 package com.High365.HighLight;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -196,6 +198,7 @@ public class MyActivity extends Activity {
      * 退出应用
      */
     public void exit(){
-        System.exit(0);
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        manager.restartPackage(getPackageName());
     }
 }
