@@ -210,8 +210,6 @@ public class LocusPassWordView extends View {
 
     /**
      * 初始化Cache信息
-     *
-     * @param
      */
     private void initCache() {
 
@@ -433,8 +431,9 @@ public class LocusPassWordView extends View {
     /**
      * 1=30度 2=45度 4=60度
      *
-     * @param
-     * @return
+     * @param x x值
+     * @param y y值
+     * @return 结果
      */
     private float switchDegrees(float x, float y) {
         return (float) MathUtil.pointTotoDegrees(x, y);
@@ -704,7 +703,7 @@ public class LocusPassWordView extends View {
     /**
      * 取得密码
      *
-     * @return
+     * @return 取得的手势密码
      */
     private String getPassword() {
         SharedPreferences settings = this.getContext().getSharedPreferences(
@@ -715,7 +714,7 @@ public class LocusPassWordView extends View {
     /**
      * 密码是否为空
      *
-     * @return
+     * @return 判断密码是否为空,若为空则返回false,否则返回true
      */
     public boolean isPasswordEmpty() {
         return StringUtil.isEmpty(getPassword());
@@ -768,7 +767,7 @@ public class LocusPassWordView extends View {
         /**
          * 画完了
          *
-         * @param
+         * @param password 手势密码
          */
         public void onComplete(String password);
     }

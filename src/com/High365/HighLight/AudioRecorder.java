@@ -7,7 +7,8 @@ import android.util.Log;
 import com.High365.util.RecordFileUtil;
 
 /**
- * @author HUPENG
+ * 此类主要实现录音</br>
+ * <a href="http://www.jb51.net/article/64806.htm">Android中实时获取音量分贝值详解</a>
  * @version 1.0
  * 录音类
  */

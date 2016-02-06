@@ -271,7 +271,9 @@ public class SqlLiteManager extends SQLiteOpenHelper {
             highLightDB.update("LoveLog",cv,"LogID=?",new String[]{loveLogBean.getLogID()+""});
         }else{
             //insert
-            highLightDB.insert("LoveLog",null,cv);
+            long id = highLightDB.insert("LoveLog",null,cv);
+            loveLogBean.setLogID((int)id);
         }
+        highLightDB.close();
     }
 }

@@ -3,12 +3,12 @@ package com.High365.HighLight;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
  *  @author HUPENG
+ *  @version 1.0
  *  将图片与base64相互装换的工具类
  */
 public class ImageEncodeUtil {
