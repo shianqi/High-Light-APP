@@ -3,7 +3,9 @@ package com.High365.HighLight;
 import android.content.Context;
 import android.widget.Toast;
 
-
+/**
+ * 对Toast进行的一个封装，可以取消掉上一次未完成的，直接进行下一次Toast
+ */
 public class ToastManager {
     /**
      * Toast实例，用于对本页出现的所有Toast进行处理

@@ -17,22 +17,28 @@ import android.widget.*;
 import java.sql.Timestamp;
 
 /**
- * 第一个界面的逻辑代码
- * @author 史安琪
+ * 录音界面
+ * @author shianqi@imudges.com
  */
 public class PageOne extends Fragment{
 
+    /**
+     * 录音界面的View
+     */
     private View view;
+    /**
+     * 灯泡点亮时的图片，通过改变其透明度可以实现灯泡的明暗变化
+     */
     private ImageView light1;
 
     /**
      * 性的状态帧
-     * */
+     */
     private String sexFrameState = "";
 
     /**
      * loveLog的服务类
-     * */
+     */
 
     private LoveLogService loveLogService;
 
@@ -40,12 +46,15 @@ public class PageOne extends Fragment{
      * 灯光亮度
      */
     private int state;
-    /**
-     * Toast实例，用于对本页出现的所有Toast进行处理
-     */
-    private static Toast myToast;
 
+    /**
+     * 滑动条，负责录音结束后用户进行评价打分
+     */
     private AudioRecorder audioRecorder;
+
+    /**
+     * 日志Bean对象
+     */
     private LoveLogBean loveLogBean;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,12 +85,12 @@ public class PageOne extends Fragment{
                 if (state!=0){
                     state=0;
                     changeBrightness(0);
-                    myToast(view,"录音暂停中");
+                    ToastManager.toast(getActivity(),"录音暂停中");
                     audioRecorder.isGetVoiceRun = false;
                 }else{
                     state=255;
                     changeBrightness(255);
-                    myToast(view,"录音已开始");
+                    ToastManager.toast(getActivity(),"录音已开始");
                     loveLogBean.setSexStartTime(new Timestamp(System.currentTimeMillis()));
                     audioRecorder.isGetVoiceRun = false;
                     audioRecorder.getNoiseLevel(new AudioRecorderListener() {
@@ -123,7 +132,7 @@ public class PageOne extends Fragment{
                     state=0;
                     changeBrightness(0);
                     audioRecorder.stopRecord();
-                    myToast(view,"录音已结束");
+                    ToastManager.toast(getActivity(),"录音已结束");
                     loveLogBean.setSexEndTime(new Timestamp(System.currentTimeMillis()));
                     loveLogBean.setUserId(new SharedPreferencesManager(getActivity()).readString("UserID"));
                     loveLogBean.setRecordFileName(audioRecorder.recordFileName);
@@ -171,20 +180,7 @@ public class PageOne extends Fragment{
         light1.getBackground().setAlpha(brightness);
     }
 
-    /**
-     * 此处是一个封装的Toast方法，可以取消掉上一次未完成的，直接进行下一次Toast
-     * @param view view
-     * @param text 需要toast的内容
-     */
-    public static void myToast(View view,String text){
-        if (myToast != null) {
-            myToast.cancel();
-            myToast=Toast.makeText(view.getContext(),text,Toast.LENGTH_SHORT);
-        }else{
-            myToast=Toast.makeText(view.getContext(),text,Toast.LENGTH_SHORT);
-        }
-        myToast.show();
-    }
+
 
     /**
      * 是否保存Dialog显示
@@ -238,6 +234,9 @@ public class PageOne extends Fragment{
                 })
                 .show();
 
+        /**
+         * 设置滚动条的监听
+         */
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

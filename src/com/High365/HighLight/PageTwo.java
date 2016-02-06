@@ -26,14 +26,28 @@ import java.util.List;
 
 
 /**
+ * 日志页面，记录用户性生活情况
  * @author shianqi@imudges.com
- * 日志页面
  */
 public class PageTwo extends Fragment{
 
+    /**
+     * 获取到的用户日志
+     */
     private List<LoveLogBean> listItem;
+    /**
+     * sharedPreferences管理封装类实例
+     * @see SharedPreferencesManager
+     */
     private SharedPreferencesManager sharedPreferencesManager;
+    /**
+     * 用户ID
+     */
     private String UserID;
+    /**
+     * 数据库管理封装实例
+     * @see SqlLiteManager
+     */
     private SqlLiteManager sqlLiteManager;
 
     @Override
@@ -67,6 +81,9 @@ public class PageTwo extends Fragment{
         paintGraph();
     }
 
+    /**
+     * 绘制图像
+     */
     public void paintGraph(){
         ListView listView = (ListView)getActivity().findViewById(R.id.ListView);
 
@@ -103,16 +120,11 @@ public class PageTwo extends Fragment{
 
                             }
                         })
-                        .setNeutralButton("删除", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
                         .setPositiveButton("分享", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                ToastManager.toast(getActivity(),"请申请合适的api来实现分享");
+                                //没有申请合适的api来实现分享
                             }
                         })
                         .show();

@@ -16,13 +16,13 @@ import android.widget.Button;
 /**
  * 主页面
  * <p>由三个Fragment构成，分别是录音界面，日志界面，排行榜界面</p>
- * 录音界面：
+ *
  * @see PageOne
- * 日志界面：
+ * 录音界面
  * @see PageTwo
- * 排行榜界面：
+ * 日志界面
  * @see PageThree
- * <br>
+ * 排行榜界面
  */
 public class MyActivity extends Activity {
 
@@ -39,8 +39,20 @@ public class MyActivity extends Activity {
      */
     private Button button3;
 
+    /**
+     * 录音界面
+     * @see PageOne
+     */
     private PageOne pageOne;
+    /**
+     * 日志界面
+     * @see PageTwo
+     */
     private PageTwo pageTwo;
+    /**
+     * 排行榜界面
+     * @see PageThree
+     */
     private PageThree pageThree;
 
     /**
@@ -107,6 +119,7 @@ public class MyActivity extends Activity {
                 transaction.show(pageTwo);
                 transaction.hide(pageOne);
                 transaction.hide(pageThree);
+                transaction.attach(pageTwo);
                 transaction.commit();
             }
         });
@@ -124,6 +137,7 @@ public class MyActivity extends Activity {
                 transaction.show(pageThree);
                 transaction.hide(pageTwo);
                 transaction.hide(pageOne);
+                transaction.attach(pageThree);
                 transaction.commit();
             }
         });

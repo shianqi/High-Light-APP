@@ -6,24 +6,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.High365.HighLight.LocusPassWordView.OnCompleteListener;
 
+/**
+ * 此文件是九宫格图形锁的界面(这个工具是互联网上的开源代码)<br>
+ *     主要负责处理图形登陆的逻辑<br>
+ *     详细内容请参考<a href="http://www.cnblogs.com/weixing/p/3413998.html">Android之九宫格解锁的实现</a>
+ */
 public class GraphLoginActivity extends Activity {
+    /**
+     * 图形密码登陆界面的view
+     */
     private LocusPassWordView lpwv;
-    private Toast toast;
-
-    private void showToast(CharSequence message) {
-        if (null == toast) {
-            toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-            // toast.setGravity(Gravity.CENTER, 0, 0);
-        } else {
-            toast.setText(message);
-        }
-
-        toast.show();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,14 +30,14 @@ public class GraphLoginActivity extends Activity {
             public void onComplete(String mPassword) {
                 // 如果密码正确,则进入主页面。
                 if (lpwv.verifyPassword(mPassword)) {
-                    showToast("登陆成功！");
+                    ToastManager.toast(getApplication(),"登陆成功！");
                     Intent intent = new Intent(GraphLoginActivity.this,
                             MyActivity.class);
                     // 打开新的Activity
                     startActivity(intent);
                     finish();
                 } else {
-                    showToast("密码输入错误,请重新输入");
+                    ToastManager.toast(getApplication(),"密码输入错误,请重新输入");
                     lpwv.markError();
                 }
             }
@@ -77,10 +72,4 @@ public class GraphLoginActivity extends Activity {
             noSetPassword.setVisibility(View.GONE);
         }
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
 }
