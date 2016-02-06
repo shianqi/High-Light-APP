@@ -59,6 +59,7 @@ public class LoveLogService extends Thread{
         param = "userID=" + userID + "&oper=" + oper;
         taskId = 1;
         this.getRankListener = listener;
+        Log.i("向服务端请求",param);
         start();
     }
 
@@ -91,7 +92,7 @@ public class LoveLogService extends Thread{
                 List<RankModel> list = new ArrayList<RankModel>();
                 try {
                     httpResponseStr = HttpRequest.sendPost(url,param);
-                    Log.d("***",httpResponseStr);
+                    Log.d("服务器返回的数据",httpResponseStr);
                     list = new Gson().fromJson(httpResponseStr,new TypeToken<List<RankModel>>() {}.getType());
                     getRankListener.onSuccess(list);
                 }catch (Exception e){
