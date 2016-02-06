@@ -2,14 +2,9 @@ package com.High365.HighLight;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,15 +13,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.DialogPreference;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.*;
 import com.High365.util.SdUtil;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
@@ -54,7 +45,6 @@ public class UserInformationActivity extends Activity {
 
     private String[] items = new String[] { "选择本地图片", "拍照" };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +52,6 @@ public class UserInformationActivity extends Activity {
 
         init();
     }
-
 
     /**
      * 绑定各个元素的id,初始化控件属性,初始化控件值
@@ -82,7 +71,6 @@ public class UserInformationActivity extends Activity {
         birthdayEditText=(EditText)findViewById(R.id.birthdayEditText);
         emailEditText=(EditText)findViewById(R.id.emailEditText);
         phoneEditText=(EditText)findViewById(R.id.phoneEditText);
-
 
         //初始化控件属性
         usernameTextView.setTextColor(Color.WHITE);

@@ -9,11 +9,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 /**
- * 注册界面
- * @author 史安琪
+ * 用户注册界面
+ * @author shianqi@imudges.com
  */
 public class RegistActivity extends Activity{
 
@@ -38,10 +37,15 @@ public class RegistActivity extends Activity{
     private EditText sexText;
     private EditText birthdayText;
     private EditText passwordText;
-
     private Button registButton;
 
+    /**
+     * 状态码，表示成功
+     */
     final private int SUCCESS = 1;
+    /**
+     * 状态码，表示失败
+     */
     final private int FAILURE = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,22 +56,21 @@ public class RegistActivity extends Activity{
         sexText=(EditText)findViewById(R.id.userSexText);
         birthdayText=(EditText)findViewById(R.id.birthdayText);
         passwordText=(EditText)findViewById(R.id.passwordText);
-
         registButton=(Button)findViewById(R.id.registButton);
 
-        setListerner();
-
-
+        setListener();
     }
 
-
-    private void setListerner(){
+    /**
+     * 绑定监听
+     */
+    private void setListener(){
+        /**
+         * 此处点击文本框修改用户性别，方便用户输入
+         * sex  1为男，0为女
+         * @param v view
+         */
         sexText.setOnClickListener(new View.OnClickListener() {
-            /**
-             * 此处点击文本框修改用户性别，方便用户输入
-             * sex  1为男，0为女
-             * @param v view
-             */
             @Override
             public void onClick(View v) {
                 if(sex==1){
@@ -155,8 +158,7 @@ public class RegistActivity extends Activity{
     /**
      * 注册失败时调用此方法
      * 使注册按钮可用,并提示
-     * */
-
+     */
     public void onFailure(String msgStr){
         //设置注册按钮可用,使用户能够修改注册信息后重新注册
         registButton.setEnabled(true);

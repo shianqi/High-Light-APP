@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.High365.HighLight.LocusPassWordView.OnCompleteListener;
 import com.High365.util.StringUtil;
 
@@ -20,7 +19,6 @@ public class SetGraphPasswordActivity extends Activity {
     private void showToast(CharSequence message) {
         if (null == toast) {
             toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-//			toast.setGravity(Gravity.CENTER, 0, 0);
         } else {
             toast.setText(message);
         }

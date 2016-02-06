@@ -5,11 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import java.io.File;
-import java.io.IOException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,7 +66,6 @@ public class SqlLiteManager extends SQLiteOpenHelper {
 
         userInfoBean.setUserPhoto(cursor.getString(cursor.getColumnIndex("UserPhoto"))==null?"":cursor.getString(cursor.getColumnIndex("UserPhoto")));
         userInfoBean.setUserGender(cursor.getInt(cursor.getColumnIndex("UserGender")));
-
 
         try {
             //从字符串构建date对象

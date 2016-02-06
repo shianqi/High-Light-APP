@@ -3,12 +3,10 @@ package com.High365.HighLight;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.google.gson.Gson;
 import android.os.Looper;
 import com.google.gson.GsonBuilder;
-
 import java.text.SimpleDateFormat;
 
 /**
@@ -22,7 +20,6 @@ import java.text.SimpleDateFormat;
  * 由于Android的网络通信模块必须放在子线程中,若放在主线程中会导致阻塞主线程.
  */
 public class UserInfoService extends Thread{
-
 
     String url;
     String param;
@@ -67,7 +64,7 @@ public class UserInfoService extends Thread{
 
     /**
      * 注册方法,必须联网才能注册
-     * */
+     */
     public void register(String userID,String password,int gender,String birthDay,Context context,Listener listener){
         this.listener = listener;
         this.context = context;
@@ -299,8 +296,7 @@ public class UserInfoService extends Thread{
     /**
      * 此内部类为一个JavaBean
      * 为更新用户数据结果的Json对象所对应的bean
-     * */
-
+     */
     class UpdateModel{
         private Integer status;
         private String errorInfo;
