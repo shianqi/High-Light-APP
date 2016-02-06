@@ -42,7 +42,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         userInfoBean.setUserGender(1);
         userInfoBean.setUserPhone("");
         userInfoBean.setUserEmail("");
-        userInfoBean.setUsername("");
+        userInfoBean.setUserName("");
         //构造数据库对象
         SQLiteDatabase highLightDB = this.getReadableDatabase();
         //构造数据库查询语句
@@ -58,7 +58,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         userInfoBean.setUserPwd(cursor.getString(cursor.getColumnIndex("UserPWD")));
         //若可能为NULL,则返回空字符串
         userInfoBean.setUserGesturePwd(cursor.getString(cursor.getColumnIndex("UserGesturePWD"))==null?"":cursor.getString(cursor.getColumnIndex("UserGesturePWD")));
-        userInfoBean.setUsername(cursor.getString(cursor.getColumnIndex("UserName"))==null?"":cursor.getString(cursor.getColumnIndex("UserName")));
+        userInfoBean.setUserName(cursor.getString(cursor.getColumnIndex("UserName"))==null?"":cursor.getString(cursor.getColumnIndex("UserName")));
         userInfoBean.setUserEmail(cursor.getString(cursor.getColumnIndex("UserEmail"))==null?"":cursor.getString(cursor.getColumnIndex("UserEmail")));
         //从字符串构建date对象
         String userBirthDayString = cursor.getString(cursor.getColumnIndex("UserBirthDay"))==null?"":cursor.getString(cursor.getColumnIndex("UserBirthDay"));
@@ -131,8 +131,8 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         if (userInfoBean.getUserGesturePwd()!=null){
             cv.put("UserGesturePWD",userInfoBean.getUserGesturePwd());
         }
-        if (userInfoBean.getUsername()!=null){
-            cv.put("UserName",userInfoBean.getUsername());
+        if (userInfoBean.getUserName()!=null){
+            cv.put("UserName",userInfoBean.getUserName());
         }
         if (userInfoBean.getUserEmail()!=null){
             cv.put("UserEmail",userInfoBean.getUserEmail());

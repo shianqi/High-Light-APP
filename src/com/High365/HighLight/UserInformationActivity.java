@@ -95,7 +95,7 @@ public class UserInformationActivity extends Activity {
         }else {
             sexTextView.setText("男");
         }
-        nicknameEditText.setText(userInfoBean.getUsername());
+        nicknameEditText.setText(userInfoBean.getUserName());
         usernameTextView.setText(userInfoBean.getUserId());
         birthdayEditText.setText(new SimpleDateFormat("yyyyMMdd").format(userInfoBean.getUserBirthDay()));
         emailEditText.setText(userInfoBean.getUserEmail());
@@ -194,7 +194,7 @@ public class UserInformationActivity extends Activity {
         try{
             userInfoBean.setUserPhoto(ImageEncodeUtil.bitmapToBase64(((BitmapDrawable) (userPhoto.getDrawable())).getBitmap()));
         }catch (Exception e){}
-        userInfoBean.setUsername(nicknameEditText.getText().toString());
+        userInfoBean.setUserName(nicknameEditText.getText().toString());
         userInfoBean.setUserPhone(phoneEditText.getText().toString());
         try{
             userInfoBean.setUserBirthDay(new SimpleDateFormat("yyyyMMdd").parse(birthdayEditText.getText().toString()));
