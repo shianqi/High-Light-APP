@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -182,6 +183,7 @@ public class LoginActivity extends Activity {
             } else {
                 ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 manager.restartPackage(getPackageName());
+                System.exit(0);
             }
             return true;
         }

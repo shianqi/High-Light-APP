@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 /**
  * <p>程序加载界面</p>
@@ -59,18 +60,23 @@ public class WelcomeActivity extends Activity {
     private void init(){
         //handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(getApplication());
+        Log.i("用户信息",sharedPreferencesManager.readString("UserID")+" "+sharedPreferencesManager.readString("WP"));
         if(sharedPreferencesManager.readString("UserID")!=null&&sharedPreferencesManager.readString("WP")!=null){
             SqlLiteManager sqlLiteManager = new SqlLiteManager(getApplication());
             UserInfoBean userInfoBean = sqlLiteManager.findUserInfoById(sharedPreferencesManager.readString("UserID"));
             if (userInfoBean!=null){
                 if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(sharedPreferencesManager.readString("WP"))){
                     handler.sendEmptyMessageDelayed(GRAPHLOGIN,DELAY_TIME);
+                }else{
+                    handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
                 }
+            }else{
+                ToastManager.toast(getApplication(),"错误提示：userBean为空");
+                handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
             }
         }else{
             handler.sendEmptyMessageDelayed(LOGIN,DELAY_TIME);
         }
-
     }
 
     /**

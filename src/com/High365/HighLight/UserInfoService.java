@@ -49,6 +49,7 @@ public class UserInfoService extends Thread{
             if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(WP)){
                 SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
                 sharedPreferencesManager.writeString("UserID",userID);
+                sharedPreferencesManager.writeString("WP",WP);
                 listener.onSuccess();
                 return;
             }
