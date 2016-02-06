@@ -142,4 +142,12 @@ public class LoveLogBean {
     public void setUpdateFlag(Integer updateFlag) {
         this.updateFlag = updateFlag;
     }
+
+    public int getSexFrameStateSize(){
+        return sexFrameState.length()/2;
+    }
+
+    public int getSexFrameStateByNumber(int i){
+        return Integer.parseInt(sexFrameState.substring(i*2,i*2+2));
+    }
 }

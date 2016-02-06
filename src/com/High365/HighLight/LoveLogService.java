@@ -63,6 +63,12 @@ public class LoveLogService extends Thread{
         start();
     }
 
+    /**
+     * 根据用户ID获取用户日志
+     * @param userID 用户ID
+     * @param context context
+     * @return 用户的日志列表
+     */
     public List<LoveLogBean>getLoveLogListByUserID(String userID,Context context){
         this.context = context;
         SqlLiteManager sqlLiteManager = new SqlLiteManager(context);

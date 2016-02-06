@@ -71,15 +71,14 @@ public class PageTwo extends Fragment{
         ListView listView = (ListView)getActivity().findViewById(R.id.ListView);
 
         ArrayList<BarData> list = new ArrayList<BarData>();
+        Log.i("日志数量：",""+listItem.size());
 
-        // 20 items
-        for (int i = 0; i < 20; i++) {
-            list.add(generateData(i + 1));
+        for (int i = 0; i < listItem.size(); i++) {
+            list.add(generateData(i));
         }
 
         ChartDataAdapter cda = new ChartDataAdapter(getActivity(), list);
         listView.setAdapter(cda);
-
         /**
          * 设置点击事件
          */
@@ -192,19 +191,18 @@ public class PageTwo extends Fragment{
     }
 
     /**
-     * generates a random ChartData object with just one DataSet
-     *
-     * @return
+     * 将数据添加到表格中
+     * @return BarDate数据
      */
     private BarData generateData(int cnt) {
-
         ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
-
-        for (int i = 0; i < 12; i++) {
-            entries.add(new BarEntry((int) (Math.random() * 70) + 30, i));
+        Log.i("SexFrameStateSize：",listItem.get(cnt).getSexFrameStateSize()+"");
+        for (int i = 0; i < listItem.get(cnt).getSexFrameStateSize(); i++) {
+            Log.i("数量",i+"");
+            entries.add(new BarEntry(listItem.get(cnt).getSexFrameStateByNumber(i), i));
         }
 
-        BarDataSet d = new BarDataSet(entries, "New DataSet " + cnt);
+        BarDataSet d = new BarDataSet(entries, "Data: " + listItem.get(cnt).getSexEndTime());
         d.setBarSpacePercent(20f);
         d.setColors(ColorTemplate.VORDIPLOM_COLORS);
         d.setBarShadowColor(Color.rgb(203, 203, 203));
@@ -212,26 +210,16 @@ public class PageTwo extends Fragment{
         ArrayList<IBarDataSet> sets = new ArrayList<IBarDataSet>();
         sets.add(d);
 
-        BarData cd = new BarData(getMonths(), sets);
+        BarData cd = new BarData(getMonths(cnt), sets);
         return cd;
     }
 
-    private ArrayList<String> getMonths() {
+    private ArrayList<String> getMonths(int cnt) {
 
         ArrayList<String> m = new ArrayList<String>();
-        m.add("Jan");
-        m.add("Feb");
-        m.add("Mar");
-        m.add("Apr");
-        m.add("May");
-        m.add("Jun");
-        m.add("Jul");
-        m.add("Aug");
-        m.add("Sep");
-        m.add("Okt");
-        m.add("Nov");
-        m.add("Dec");
-
+        for(int i=0;i<listItem.get(cnt).getSexFrameStateSize();i++){
+            m.add(listItem.get(cnt).getSexFrameStateByNumber(i)+"");
+        }
         return m;
     }
 }
