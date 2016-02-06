@@ -9,17 +9,23 @@ import java.io.FileOutputStream;
 
 /**
  * 录音文件处理工具类
- * @author HUPENG
+ * @author hupeng@imudges.com
  * @version 1.0
  */
 public class RecordFileUtil {
-    //文件路径对象
+    /**
+     * 文件路径对象
+     */
     private File fpath;
 
-    //loveLogID
+    /**
+     * 日志ID
+     */
     private int loveLogID;
 
-    //流对象
+    /**
+     *  音频流对象
+     */
     private DataOutputStream dos = null;
 
     //文件名
@@ -28,7 +34,10 @@ public class RecordFileUtil {
     //录音文件对象
     private File audioFile;
 
-    //初始化值
+    /**
+     * 初始化值
+     * @param loveLogID 日志ID
+     */
     public void init(int loveLogID){
         //文件路径
         String pathStr = Environment.getExternalStorageDirectory().getAbsolutePath()+"/data/highLightRecordFile/";
@@ -40,14 +49,19 @@ public class RecordFileUtil {
         this.loveLogID = loveLogID;
     }
 
+    /**
+     * 记录文件
+     * @param loveLogID 日志ID
+     */
     public RecordFileUtil(int loveLogID){
         //每个loveLog对应一个录音文件
         init(loveLogID);
     }
 
     /**
-     * 写入buffer
-     * */
+     * 将数据写入buffer
+     * @param buffer 音频数据
+     */
     public void writeBuffer(short buffer){
         if (dos==null){
             try {
@@ -67,7 +81,7 @@ public class RecordFileUtil {
 
     /**
      * 停止写入buffer
-     * */
+     */
     public void stopWriteBuffer(){
         if (dos!=null){
             try{
@@ -87,7 +101,8 @@ public class RecordFileUtil {
 
     /**
      * 得到文件名
-     * */
+     * @return 文件名
+     */
     public String getFileName(){
         return fileName;
     }

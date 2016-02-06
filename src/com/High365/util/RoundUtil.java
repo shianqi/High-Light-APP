@@ -1,7 +1,8 @@
 package com.High365.util;
 
 /**
- * 此文件是九宫格图形锁的工具类
+ * 此文件是九宫格图形锁的工具类(这个工具是互联网上的开源代码,不做详细介绍)<br>
+ *     详细内容请参考<a href="http://www.cnblogs.com/weixing/p/3413998.html">Android之九宫格解锁的实现</a>
  */
 public class RoundUtil {
     /**

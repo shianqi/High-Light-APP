@@ -11,13 +11,15 @@ import android.graphics.Bitmap.Config;
 import android.graphics.PorterDuff.Mode;
 
 /**
- * 此文件是九宫格图形锁的工具类
+ * 此文件是九宫格图形锁的工具类(这个工具是互联网上的开源代码)<br>
+ *     详细内容请参考<a href="http://www.cnblogs.com/weixing/p/3413998.html">Android之九宫格解锁的实现</a>
  */
 public class BitmapUtil {
 
     /**
      * 缩放图片
      * @param bitmap bitmap
+     * @param zf zf
      * @return bitmap
      */
     public static Bitmap zoom(Bitmap bitmap, float zf) {
@@ -31,6 +33,7 @@ public class BitmapUtil {
      * 缩放图片
      * @param bitmap bitmap
      * @param wf wf
+     * @param hf hf
      * @return Bitmap
      */
     public static Bitmap zoom(Bitmap bitmap, float wf, float hf) {

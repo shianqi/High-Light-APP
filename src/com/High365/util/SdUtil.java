@@ -2,9 +2,9 @@ package com.High365.util;
 
 import android.os.Environment;
 /**
- *
- * @author XuZhiwei (xuzw13@gmail.com)
+ * 此类是监测是否有SD卡<br>
  * Create at 2012-8-17 上午10:14:40
+ * @author XuZhiwei (xuzw13@gmail.com)
  */
 public class SdUtil {
     /**
