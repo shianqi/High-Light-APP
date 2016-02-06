@@ -132,7 +132,7 @@ public class PageOne extends Fragment{
                     loveLogBean.setSexTime(new Timestamp(loveLogBean.getSexEndTime().getTime()-loveLogBean.getSexStartTime().getTime()));
                     loveLogBean.setSexHighTime(new Timestamp(0));
                     loveLogBean.setSexSubjectiveScore(0);
-                    loveLogBean.setSexObjectiveScore(0);
+                    loveLogBean.setSexObjectiveScore(88);
                     SqlLiteManager sqlLiteManager = new SqlLiteManager(getActivity());
                     sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
 
@@ -232,7 +232,7 @@ public class PageOne extends Fragment{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ToastManager.toast(getActivity(),sexSubjectiveScore.getText()+"");
-                        loveLogBean.setSexSubjectiveScore(which);
+                        loveLogBean.setSexSubjectiveScore(Integer.parseInt(sexSubjectiveScore.getText()+""));
                         loveLogService.update(loveLogBean,getActivity());
                     }
                 })
