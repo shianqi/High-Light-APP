@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 /**
  * 录音界面
  * @author shianqi@imudges.com
+ * @version 1.0
  */
 public class PageOne extends Fragment{
 

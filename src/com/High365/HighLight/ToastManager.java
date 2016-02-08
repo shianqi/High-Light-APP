@@ -4,6 +4,9 @@ import android.content.Context;
 import android.widget.Toast;
 
 /**
+ * Toast封装类
+ * @author shianqi@imudges.com
+ * @version 1.0
  * 对Toast进行的一个封装，可以取消掉上一次未完成的，直接进行下一次Toast
  */
 public class ToastManager {

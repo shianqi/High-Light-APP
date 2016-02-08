@@ -10,14 +10,14 @@ import com.google.gson.GsonBuilder;
 import java.text.SimpleDateFormat;
 
 /**
+ * 这个类主要负责UserInfo的业务逻辑的处理和本地数据库的访问<br>
  * @author hupeng
- * 这个类主要负责UserInfo的业务逻辑的处理和本地数据库的访问
- *
+ * @version 1.0
  * 此类继承于线程类
- * url:服务器的url地址的一部分,IP地址与端口号在HttpRequest类中定义,这样做只需要修改那边的HOST的值就可以方便的更换服务器的地址与参数
- * param:参数
- * httpResponseOutputStreamString:服务器所返回的json字符串
- * 由于Android的网络通信模块必须放在子线程中,若放在主线程中会导致阻塞主线程.
+ * url:服务器的url地址的一部分,IP地址与端口号在HttpRequest类中定义,这样做只需要修改那边的HOST的值就可以方便的更换服务器的地址与参数<br>
+ * param:参数<br>
+ * httpResponseOutputStreamString:服务器所返回的json字符串<br>
+ * 由于Android的网络通信模块必须放在子线程中,若放在主线程中会导致阻塞主线程.<br>
  */
 public class UserInfoService extends Thread{
 
@@ -30,8 +30,11 @@ public class UserInfoService extends Thread{
     Context context;
     UserInfoBean userInfoBean;
     /**
+     * 登陆方法
      * @param userID 用户名
      * @param password 密码
+     * @param listener 实现回调的接口
+     * @param context context对象
      * 成功回调:onSuccess,失败回调:onFailure.
      * */
     public void login(String userID,String password,Listener listener,Context context){
@@ -65,6 +68,13 @@ public class UserInfoService extends Thread{
 
     /**
      * 注册方法,必须联网才能注册
+     * @param context context对象
+     * @param userID 用户ID
+     * @param password 用户密码
+     * @param gender 用户的性别
+     * @param birthDay 用户生日
+     * @param listener 实现回调的接口
+     * 成功回调:onSuccess,失败回调:onFailure.
      */
     public void register(String userID,String password,int gender,String birthDay,Context context,Listener listener){
         this.listener = listener;
@@ -89,6 +99,10 @@ public class UserInfoService extends Thread{
 
     /**
      * 执行用户信息更新的方法
+     * @param userInfoBean 存放用户信息的对象
+     * @param context context对象
+     * @param listener 实现回调的接口
+     * 成功回调:onSuccess,失败回调:onFailure.
      * */
     public void updateUserInfo(UserInfoBean userInfoBean,Context context,Listener listener){
         this.listener = listener;
@@ -103,6 +117,7 @@ public class UserInfoService extends Thread{
 
     /**
      * 从服务器端获取用户身份,获得数据后直接将本地数据库中的数据进行更新,由于不需要直接进行UI操作,因此不需要使用监听器
+     * @param context context对象
      * */
     public void getUserInfo(Context context){
         this.context = context;

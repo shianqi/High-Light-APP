@@ -2,6 +2,8 @@ package com.High365.HighLight;
 
 /**
  * 录音处理类,向下连接 AudioRecorder.class,向上为UI层提供接口
+ * @author HUPENG
+ * @version 1.0
  */
 public class RecordService {
     private short buffer[] = new short[10000];

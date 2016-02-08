@@ -18,7 +18,8 @@ import android.widget.Toast;
 
 /**
  * 登陆页面的处理逻辑
- * @author 史安琪
+ * @author shianqi@imudges.com
+ * @version 1.0
  */
 public class LoginActivity extends Activity {
     /**

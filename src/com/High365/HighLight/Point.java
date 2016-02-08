@@ -1,9 +1,11 @@
 package com.High365.HighLight;
 
 /**
- * 点位置
+ * 点位置<br>
+ *     此文件是九宫格图形锁的工具类(这个工具是互联网上的开源代码,不做详细介绍)<br>
+ *     详细内容请参考<a href="http://www.cnblogs.com/weixing/p/3413998.html">Android之九宫格解锁的实现</a>
  * @author shianqi@imudges.com
- *
+ * @version 1.0
  */
 public class Point {
     public static int STATE_NORMAL = 0; // 未选中

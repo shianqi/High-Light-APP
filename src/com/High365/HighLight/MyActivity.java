@@ -23,6 +23,8 @@ import android.widget.Button;
  * 日志界面
  * @see PageThree
  * 排行榜界面
+ * @author shianqi@imudges.com
+ * @version 1.0
  */
 public class MyActivity extends Activity {
 

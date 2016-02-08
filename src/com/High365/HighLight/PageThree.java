@@ -23,6 +23,7 @@ import java.util.List;
  * 排行榜页面，用于展示当前用户和所有用户一段时间内的最好成绩
  * (这是一个Fragment页面)
  * @author shianqi@imudges.com
+ * @version 1.0
  */
 public class PageThree extends Fragment {
 

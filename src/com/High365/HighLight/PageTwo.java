@@ -28,6 +28,7 @@ import java.util.List;
 /**
  * 日志页面，记录用户性生活情况
  * @author shianqi@imudges.com
+ * @version 1.0
  */
 public class PageTwo extends Fragment{
 

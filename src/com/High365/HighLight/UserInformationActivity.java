@@ -21,28 +21,86 @@ import com.High365.util.SdUtil;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
-
+/**
+ * 显示修改用户信息界面<br>
+ * @author shianqi@imudges.com
+ * @version 1.0
+ * 此页面的功能如下：<br>
+ *     1.显示用户基本信息。<br>
+ *     2.修改用户信息。<br>
+ *     3.修改用户头像（可以从本地图库中通过裁剪得到，或者拍照上传头像）。<br>
+ *     4.跳转到修改密码，图形密码界面。<br>
+ *     5.退出当前已经登陆的用户。<br>
+ */
 public class UserInformationActivity extends Activity {
     private static final int IMAGE_REQUEST_CODE = 0;
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int RESULT_REQUEST_CODE = 2;
+    /**
+     * 状态码，表示成功
+     */
     final private int SUCCESS = 1;
+    /**
+     * 状态码，表示失败
+     */
     final private int FAILURE = 0;
+    /**
+     * 图片文件名字
+     */
     private static final String IMAGE_FILE_NAME = "faceImage.jpg";
 
+    /**
+     * 用户头像控件
+     */
     private ImageView userPhoto;
+    /**
+     * 修改用户信息按钮
+     */
     private Button fixUserInformationButton;
+    /**
+     * 修改密码按钮
+     */
     private Button fixPasswordButton;
+    /**
+     * 修改图形锁密码按钮
+     */
     private Button fixGraphPasswordButton;
+    /**
+     * 退出登陆按钮
+     */
     private Button logoutButton;
+    /**
+     * 用户名文字显示组件
+     */
     private TextView usernameTextView;
+    /**
+     * 用户昵称文字编辑组件
+     */
     private EditText nicknameEditText;
+    /**
+     * 性别文字显示组件
+     */
     private TextView sexTextView;
+    /**
+     * 用户生日文字编辑组件
+     */
     private EditText birthdayEditText;
+    /**
+     * 用户邮箱文字编辑组件
+     */
     private EditText emailEditText;
+    /**
+     * 用户手机号文字编辑组件
+     */
     private EditText phoneEditText;
+    /**
+     * 存放用户信息的对象
+     */
     private UserInfoBean userInfoBean;
 
+    /**
+     * 选择上传方式时弹出菜单文字
+     */
     private String[] items = new String[] { "选择本地图片", "拍照" };
 
     @Override
@@ -377,7 +435,7 @@ public class UserInformationActivity extends Activity {
 
     /**
      * 保存裁剪之后的图片数据
-     * @param data data
+     * @param data 接受到的数据
      */
     private void getImageToView(Intent data) {
         Bundle extras = data.getExtras();

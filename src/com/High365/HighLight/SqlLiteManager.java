@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * @author HUPENG
  * 此类用于android端本地数据库的管理
  */
 public class SqlLiteManager extends SQLiteOpenHelper {

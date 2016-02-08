@@ -11,8 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * 用户注册界面
+ * 用户注册界面<br>
+ * 此页面的功能如下：<br>
+ *     1.用户注册账号。
+ *     2.注册成功时前往登陆界面，失败时提示失败原因
+ *     3.按返回键回到登陆界面
  * @author shianqi@imudges.com
+ * @version 1.0
  */
 public class RegistActivity extends Activity{
 

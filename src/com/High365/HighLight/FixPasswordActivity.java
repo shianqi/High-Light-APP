@@ -14,7 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * 修改密码界面
+ * 修改密码界面<br>
+ * 此页面的功能如下：<br>
+ *     1.用户输入原密码和新密码两次，提交并注册。服务器监测用户是否可以注册，并将注册结果返回。
+ * @author shianqi@imudges.com
+ * @version 1.0
  */
 public class FixPasswordActivity extends Activity{
     Button verifyFix;
@@ -106,6 +110,9 @@ public class FixPasswordActivity extends Activity{
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * 去获取用户信息界面
+     */
     public void goUserInformationActivity(){
         Intent intent = new Intent(FixPasswordActivity.this, UserInformationActivity.class);
         FixPasswordActivity.this.startActivity(intent);

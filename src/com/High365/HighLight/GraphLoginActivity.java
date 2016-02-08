@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.High365.HighLight.LocusPassWordView.OnCompleteListener;
 
 /**
- * 此文件是九宫格图形锁的界面(这个工具是互联网上的开源代码)<br>
+ * 此文件是九宫格图形锁的界面(这个工具是互联网上的开源代码,此处不做详细介绍)<br>
  *     主要负责处理图形登陆的逻辑<br>
  *     详细内容请参考<a href="http://www.cnblogs.com/weixing/p/3413998.html">Android之九宫格解锁的实现</a>
  */

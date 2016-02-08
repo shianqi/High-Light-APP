@@ -10,6 +10,13 @@ import android.widget.Toast;
 import com.High365.HighLight.LocusPassWordView.OnCompleteListener;
 import com.High365.util.StringUtil;
 
+/**
+ * 修改图形锁密码界面<br>
+ *     此文件是九宫格图形锁的工具类(这个工具是互联网上的开源代码,不做详细介绍)<br>
+ *     详细内容请参考<a href="http://www.cnblogs.com/weixing/p/3413998.html">Android之九宫格解锁的实现</a>
+ * @author unknown
+ * @version unknown
+ */
 public class SetGraphPasswordActivity extends Activity {
     private LocusPassWordView lpwv;
     private String password;

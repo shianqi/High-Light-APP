@@ -8,12 +8,12 @@ import android.os.Message;
 import android.util.Log;
 
 /**
- * <p>程序加载界面</p>
+ * <p>程序加载界面(导航页)</p>
  * 该段代码负责进入程序时显示欢迎界面，并在2秒后根据用户登陆情况分别
  * 跳转到不同的页面<br>
  * 根据用户登陆的不同情况，向Handler类的handleMessage(Message msg)方法传递不同的状态码<br>
  * handleMessage(Message msg)接收到不同的状态码，从而跳转到不同界面。
- * @author 史安琪
+ * @author shianqi@imudges.com
  * @version 1.0
  */
 public class WelcomeActivity extends Activity {
