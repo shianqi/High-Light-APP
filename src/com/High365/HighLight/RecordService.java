@@ -10,7 +10,7 @@ public class RecordService {
 
 
     /**
-     * 计算客观分数,参数与逻辑需要补全
+     * 计算客观分数,参数与逻辑需要补全,此函数的调用应该在OnePage
      * */
     public int getSexObjectiveScore(){
         return 0;
