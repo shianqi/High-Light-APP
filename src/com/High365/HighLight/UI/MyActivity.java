@@ -183,9 +183,11 @@ public class MyActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, MYINFORMATION, 0, "我的信息");
-        menu.add(0, EXIT, 1, "退出");
-        return super.onCreateOptionsMenu(menu);
+//        menu.add(0, MYINFORMATION, 0, "我的信息");
+//        menu.add(0, EXIT, 1, "退出");
+//        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
     /**
@@ -195,13 +197,20 @@ public class MyActivity extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case MYINFORMATION:
-                toUserInformation();
-                break;
-            case EXIT:
-                exit();
-                break;
+//        switch (item.getItemId()){
+//            case MYINFORMATION:
+//                toUserInformation();
+//                break;
+//            case EXIT:
+//                exit();
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+        if(item.getItemId()==R.id.userInformation)
+        {
+            Intent intent = new Intent();
+            intent.setClass(MyActivity.this, UserInformationActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -217,7 +226,7 @@ public class MyActivity extends Activity {
      * 退出应用
      */
     public void exit(){
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        manager.restartPackage(getPackageName());
+        finish();
+        System.exit(0);
     }
 }
