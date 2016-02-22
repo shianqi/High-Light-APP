@@ -78,7 +78,7 @@ public class PageOne extends Fragment{
     private void init(){
         state=0;
         changeBrightness(0);
-        loveLogService = new LoveLogService();
+
         light1=(ImageView)view.findViewById(R.id.light1);
 
         //点击
@@ -238,6 +238,7 @@ public class PageOne extends Fragment{
                         loveLogBean.setSexSubjectiveScore(Integer.parseInt(sexSubjectiveScore.getText()+""));
                         SqlLiteManager sqlLiteManager = new SqlLiteManager(getActivity());
                         sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
+                        loveLogService = new LoveLogService();
                         loveLogService.update(loveLogBean,getActivity());
                     }
                 })
