@@ -1,10 +1,10 @@
-package com.High365.HighLight;
+package com.High365.HighLight.Bean;
 
 /**
  * 此内部类为一个JavaBean
  * 为更新用户数据结果的Json对象所对应的bean
  */
-class UpdateModel{
+public class UpdateModel{
     private Integer status;
     private String errorInfo;
     public Integer getStatus() {

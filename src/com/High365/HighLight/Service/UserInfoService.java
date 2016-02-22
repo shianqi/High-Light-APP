@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import com.High365.HighLight.Bean.UpdateModel;
 import com.High365.HighLight.Bean.UserInfoBean;
 import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Util.HttpRequest;

@@ -1,4 +1,4 @@
-package com.High365.HighLight;
+package com.High365.HighLight.Bean;
 
 /**
  * Created by HUPENG on 2/13/16.

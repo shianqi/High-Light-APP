@@ -3,6 +3,7 @@ package com.High365.HighLight.Service;
 import android.content.Context;
 import android.util.Log;
 import com.High365.HighLight.Bean.LoveLogBean;
+import com.High365.HighLight.Bean.UpdateModel;
 import com.High365.HighLight.Interface.GetRankListener;
 import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Util.HttpRequest;
@@ -10,7 +11,6 @@ import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.SqlLiteManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.List;
 

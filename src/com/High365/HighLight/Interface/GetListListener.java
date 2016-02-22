@@ -1,4 +1,4 @@
-package com.High365.HighLight;
+package com.High365.HighLight.Interface;
 
 import java.util.List;
 

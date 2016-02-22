@@ -1,10 +1,14 @@
-package com.High365.HighLight;
+package com.High365.HighLight.Service;
 
 import android.content.Context;
+import com.High365.HighLight.Bean.FriendCircleModel;
+import com.High365.HighLight.Bean.UpdateModel;
+import com.High365.HighLight.Interface.GetListListener;
+import com.High365.HighLight.Interface.Listener;
+import com.High365.HighLight.Util.HttpRequest;
+import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
