@@ -68,7 +68,7 @@ public class PageOne extends Fragment{
         view = inflater.inflate(R.layout.frist_fragment, container, false);
         init();
         audioRecorder = new AudioRecorder(0);
-        loveLogBean = new LoveLogBean();
+
         return view;
     }
 
@@ -98,6 +98,7 @@ public class PageOne extends Fragment{
                     state=255;
                     changeBrightness(255);
                     ToastManager.toast(getActivity(),"录音已开始");
+                    loveLogBean = new LoveLogBean();
                     loveLogBean.setSexStartTime(new Timestamp(System.currentTimeMillis()));
                     audioRecorder.isGetVoiceRun = false;
                     audioRecorder.getNoiseLevel(new AudioRecorderListener() {
