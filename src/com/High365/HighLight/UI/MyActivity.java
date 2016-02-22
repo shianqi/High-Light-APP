@@ -121,6 +121,8 @@ public class MyActivity extends Activity {
                 // 开启Fragment事务
                 FragmentTransaction transaction = fm.beginTransaction();
 
+                pageTwo.init();
+
                 transaction.show(pageTwo);
                 transaction.hide(pageOne);
                 transaction.hide(pageThree);
