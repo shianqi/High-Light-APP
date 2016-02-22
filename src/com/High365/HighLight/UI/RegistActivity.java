@@ -110,6 +110,9 @@ public class RegistActivity extends Activity{
                 birthday = birthdayText.getText().toString();
                 //点击后设置按钮不可用,防止重复点击
                 registButton.setEnabled(false);
+                registButton.setBackgroundResource(R.drawable.button_unenable);
+                registButton.setText("注册中...");
+
                 UserInfoService userInfoService = new UserInfoService();
                 userInfoService.register(username, password, sex, birthday, RegistActivity.this, new Listener() {
                     @Override
@@ -171,6 +174,8 @@ public class RegistActivity extends Activity{
     public void onFailure(String msgStr){
         //设置注册按钮可用,使用户能够修改注册信息后重新注册
         registButton.setEnabled(true);
+        registButton.setBackgroundResource(R.drawable.button_blue);
+        registButton.setText("注册");
         ToastManager.toast(this,msgStr);
     }
 

@@ -266,7 +266,7 @@
                         android:id="@+id/fixPasswordButton"
                         android:layout_width="fill_parent"
                         android:layout_height="50.0dip"
-                        android:background="#3385ff"
+                        android:background="@drawable/button_blue"
                         android:text="修改密码"
                         android:textColor="#ffffff"
                         android:textSize="18.0sp"/>
@@ -284,7 +284,7 @@
                         android:id="@+id/fixGraphPasswordButton"
                         android:layout_width="fill_parent"
                         android:layout_height="50.0dip"
-                        android:background="#3385ff"
+                        android:background="@drawable/button_blue"
                         android:text="修改图形密码"
                         android:textColor="#ffffff"
                         android:textSize="18.0sp"/>

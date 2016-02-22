@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -85,6 +86,8 @@ public class LoginActivity extends Activity{
             @Override
             public void onClick(View v) {
                 loginButton.setEnabled(false);
+                loginButton.setBackgroundResource(R.drawable.button_unenable);
+                loginButton.setText("登录中...");
                 userInfoService = new UserInfoService();
                 userInfoService.login(usernameTextView.getText().toString(), passwordTextView.getText().toString(), new Listener() {
                     @Override
@@ -168,6 +171,8 @@ public class LoginActivity extends Activity{
      * */
     void onFailure(String msg){
         ToastManager.toast(this,msg);
+        loginButton.setBackgroundResource(R.drawable.button_blue);
+        loginButton.setText("登录");
         loginButton.setEnabled(true);
     }
 
