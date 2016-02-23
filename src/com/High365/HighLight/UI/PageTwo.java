@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,12 +20,15 @@ import com.High365.HighLight.Util.SqlLiteManager;
 import com.High365.HighLight.Util.ToastManager;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.*;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -70,9 +74,7 @@ public class PageTwo extends Fragment{
      * ListView数据
      */
     private ArrayList<HashMap<String,Object>> listItem;
-    /**
-     * 分享按钮
-     */
+    private LineChart mChart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -139,9 +141,78 @@ public class PageTwo extends Fragment{
                 final View evaluateDialogView = inflater.inflate(R.layout.line_chart_dialog,null);
 
 
+                mChart = (LineChart)evaluateDialogView.findViewById(R.id.list_item_chart);
+                mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+
+                    }
+
+                    @Override
+                    public void onNothingSelected() {
+
+                    }
+                });
+
+                // no description text
+                mChart.setDescription("");
+                mChart.setNoDataTextDescription("You need to provide data for the chart.");
+
+                // enable touch gestures
+                mChart.setTouchEnabled(true);
+
+                mChart.setDragDecelerationFrictionCoef(0.9f);
+
+                // enable scaling and dragging
+                mChart.setDragEnabled(true);
+                mChart.setScaleEnabled(true);
+                mChart.setDrawGridBackground(false);
+                mChart.setHighlightPerDragEnabled(true);
+
+                // if disabled, scaling can be done on x- and y-axis separately
+                mChart.setPinchZoom(true);
+
+                // set an alternative background color
+                mChart.setBackgroundColor(Color.LTGRAY);
+
+                // add data
+                setData(20, 30);
+
+                mChart.animateX(2500);
+
+                // get the legend (only possible after setting data)
+                Legend l = mChart.getLegend();
+
+                // modify the legend ...
+                // l.setPosition(LegendPosition.LEFT_OF_CHART);
+                l.setForm(Legend.LegendForm.LINE);
+
+                l.setTextSize(11f);
+                l.setTextColor(Color.WHITE);
+                l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+//        l.setYOffset(11f);
+
+                XAxis xAxis = mChart.getXAxis();
+
+                xAxis.setTextSize(12f);
+                xAxis.setTextColor(Color.WHITE);
+                xAxis.setDrawGridLines(false);
+                xAxis.setDrawAxisLine(false);
+                xAxis.setSpaceBetweenLabels(1);
+
+                YAxis leftAxis = mChart.getAxisLeft();
+                leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+                leftAxis.setAxisMaxValue(100f);
+                leftAxis.setDrawGridLines(true);
+
+                YAxis rightAxis = mChart.getAxisRight();
+                rightAxis.setTextColor(ColorTemplate.getHoloBlue());
+                rightAxis.setAxisMaxValue(100);
+                rightAxis.setStartAtZero(false);
+                rightAxis.setDrawGridLines(false);
 
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("自我评价")
+                        .setTitle("成绩曲线")
                         .setView(evaluateDialogView)
                         .setNegativeButton("跳过",new DialogInterface.OnClickListener() {
                             @Override
@@ -196,36 +267,50 @@ public class PageTwo extends Fragment{
         return sqlLiteManager.getLoveLogsByUserID(UserID);
     }
 
-//    /**
-//     * 将数据添加到表格中
-//     * @return BarDate数据
-//     */
-//    private BarData generateData(int cnt) {
-//        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
-//        Log.i("SexFrameStateSize：",listItem.get(cnt).getSexFrameStateSize()+"");
-//        for (int i = 0; i < listItem.get(cnt).getSexFrameStateSize(); i++) {
-//            Log.i("数量",i+"");
-//            entries.add(new BarEntry(listItem.get(cnt).getSexFrameStateByNumber(i), i));
-//        }
-//
-//        BarDataSet d = new BarDataSet(entries, "Data: " + listItem.get(cnt).getSexEndTime());
-//        d.setBarSpacePercent(20f);
-//        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
-//        d.setBarShadowColor(Color.rgb(203, 203, 203));
-//
-//        ArrayList<IBarDataSet> sets = new ArrayList<IBarDataSet>();
-//        sets.add(d);
-//
-//        BarData cd = new BarData(getMonths(cnt), sets);
-//        return cd;
-//    }
-//
-//    private ArrayList<String> getMonths(int cnt) {
-//
-//        ArrayList<String> m = new ArrayList<String>();
-//        for(int i=0;i<listItem.get(cnt).getSexFrameStateSize();i++){
-//            m.add(listItem.get(cnt).getSexFrameStateByNumber(i)+"");
-//        }
-//        return m;
-//    }
+    private void setData(int count, float range) {
+
+        ArrayList<String> xVals = new ArrayList<String>();
+        for (int i = 0; i < count; i++) {
+            xVals.add((i) + "");
+        }
+
+        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+
+        for (int i = 0; i < count; i++) {
+            float mult = range / 2f;
+            float val = (float) (Math.random() * mult) + 50;// + (float)
+            // ((mult *
+            // 0.1) / 10);
+            yVals1.add(new Entry(val, i));
+        }
+
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(yVals1, "DataSet 1");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(ColorTemplate.getHoloBlue());
+        set1.setCircleColor(Color.WHITE);
+        set1.setLineWidth(2f);
+        set1.setCircleRadius(3f);
+        set1.setFillAlpha(65);
+        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+        //set1.setFillFormatter(new MyFillFormatter(0f));
+//        set1.setDrawHorizontalHighlightIndicator(false);
+//        set1.setVisible(false);
+//        set1.setCircleHoleColor(Color.WHITE);
+
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
+        dataSets.add(set1); // add the datasets
+
+        // create a data object with the datasets
+        LineData data = new LineData(xVals, dataSets);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(9f);
+
+        // set data
+        mChart.setData(data);
+    }
 }
