@@ -50,7 +50,10 @@ public class ImageEncodeUtil {
      * @param base64String Base64字符串
      * @return bitmap 对象
      * */
-    public static Bitmap base64ToBitmap(String base64String){
+    public static Bitmap base64ToBitmap(String base64String) throws Exception {
+        if (base64String == null || base64String.equals("")){
+            throw new Exception("");
+        }
         byte[] bytes;
         //消除在网络传输的过程中可能出现的+变成空格的错误
         base64String = base64String.replaceAll(" ","+");

@@ -167,6 +167,7 @@ public class UserInformationActivity extends Activity {
             Bitmap bitmap = ImageEncodeUtil.base64ToBitmap(userInfoBean.getUserPhoto());
             userPhoto.setImageDrawable(new BitmapDrawable(bitmap));
         }catch (Exception e){
+            userPhoto.setImageDrawable(getResources().getDrawable(R.drawable.mini_avatar));
             e.printStackTrace();
         }
         userInfoBean.setFixAble(false);
