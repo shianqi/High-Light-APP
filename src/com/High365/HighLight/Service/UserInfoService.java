@@ -66,7 +66,7 @@ public class UserInfoService{
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
         sharedPreferencesManager.writeString("UserID",userID);
 
-
+        url = "login.action";
         params = new RequestParams();
         params.add("userId",userID);
         params.add("password",password);
