@@ -5,12 +5,15 @@ import android.util.Log;
 import com.High365.HighLight.Bean.LoveLogBean;
 import com.High365.HighLight.Bean.UpdateModel;
 import com.High365.HighLight.Interface.GetRankListener;
-import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Util.HttpRequest;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.SqlLiteManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import org.apache.http.Header;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,28 +27,46 @@ import java.util.List;
  * httpResponseStr:服务器所返回的json字符串
  * 由于Android的网络通信模块必须放在子线程中,若放在主线程中会导致阻塞主线程.
  */
-public class LoveLogService extends Thread{
-    private Context context;
-    private Listener listener;
-    private GetRankListener getRankListener;
-    private Integer taskId;
+public class LoveLogService {
     private String url;
-    private String param;
     private String httpResponseStr;
-    private LoveLogBean loveLogBean;
+    private RequestParams params;
 
     public void update(LoveLogBean loveLogBean,Context context){
-        this.context = context;
-        this.loveLogBean = loveLogBean;
-
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
         String userID = sharedPreferencesManager.readString("UserID");
         String secretKey = sharedPreferencesManager.readString("secretKey");
 
         url = "updateLoveLog.action";
-        param = "userID=" + userID + "&secretKey=" + secretKey + "&jsonString=" + new Gson().toJson(loveLogBean);
-        taskId = 0;
-        start();
+        params.add("userID",userID);
+        params.add("secretKey",secretKey);
+        params.add("jsonString","new Gson().toJson(loveLogBean)");
+
+        HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                try{
+                    httpResponseStr = new String(bytes);
+                    UpdateModel updateModel = new Gson().fromJson(httpResponseStr, UpdateModel.class);
+                    if (updateModel!=null){
+                        if (updateModel.getStatus() == 1){
+                            //当更新成功时,更新本地数据库中的updateFlag值,值为1时则已经成功上传到远程服务器
+                            loveLogBean.setUpdateFlag(1);
+                            SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+                            sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+
+            }
+        });
+
     }
 
     /**
@@ -62,11 +83,28 @@ public class LoveLogService extends Thread{
     public void getRankModelList(int oper,Context context,GetRankListener listener) {
         String userID = new SharedPreferencesManager(context).readString("UserID");
         url = "getRank.action";
-        param = "userID=" + userID + "&oper=" + oper;
-        taskId = 1;
-        this.getRankListener = listener;
-        Log.i("向服务端请求",param);
-        start();
+        params = new RequestParams();
+        params.add("userID",userID);
+        params.add("oper",oper+"");
+        HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                List<RankModel> list = new ArrayList<RankModel>();
+                try {
+                    httpResponseStr = new String(bytes);
+                    Log.d("服务器返回的数据",httpResponseStr);
+                    list = new Gson().fromJson(httpResponseStr,new TypeToken<List<RankModel>>() {}.getType());
+                    listener.onSuccess(list);
+                }catch (Exception e){
+                    listener.onFailure("获取信息失败");
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                listener.onFailure(throwable.getMessage());
+            }
+        });
     }
 
     /**
@@ -76,44 +114,11 @@ public class LoveLogService extends Thread{
      * @return 用户的日志列表
      */
     public List<LoveLogBean>getLoveLogListByUserID(String userID, Context context){
-        this.context = context;
         SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
         return sqlLiteManager.getLoveLogsByUserID(userID);
     }
 
-    @Override
-    public void run() {
-        switch (taskId){
-            case 0:
-                try{
-                    httpResponseStr = HttpRequest.sendPost(url,param);
-                    UpdateModel updateModel = new Gson().fromJson(httpResponseStr, UpdateModel.class);
-                    if (updateModel!=null){
-                        if (updateModel.getStatus() == 1){
-                            //当更新成功时,更新本地数据库中的updateFlag值,值为1时则已经成功上传到远程服务器
-                            loveLogBean.setUpdateFlag(1);
-                            SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
-                            sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
-                        }
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                break;
-            case 1:
-                List<RankModel> list = new ArrayList<RankModel>();
-                try {
-                    httpResponseStr = HttpRequest.sendPost(url,param);
-                    Log.d("服务器返回的数据",httpResponseStr);
-                    list = new Gson().fromJson(httpResponseStr,new TypeToken<List<RankModel>>() {}.getType());
-                    getRankListener.onSuccess(list);
-                }catch (Exception e){
-                    getRankListener.onFailure("获取信息失败");
-                }
-                break;
-            default:
-        }
-    }
+
 
 
     /**

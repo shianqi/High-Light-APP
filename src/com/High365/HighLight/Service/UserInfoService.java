@@ -1,9 +1,7 @@
 package com.High365.HighLight.Service;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import com.High365.HighLight.Bean.UpdateModel;
 import com.High365.HighLight.Bean.UserInfoBean;
 import com.High365.HighLight.Interface.Listener;
@@ -12,8 +10,11 @@ import com.High365.HighLight.Util.MD5;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.SqlLiteManager;
 import com.google.gson.Gson;
-import android.os.Looper;
 import com.google.gson.GsonBuilder;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import org.apache.http.Header;
+
 import java.text.SimpleDateFormat;
 
 /**
@@ -26,16 +27,14 @@ import java.text.SimpleDateFormat;
  * httpResponseOutputStreamString:服务器所返回的json字符串<br>
  * 由于Android的网络通信模块必须放在子线程中,若放在主线程中会导致阻塞主线程.<br>
  */
-public class UserInfoService extends Thread{
+public class UserInfoService{
 
-    String url;
-    String param;
+    private String url;
     private String WP;
-    String httpResponseOutputStreamString;
-    Listener listener;
-    Integer taskId;
-    Context context;
-    UserInfoBean userInfoBean;
+    private String httpResponseOutputStreamString;
+    private Listener listener;
+    private UserInfoBean userInfoBean;
+    private RequestParams params;
     /**
      * 登陆方法
      * @param userID 用户名
@@ -47,7 +46,6 @@ public class UserInfoService extends Thread{
     public void login(String userID,String password,Listener listener,Context context){
 
         this.listener = listener;
-        this.context = context;
         WP = new MD5().encryptPassword(password);
 
         //登陆操作前首先判断
@@ -65,87 +63,18 @@ public class UserInfoService extends Thread{
             }
         }
         //执行网络请求,在线判断密码的正确与否
-        url = "login.action";
-        param = "username=" + userID + "&password=" + password;
-        taskId = 0;
-        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this.context);
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
         sharedPreferencesManager.writeString("UserID",userID);
-        start();
-    }
 
-    /**
-     * 注册方法,必须联网才能注册
-     * @param context context对象
-     * @param userID 用户ID
-     * @param password 用户密码
-     * @param gender 用户的性别
-     * @param birthDay 用户生日
-     * @param listener 实现回调的接口
-     * 成功回调:onSuccess,失败回调:onFailure.
-     */
-    public void register(String userID,String password,int gender,String birthDay,Context context,Listener listener){
-        this.listener = listener;
-        this.context = context;
-        url= "register.action";
-        param = "username=" + userID + "&password=" + password + "&gender=" + gender + "&birthDay=" + birthDay;
-        taskId = 1;
-        userInfoBean = new UserInfoBean();
-        userInfoBean.setUserId(userID);
-        userInfoBean.setUserPwd(password);
-        try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-            userInfoBean.setUserBirthDay(simpleDateFormat.parse(birthDay));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        userInfoBean.setUserGender(gender);
-        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this.context);
-        sharedPreferencesManager.writeString("UserID",userID);
-        start();
-    }
 
-    /**
-     * 执行用户信息更新的方法
-     * @param userInfoBean 存放用户信息的对象
-     * @param context context对象
-     * @param listener 实现回调的接口
-     * 成功回调:onSuccess,失败回调:onFailure.
-     * */
-    public void updateUserInfo(UserInfoBean userInfoBean,Context context,Listener listener){
-        this.listener = listener;
-        this.context = context;
-        SharedPreferencesManager spm = new SharedPreferencesManager(context);
-        url = "updateUserInfo.action";
-        param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey") + "&userInfoJson=" + new GsonBuilder().setDateFormat("yyyy-MM-dd").disableHtmlEscaping().create().toJson(userInfoBean);
-        taskId = 2;
-        new SqlLiteManager(context).saveOrupdateUserInfo(userInfoBean);
-        start();
-    }
-
-    /**
-     * 从服务器端获取用户身份,获得数据后直接将本地数据库中的数据进行更新,由于不需要直接进行UI操作,因此不需要使用监听器
-     * @param context context对象
-     * */
-    public void getUserInfo(Context context){
-        this.context = context;
-        SharedPreferencesManager spm = new SharedPreferencesManager(context);
-        url = "getUserInfo.action";
-        param = "userID=" + spm.readString("UserID") + "&secretKey=" + spm.readString("secretKey");
-        taskId = 3;
-        start();
-    }
-
-    @Override
-    public void run() {
-        Looper.prepare();
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd")
-                .create();
-        switch (taskId){
-            case 0:
-                //login
+        params = new RequestParams();
+        params.add("userId",userID);
+        params.add("password",password);
+        HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                httpResponseOutputStreamString = new String(bytes);
                 try{
-                    httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
                     LoginModel loginModel = new Gson().fromJson(httpResponseOutputStreamString,LoginModel.class);
                     //判断登录结果
                     if (loginModel.getStatus().equals(1)){
@@ -154,7 +83,7 @@ public class UserInfoService extends Thread{
                         editor.putString("secretKey",loginModel.getSecretKey());
                         editor.commit();
 
-                        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this.context);
+                        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
                         sharedPreferencesManager.writeString("WP",WP);
 
                         System.out.println(loginModel.getSecretKey());
@@ -170,10 +99,50 @@ public class UserInfoService extends Thread{
                     listener.onFailure("网络连接失败");
                     return;
                 }
-            case 1:
-                //Register
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                listener.onFailure(throwable.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 注册方法,必须联网才能注册
+     * @param context context对象
+     * @param userID 用户ID
+     * @param password 用户密码
+     * @param gender 用户的性别
+     * @param birthDay 用户生日
+     * @param listener 实现回调的接口
+     * 成功回调:onSuccess,失败回调:onFailure.
+     */
+    public void register(String userID,String password,int gender,String birthDay,Context context,Listener listener){
+        url= "register.action";
+        userInfoBean = new UserInfoBean();
+        userInfoBean.setUserId(userID);
+        userInfoBean.setUserPwd(password);
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+            userInfoBean.setUserBirthDay(simpleDateFormat.parse(birthDay));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        userInfoBean.setUserGender(gender);
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
+        sharedPreferencesManager.writeString("UserID",userID);
+
+        params = new RequestParams();
+        params.add("userId",userID);
+        params.add("password",password);
+        params.add("gender",gender+"");
+        params.add("birthDay",birthDay);
+        HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
                 try{
-                    httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
+                    httpResponseOutputStreamString = new String(bytes);
                     RegisterModel registerModel = new Gson().fromJson(httpResponseOutputStreamString,RegisterModel.class);
                     //判断注册结果
                     if (registerModel.getStatus().equals(1)){
@@ -182,18 +151,7 @@ public class UserInfoService extends Thread{
                         sharedPreferencesManager.writeString("secretKey",registerModel.getSecretKey());
                         //写入用户的注册数据到UserInfo表中
                         SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
-                        SQLiteDatabase highLightDatabase = sqlLiteManager.getWritableDatabase();
-                        //若原有记录则删除
-                        String sql = "DELETE FROM UserInfo where userID = '"+ userInfoBean.getUserId()+"';";
-                        highLightDatabase.execSQL(sql);
-                        //插入新纪录
-                        ContentValues cv = new ContentValues();
-                        cv.put("UserID",userInfoBean.getUserId());
-                        cv.put("UserPWD",userInfoBean.getUserPwd());
-                        cv.put("UserGender",userInfoBean.getUserGender());
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        cv.put("UserBirthDay",sdf.format(userInfoBean.getUserBirthDay()));
-                        highLightDatabase.insert("UserInfo",null,cv);
+                        sqlLiteManager.saveOrUpdateUserInfo(userInfoBean);
                         listener.onSuccess();
                         return;
                     }else{
@@ -205,10 +163,36 @@ public class UserInfoService extends Thread{
                     listener.onFailure("网络连接失败");
                     return;
                 }
-            case 2:
-                //Update
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                listener.onFailure(throwable.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 执行用户信息更新的方法
+     * @param userInfoBean 存放用户信息的对象
+     * @param context context对象
+     * @param listener 实现回调的接口
+     * 成功回调:onSuccess,失败回调:onFailure.
+     * */
+    public void updateUserInfo(UserInfoBean userInfoBean,Context context,Listener listener){
+        SharedPreferencesManager spm = new SharedPreferencesManager(context);
+        url = "updateUserInfo.action";
+        params = new RequestParams();
+        params.add("userID",spm.readString("UserID"));
+        params.add("secretKey",spm.readString("secretKey"));
+        params.add("userInfoJson",new GsonBuilder().setDateFormat("yyyy-MM-dd").disableHtmlEscaping().create().toJson(userInfoBean));
+        //先存一份到本地数据库
+        new SqlLiteManager(context).saveOrUpdateUserInfo(userInfoBean);
+        HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
                 try {
-                    httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
+                    httpResponseOutputStreamString = new String(bytes);
                     System.out.println(httpResponseOutputStreamString);
                     UpdateModel updateModel = new GsonBuilder().setDateFormat("yyyy-MM-dd").create().fromJson(httpResponseOutputStreamString,UpdateModel.class);
                     if (updateModel.getStatus() == 1){
@@ -221,25 +205,54 @@ public class UserInfoService extends Thread{
                 }catch (Exception e){
                     e.printStackTrace();
                     listener.onFailure("网络连接失败");
-                    break;
+                    return;
                 }
-            case 3:
-                //getUserInfo
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                listener.onFailure(throwable.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 从服务器端获取用户身份,获得数据后直接将本地数据库中的数据进行更新,由于不需要直接进行UI操作,因此不需要使用监听器
+     * @param context context对象
+     * */
+    public void getUserInfo(Context context){
+        SharedPreferencesManager spm = new SharedPreferencesManager(context);
+        url = "getUserInfo.action";
+
+        params = new RequestParams();
+        params.add("userID",spm.readString("UserID"));
+        params.add("secretKey",spm.readString("secretKey"));
+
+        HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
                 try {
-                    httpResponseOutputStreamString = HttpRequest.sendPost(url,param);
+                    httpResponseOutputStreamString = new String(bytes);
+                    Gson gson = new GsonBuilder()
+                            .setDateFormat("yyyy-MM-dd")
+                            .create();
                     UserInfoBean userInfoBean = gson.fromJson(httpResponseOutputStreamString,UserInfoBean.class);
                     if (userInfoBean==null){
                         return;
                     }
                     SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
-                    sqlLiteManager.saveOrupdateUserInfo(userInfoBean);
+                    sqlLiteManager.saveOrUpdateUserInfo(userInfoBean);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-                break;
-            default:
-                break;
-        }
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+
+            }
+        });
+
     }
 
     /**

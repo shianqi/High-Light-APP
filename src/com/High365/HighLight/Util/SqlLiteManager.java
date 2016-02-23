@@ -119,7 +119,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
     /**
      * 进行数据的持久化操作,即将bean里面的数据持久化到数据库中
      * */
-    public void saveOrupdateUserInfo(UserInfoBean userInfoBean){
+    public void saveOrUpdateUserInfo(UserInfoBean userInfoBean){
         if (userInfoBean == null){
             return;
         }

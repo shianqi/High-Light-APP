@@ -9,7 +9,7 @@ public interface GetListListener {
     /**
      * 成功回调
      * */
-    public void onSuccess(Object list);
+    public void onSuccess(List list);
 
     /**
      * 失败回调
