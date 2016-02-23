@@ -38,6 +38,7 @@ public class LoveLogService {
         String secretKey = sharedPreferencesManager.readString("secretKey");
 
         url = "updateLoveLog.action";
+        params = new RequestParams();
         params.add("userID",userID);
         params.add("secretKey",secretKey);
         params.add("jsonString","new Gson().toJson(loveLogBean)");

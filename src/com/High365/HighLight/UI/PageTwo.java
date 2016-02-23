@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.High365.HighLight.*;
 import com.High365.HighLight.Bean.LoveLogBean;
+import com.High365.HighLight.Service.LoveLogService;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.SqlLiteManager;
 import com.High365.HighLight.Util.ToastManager;
@@ -65,7 +66,13 @@ public class PageTwo extends Fragment{
      * 用于将数据绑定到ListView的适配器
      */
     private SimpleAdapter listAdatper;
+    /**
+     * ListView数据
+     */
     private ArrayList<HashMap<String,Object>> listItem;
+    /**
+     * 分享按钮
+     */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,6 +134,28 @@ public class PageTwo extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ToastManager.toast(getActivity(),"点击第:"+position+"个");
+
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                final View evaluateDialogView = inflater.inflate(R.layout.line_chart_dialog,null);
+
+
+
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("自我评价")
+                        .setView(evaluateDialogView)
+                        .setNegativeButton("跳过",new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -152,7 +181,7 @@ public class PageTwo extends Fragment{
                             }
                         })
                         .show();
-                return false;
+                return true;
             }
         });
     }
