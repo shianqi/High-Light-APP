@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import com.High365.HighLight.Bean.LoveLogBean;
 import com.High365.HighLight.Bean.UserInfoBean;
 
@@ -226,6 +227,46 @@ public class SqlLiteManager extends SQLiteOpenHelper {
             list.add(getLoveLogByLogID(logID));
         }
         highLightDB.close();
+
+        for (int i=0;i<list.size();i++) {
+            LoveLogBean loveLogBean = list.get(i);
+            String sexState = loveLogBean.getSexFrameState();
+            int index = 0;
+            int n = 0;
+            int sum = 0;
+            String temp = "";
+            String tmp = "";
+            for (int j = 0; j < sexState.length(); j = j + 2) {
+                if (sexState.length() > 100) {
+                    if (index == j * 51 / sexState.length()) {
+                        tmp = "";
+                        tmp = tmp + sexState.charAt(j) + sexState.charAt(j + 1);
+                        sum += Integer.parseInt(tmp);
+                        n++;
+                    } else {
+                        index = j * 51 / sexState.length();
+                        if (sum / n<10){
+                            temp += "0" + sum / n;
+                        }else {
+                            temp += sum/n;
+                        }
+                        sum = 0;
+                        n = 0;
+
+
+                        tmp = "";
+                        tmp = tmp + sexState.charAt(j) + sexState.charAt(j + 1);
+                        sum += Integer.parseInt(tmp);
+                        n++;
+                    }
+                }
+            }
+            loveLogBean.setSexFrameState(temp);
+        }
+        for (int i= 0;i<list.size();i++){
+            Log.d("长度",list.get(i).getSexFrameState().length()+"");
+        }
+
         return list;
     }
 

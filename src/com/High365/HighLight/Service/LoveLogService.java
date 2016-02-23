@@ -116,7 +116,10 @@ public class LoveLogService {
      */
     public List<LoveLogBean>getLoveLogListByUserID(String userID, Context context){
         SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
-        return sqlLiteManager.getLoveLogsByUserID(userID);
+
+        List<LoveLogBean> list = sqlLiteManager.getLoveLogsByUserID(userID);
+
+        return list;
     }
 
 
