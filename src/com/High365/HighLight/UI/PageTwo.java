@@ -262,9 +262,7 @@ public class PageTwo extends Fragment{
      * @return 一个声音数据的List
      */
     public List<LoveLogBean> getListItem(){
-        UserID = sharedPreferencesManager.readString("UserID");
-        Log.i("UserID:", ""+UserID);
-        return sqlLiteManager.getLoveLogsByUserID(UserID);
+        return new LoveLogService().getLoveLogList(getActivity());
     }
 
     private void setData(int count, float range) {
