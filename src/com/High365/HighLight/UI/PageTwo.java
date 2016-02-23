@@ -113,8 +113,8 @@ public class PageTwo extends Fragment{
         for (int i = 0; i < listdata.size(); i++) {
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("list_item_date",listdata.get(i).getSexDateToString());
-            map.put("list_item_beginning_time",listdata.get(i).getSexStartTimeToString());
-            map.put("list_item_time",listdata.get(i).getSexTimeToString());
+            map.put("list_item_beginning_time"," "+listdata.get(i).getSexStartTimeToString());
+            map.put("list_item_time"," "+listdata.get(i).getSexTimeToString());
             map.put("list_item_score",listdata.get(i).getSexObjectiveScore()+"");
             listItem.add(map);
         }
