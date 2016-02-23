@@ -16,13 +16,56 @@
             android:paddingBottom="5dip"
             android:orientation="vertical"
             android:background="@drawable/list_items">
-        <TextView
-                android:id="@+id/list_item_title"
+        <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="30dip"/>
-        <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="fill_parent">
+            <TextView
+                    android:id="@+id/list_item_date"
+                    android:layout_width="wrap_content"
+                    android:text="70/01/01"
+                    android:textColor="#000000"
+                    android:layout_height="wrap_content"/>
+            <TextView
+                    android:layout_below="@id/list_item_date"
+                    android:id="@+id/list_item_score"
+                    android:layout_width="wrap_content"
+                    android:textSize="90dip"
+                    android:text="93"
+                    android:textColor="#ff0000"
+                    android:layout_height="wrap_content"/>
+            <TextView
+                    android:layout_alignBottom="@id/list_item_score"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/list_item_beginning_time"
+                    android:layout_width="wrap_content"
+                    android:text="19:30"
+                    android:drawableLeft="@drawable/icon_time_1"
+                    android:textColor="#000000"
+                    android:layout_height="30dip"/>
+            <TextView
+                    android:id="@+id/list_item_time"
+                    android:layout_toLeftOf="@id/list_item_beginning_time"
+                    android:layout_alignBottom="@id/list_item_score"
+                    android:layout_marginRight="40dip"
+                    android:layout_width="wrap_content"
+                    android:text="32′43″"
+                    android:drawableLeft="@drawable/icon_time_2"
+                    android:textColor="#000000"
+                    android:layout_height="30dip"/>
+            <ImageView
+                    android:src="@drawable/icon_right_arrow"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <TextView
+                    android:id="@+id/list_item_share"
+                    android:text="分享"
+                    android:textColor="#000000"
+                    android:drawableLeft="@drawable/icon_share"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

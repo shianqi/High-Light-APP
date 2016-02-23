@@ -208,7 +208,6 @@ public class PageOne extends Fragment{
                     public void onClick(DialogInterface dialog, int which) {
                         //上传数据
                         evaluateDialog();
-
                     }
                 })
                 .show();

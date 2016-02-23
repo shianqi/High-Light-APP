@@ -2,7 +2,10 @@ package com.High365.HighLight.Bean;
 
 import android.content.Intent;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * @author HUPENG
@@ -54,6 +57,21 @@ public class LoveLogBean {
      * 上传成功标识,未上传成功值为0,上传成功以后为非零值
      * */
     private Integer updateFlag;
+
+    public String getSexDateToString(){
+        DateFormat format=new SimpleDateFormat("yyyy/MM/dd");
+        return format.format(new Date(sexStartTime.getTime()))+"";
+    }
+
+    public String getSexStartTimeToString(){
+        DateFormat format=new SimpleDateFormat("HH:mm");
+        return format.format(new Date(sexStartTime.getTime()))+"";
+    }
+
+    public String getSexTimeToString(){
+        DateFormat format=new SimpleDateFormat("mm′ss″");
+        return format.format(new Date(sexTime.getTime()))+"";
+    }
 
     public Integer getLogID() {
         return logID;
