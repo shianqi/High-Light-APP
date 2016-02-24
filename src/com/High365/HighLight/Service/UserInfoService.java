@@ -329,5 +329,14 @@ public class UserInfoService{
 
     }
 
+    public boolean isFirstLogin(String userId,Context context){
+        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+        UserInfoBean userInfoBean = sqlLiteManager.findUserInfoById(userId);
+        if (userInfoBean == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 }
