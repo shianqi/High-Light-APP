@@ -151,7 +151,9 @@ public class LoveLogService {
                         n++;
                     }
                 }
+                Log.i("temp"+j,"?"+temp+"?");
             }
+            Log.i("temp"+i,"?"+temp+"?");
             loveLogBean.setSexFrameState(temp);
         }
 

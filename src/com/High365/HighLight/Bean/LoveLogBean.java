@@ -1,6 +1,7 @@
 package com.High365.HighLight.Bean;
 
 import android.content.Intent;
+import android.util.Log;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -162,6 +163,7 @@ public class LoveLogBean {
     }
 
     public int getSexFrameStateSize(){
+        Log.i("listdata.get(position)",sexFrameState.length()/2+"");
         return sexFrameState.length()/2;
     }
 

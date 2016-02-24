@@ -176,7 +176,7 @@ public class PageTwo extends Fragment{
                 mChart.setBackgroundColor(Color.LTGRAY);
 
                 // add data
-                setData(20, 30);
+                setData(position);
 
                 mChart.animateX(2500);
 
@@ -214,10 +214,10 @@ public class PageTwo extends Fragment{
                 new AlertDialog.Builder(getActivity())
                         .setTitle("成绩曲线")
                         .setView(evaluateDialogView)
-                        .setNegativeButton("跳过",new DialogInterface.OnClickListener() {
+                        .setNegativeButton("分享",new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                ToastManager.toast(getActivity(),"分享未开放");
                             }
                         })
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -230,31 +230,31 @@ public class PageTwo extends Fragment{
             }
         });
 
-        /**
-         * 设置长按响应事件
-         */
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("操作")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setPositiveButton("分享", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ToastManager.toast(getActivity(),"请申请合适的api来实现分享");
-                                //没有申请合适的api来实现分享
-                            }
-                        })
-                        .show();
-                return true;
-            }
-        });
+//        /**
+//         * 设置长按响应事件
+//         */
+////        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+////            @Override
+////            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+////                new AlertDialog.Builder(getActivity())
+////                        .setTitle("操作")
+////                        .setNegativeButton("取消", new DialogInterface.OnClickListener(){
+////                            @Override
+////                            public void onClick(DialogInterface dialog, int which) {
+////
+////                            }
+////                        })
+////                        .setPositiveButton("分享", new DialogInterface.OnClickListener() {
+////                            @Override
+////                            public void onClick(DialogInterface dialog, int which) {
+////                                ToastManager.toast(getActivity(),"请申请合适的api来实现分享");
+////                                //没有申请合适的api来实现分享
+////                            }
+////                        })
+////                        .show();
+////                return true;
+////            }
+////        });
     }
 
     /**
@@ -265,21 +265,28 @@ public class PageTwo extends Fragment{
         return new LoveLogService().getLoveLogList(getActivity());
     }
 
-    private void setData(int count, float range) {
+    private void setData(int position) {
+
+//        for (int i = 0; i < listdata.size(); i++) {
+//            HashMap<String, Object> map = new HashMap<String, Object>();
+//            map.put("list_item_date",listdata.get(i).getSexDateToString());
+//            map.put("list_item_beginning_time"," "+listdata.get(i).getSexStartTimeToString());
+//            map.put("list_item_time"," "+listdata.get(i).getSexTimeToString());
+//            map.put("list_item_score",listdata.get(i).getSexObjectiveScore()+"");
+//            listItem.add(map);
+//        }
 
         ArrayList<String> xVals = new ArrayList<String>();
-        for (int i = 0; i < count; i++) {
-            xVals.add((i) + "");
+        for (int i = 0; i < listdata.get(position).getSexFrameStateSize(); i++) {
+            xVals.add(i + "");
         }
+
+        Log.i("listdata:("+position+")",listdata.get(position).getSexFrameStateSize()+"");
 
         ArrayList<Entry> yVals1 = new ArrayList<Entry>();
 
-        for (int i = 0; i < count; i++) {
-            float mult = range / 2f;
-            float val = (float) (Math.random() * mult) + 50;// + (float)
-            // ((mult *
-            // 0.1) / 10);
-            yVals1.add(new Entry(val, i));
+        for (int i = 0; i < listdata.get(position).getSexFrameStateSize(); i++) {
+            yVals1.add(new Entry(listdata.get(position).getSexFrameStateByNumber(i), i));
         }
 
         // create a dataset and give it a type
