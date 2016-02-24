@@ -162,7 +162,14 @@ public class LoginActivity extends Activity{
      * 登录成功时所做的操作
      * */
     void onSuccess(){
-        Intent intent = new Intent(LoginActivity.this, MyActivity.class);
+        Intent intent;
+        if(new UserInfoService().isFirstLogin(usernameTextView.getText()+"",getApplication())){
+            intent = new Intent(LoginActivity.this, SetGraphPasswordActivity.class);
+
+        }else{
+            intent = new Intent(LoginActivity.this, MyActivity.class);
+
+        }
         LoginActivity.this.startActivity(intent);
         LoginActivity.this.finish();
     }

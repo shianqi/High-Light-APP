@@ -333,9 +333,9 @@ public class UserInfoService{
         SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
         UserInfoBean userInfoBean = sqlLiteManager.findUserInfoById(userId);
         if (userInfoBean == null){
-            return false;
-        }else{
             return true;
+        }else{
+            return false;
         }
     }
 
