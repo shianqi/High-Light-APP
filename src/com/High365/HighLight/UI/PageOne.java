@@ -149,7 +149,7 @@ public class PageOne extends Fragment{
                     loveLogBean.setSexTime(new Timestamp(loveLogBean.getSexEndTime().getTime()-loveLogBean.getSexStartTime().getTime()));
                     loveLogBean.setSexHighTime(new Timestamp(0));
                     loveLogBean.setSexSubjectiveScore(0);
-                    loveLogBean.setSexObjectiveScore(88);
+                    loveLogBean.setSexObjectiveScore((int)(Math.random()*100));
                     //SqlLiteManager sqlLiteManager = new SqlLiteManager(getActivity());
                     //sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
 

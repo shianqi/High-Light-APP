@@ -127,8 +127,9 @@ public class LoveLogService {
             int sum = 0;
             String temp = "";
             String tmp = "";
-            for (int j = 0; j < sexState.length(); j = j + 2) {
-                if (sexState.length() > 100) {
+            if (sexState.length() > 100) {
+                for (int j = 0; j < sexState.length(); j = j + 2) {
+
                     if (index == j * 51 / sexState.length()) {
                         tmp = "";
                         tmp = tmp + sexState.charAt(j) + sexState.charAt(j + 1);
@@ -136,10 +137,10 @@ public class LoveLogService {
                         n++;
                     } else {
                         index = j * 51 / sexState.length();
-                        if (sum / n<10){
+                        if (sum / n < 10) {
                             temp += "0" + sum / n;
-                        }else {
-                            temp += sum/n;
+                        } else {
+                            temp += sum / n;
                         }
                         sum = 0;
                         n = 0;
@@ -150,11 +151,11 @@ public class LoveLogService {
                         sum += Integer.parseInt(tmp);
                         n++;
                     }
+                    Log.i("temp" + j, "?" + temp + "?");
                 }
-                Log.i("temp"+j,"?"+temp+"?");
+                Log.i("temp" + i, "?" + temp + "?");
+                loveLogBean.setSexFrameState(temp);
             }
-            Log.i("temp"+i,"?"+temp+"?");
-            loveLogBean.setSexFrameState(temp);
         }
 
 
