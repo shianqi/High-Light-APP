@@ -41,7 +41,7 @@ public class LoveLogService {
         params = new RequestParams();
         params.add("userID",userID);
         params.add("secretKey",secretKey);
-        params.add("jsonString","new Gson().toJson(loveLogBean)");
+        params.add("jsonString",new Gson().toJson(loveLogBean));
 
         HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
             @Override
