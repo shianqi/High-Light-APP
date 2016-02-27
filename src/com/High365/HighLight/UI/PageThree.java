@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
+import com.High365.HighLight.Bean.RankModel;
 import com.High365.HighLight.Interface.GetRankListener;
 import com.High365.HighLight.R;
 import com.High365.HighLight.Service.LoveLogService;
@@ -175,13 +176,13 @@ public class PageThree extends Fragment {
                 if(oper<20){
                     yVals1 = new ArrayList<BarEntry>();
                     for (int i = 0; i < list.size(); i++) {
-                        LoveLogService.RankModel model = (LoveLogService.RankModel)list.get(i);
+                        RankModel model = (RankModel)list.get(i);
                         int num = model.getSexObjectiveScore();
                         yVals1.add(new BarEntry(num, i));
                     }
                     xVals1 = new ArrayList<String>();
                     for (int i = 0; i < list.size(); i++) {
-                        LoveLogService.RankModel model = (LoveLogService.RankModel)list.get(i);
+                        RankModel model = (RankModel)list.get(i);
                         String name = model.getUserID();
                         xVals1.add(name);
                         message.arg1 = 1;
@@ -190,13 +191,13 @@ public class PageThree extends Fragment {
                 else{
                     yVals2 = new ArrayList<BarEntry>();
                     for (int i = 0; i < list.size(); i++) {
-                        LoveLogService.RankModel model = (LoveLogService.RankModel)list.get(i);
+                        RankModel model = (RankModel)list.get(i);
                         int num = model.getSexObjectiveScore();
                         yVals2.add(new BarEntry(num, i));
                     }
                     xVals2 = new ArrayList<String>();
                     for (int i = 0; i < list.size(); i++) {
-                        LoveLogService.RankModel model = (LoveLogService.RankModel)list.get(i);
+                        RankModel model = (RankModel)list.get(i);
                         String name = model.getUserID();
                         xVals2.add(name);
                         message.arg1 = 2;
