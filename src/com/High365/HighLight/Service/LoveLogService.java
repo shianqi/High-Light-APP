@@ -3,6 +3,7 @@ package com.High365.HighLight.Service;
 import android.content.Context;
 import android.util.Log;
 import com.High365.HighLight.Bean.LoveLogBean;
+import com.High365.HighLight.Bean.RankModel;
 import com.High365.HighLight.Bean.UpdateModel;
 import com.High365.HighLight.Interface.GetRankListener;
 import com.High365.HighLight.Util.HttpRequest;
@@ -160,42 +161,6 @@ public class LoveLogService {
 
 
         return list;
-    }
-
-
-
-
-    /**
-     * 排名model
-     * */
-    public class RankModel{
-        private String userID;
-        private Integer sexSubjectiveScore;
-        private Integer sexObjectiveScore;
-
-        public String getUserID() {
-            return userID;
-        }
-
-        public void setUserID(String userID) {
-            this.userID = userID;
-        }
-
-        public Integer getSexSubjectiveScore() {
-            return sexSubjectiveScore;
-        }
-
-        public void setSexSubjectiveScore(Integer sexSubjectiveScore) {
-            this.sexSubjectiveScore = sexSubjectiveScore;
-        }
-
-        public Integer getSexObjectiveScore() {
-            return sexObjectiveScore;
-        }
-
-        public void setSexObjectiveScore(Integer sexObjectiveScore) {
-            this.sexObjectiveScore = sexObjectiveScore;
-        }
     }
 
 
