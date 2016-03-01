@@ -66,7 +66,7 @@
                     android:textSize="16.0sp"/>
 
             <EditText
-                    android:id="@+id/birthdayText"
+                    android:id="@+id/emailText"
                     android:layout_width="fill_parent"
                     android:layout_height="50.0dip"
                     android:layout_marginBottom="20.0dip"
@@ -77,8 +77,8 @@
                     android:drawableLeft="@drawable/login_icon_password"
                     android:drawablePadding="15.0dip"
                     android:ems="10"
-                    android:hint="请输入生日 例如：19900101"
-                    android:inputType="date"
+                    android:hint="请输入邮箱"
+                    android:inputType="textEmailAddress"
                     android:maxLength="8"
                     android:paddingBottom="2.0dip"
                     android:paddingLeft="15.0dip"

@@ -78,6 +78,28 @@ public class LoginActivity extends Activity{
      * 初始化
      */
     private void init(){
+        usernameTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    usernameTextView.setHint("");
+                }else{
+                    usernameTextView.setHint("请输入账户");
+                }
+            }
+        });
+
+        passwordTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    passwordTextView.setHint("");
+                }else{
+                    passwordTextView.setHint("请输入密码");
+                }
+            }
+        });
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             /**
              * 给登陆按钮绑定监听函数，用于处理登陆请求
@@ -107,7 +129,6 @@ public class LoginActivity extends Activity{
                         handler.sendMessage(message);
                     }
                 }, LoginActivity.this);
-
             }
         });
 

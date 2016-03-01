@@ -36,7 +36,7 @@ public class RegistActivity extends Activity{
     /**
      * 用户生日，以8位字符串表示，例如：19900101
      */
-    private String birthday;
+    private String email;
     /**
      * 用户密码，长度不超过16位
      */
@@ -44,7 +44,7 @@ public class RegistActivity extends Activity{
 
     private EditText usernameText;
     private EditText sexText;
-    private EditText birthdayText;
+    private EditText emailText;
     private EditText passwordText;
     private Button registButton;
 
@@ -63,7 +63,7 @@ public class RegistActivity extends Activity{
 
         usernameText=(EditText)findViewById(R.id.userNameText);
         sexText=(EditText)findViewById(R.id.userSexText);
-        birthdayText=(EditText)findViewById(R.id.birthdayText);
+        emailText=(EditText)findViewById(R.id.emailText);
         passwordText=(EditText)findViewById(R.id.passwordText);
         registButton=(Button)findViewById(R.id.registButton);
 
@@ -92,6 +92,38 @@ public class RegistActivity extends Activity{
             }
         });
 
+        usernameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    usernameText.setHint("");
+                }else{
+                    usernameText.setHint("请输入账号");
+                }
+            }
+        });
+
+        emailText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    emailText.setHint("");
+                }else{
+                    emailText.setHint("请输入邮箱");
+                }
+            }
+        });
+
+        passwordText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    passwordText.setHint("");
+                }else{
+                    passwordText.setHint("请输入密码 最多16位");
+                }
+            }
+        });
 
         registButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,14 +139,14 @@ public class RegistActivity extends Activity{
                 //数据格式在服务器端验证
                 username = usernameText.getText().toString();
                 password = passwordText.getText().toString();
-                birthday = birthdayText.getText().toString();
+                email = emailText.getText().toString();
                 //点击后设置按钮不可用,防止重复点击
                 registButton.setEnabled(false);
                 registButton.setBackgroundResource(R.drawable.button_unenable);
                 registButton.setText("注册中...");
 
                 UserInfoService userInfoService = new UserInfoService();
-                userInfoService.register(username, password, sex, birthday, RegistActivity.this, new Listener() {
+                userInfoService.register(username, password, sex, email, RegistActivity.this, new Listener() {
                     @Override
                     public void onSuccess() {
                         Message message = new Message();

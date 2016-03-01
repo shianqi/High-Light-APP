@@ -116,18 +116,17 @@ public class UserInfoService{
      * @param userID 用户ID
      * @param password 用户密码
      * @param gender 用户的性别
-     * @param birthDay 用户生日
+     * @param email 用户邮箱
      * @param listener 实现回调的接口
      * 成功回调:onSuccess,失败回调:onFailure.
      */
-    public void register(String userID,String password,int gender,String birthDay,Context context,Listener listener){
+    public void register(String userID,String password,int gender,String email,Context context,Listener listener){
         url= "register.action";
         userInfoBean = new UserInfoBean();
         userInfoBean.setUserId(userID);
         userInfoBean.setUserPwd(password);
         try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-            userInfoBean.setUserBirthDay(simpleDateFormat.parse(birthDay));
+            userInfoBean.setUserEmail(email);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -139,7 +138,7 @@ public class UserInfoService{
         params.add("userId",userID);
         params.add("password",password);
         params.add("gender",gender+"");
-        params.add("birthDay",birthDay);
+        params.add("email",email);
         HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {

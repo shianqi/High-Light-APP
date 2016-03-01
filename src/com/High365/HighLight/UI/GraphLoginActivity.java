@@ -3,6 +3,10 @@ package com.High365.HighLight.UI;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -21,6 +25,8 @@ public class GraphLoginActivity extends Activity {
      * 图形密码登陆界面的view
      */
     private LocusPassWordView lpwv;
+    private static final long DELAY_TIME = 300;
+    private final int RESET = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,11 +47,23 @@ public class GraphLoginActivity extends Activity {
                 } else {
                     ToastManager.toast(getApplication(),"密码输入错误,请重新输入");
                     lpwv.markError();
+                    handler.sendEmptyMessageDelayed(RESET,DELAY_TIME);
+                    lpwv.reset();
                 }
             }
         });
-
     }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case RESET:
+//                    ToastManager.toast(getApplication(),"11");
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onStart() {
@@ -73,5 +91,22 @@ public class GraphLoginActivity extends Activity {
             lpwv.setVisibility(View.VISIBLE);
             noSetPassword.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * 回到登陆界面
+     */
+    public void goLoginActivity(){
+        Intent intent = new Intent(GraphLoginActivity.this, LoginActivity.class);
+        GraphLoginActivity.this.startActivity(intent);
+        GraphLoginActivity.this.finish();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            goLoginActivity();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

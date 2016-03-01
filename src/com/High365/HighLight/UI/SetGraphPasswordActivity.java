@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.High365.HighLight.UI.LocusPassWordView.OnCompleteListener;
 import com.High365.HighLight.R;
@@ -23,6 +24,7 @@ public class SetGraphPasswordActivity extends Activity {
     private String password;
     private boolean needverify = true;
     private Toast toast;
+    TextView toastTv;
 
     private void showToast(CharSequence message) {
         if (null == toast) {
@@ -37,7 +39,11 @@ public class SetGraphPasswordActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setpassword_activity);
+
         lpwv = (LocusPassWordView) this.findViewById(R.id.mLocusPassWordView);
+
+        toastTv = (TextView) findViewById(R.id.promptText);
+        toastTv.setText("请先输入原密码");
         lpwv.setOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(String mPassword) {
@@ -45,6 +51,7 @@ public class SetGraphPasswordActivity extends Activity {
                 if (needverify) {
                     if (lpwv.verifyPassword(mPassword)) {
                         showToast("密码输入正确,请输入新密码!");
+                        toastTv.setText("请输入新密码");
                         lpwv.clearPassword();
                         needverify = false;
                     } else {

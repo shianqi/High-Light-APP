@@ -303,7 +303,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="50.0dip"
                         android:background="#cd361e"
-                        android:text="退出登陆"
+                        android:text="注销用户"
                         android:textColor="#ffffff"
                         android:textSize="18.0sp"/>
             </LinearLayout>

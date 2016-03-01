@@ -87,7 +87,7 @@ public class LocusPassWordView extends View {
     /**
      * 清除痕迹的时间
      */
-    private long CLEAR_TIME = 0;
+    private long CLEAR_TIME = 1000;
     /**
      * 密码最小长度
      */
@@ -472,7 +472,7 @@ public class LocusPassWordView extends View {
     /**
      * 重置点状态
      */
-    private void reset() {
+    public void reset() {
         for (Point p : sPoints) {
             p.state = Point.STATE_NORMAL;
         }
@@ -531,6 +531,14 @@ public class LocusPassWordView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (touchEvent(event)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean touchEvent(MotionEvent event){
         // 不可操作
         if (!isTouch) {
             return false;

@@ -2,10 +2,12 @@ package com.High365.HighLight.UI;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,6 +78,9 @@ public class PageOne extends Fragment{
      * 初始化函数，用于此fragment的初始化
      */
     private void init(){
+        PowerManager powerManager = (PowerManager)getActivity().getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
+
         state=0;
         changeBrightness(0);
 
@@ -90,11 +95,15 @@ public class PageOne extends Fragment{
             @Override
             public void onClick(View v) {
                 if (state!=0){
+                    //取消不锁屏
+                    wakeLock.release();
                     state=0;
                     changeBrightness(0);
                     ToastManager.toast(getActivity(),"录音暂停中");
                     audioRecorder.isGetVoiceRun = false;
                 }else{
+                    //设置不锁屏
+                    wakeLock.acquire();
                     state=255;
                     changeBrightness(255);
                     ToastManager.toast(getActivity(),"录音已开始");
