@@ -55,16 +55,34 @@ public class PageOne extends Fragment{
      * 灯光亮度
      */
     private int state;
+    PowerManager powerManager;
 
     /**
      * 滑动条，负责录音结束后用户进行评价打分
      */
     private AudioRecorder audioRecorder;
+    private PowerManager.WakeLock wakeLock;
+
+    private final int START = 1;
+    private final int PAUSE = 2;
+    private final int STOP = 0;
+    private int recordingState = STOP;
+
+    public int getRecordingState() {
+        return recordingState;
+    }
+
+    public void setRecordingState(int recordingState) {
+        this.recordingState = recordingState;
+    }
 
     /**
      * 日志Bean对象
      */
     private LoveLogBean loveLogBean;
+    private ImageView playButton;
+    private ImageView stopButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frist_fragment, container, false);
@@ -78,99 +96,112 @@ public class PageOne extends Fragment{
      * 初始化函数，用于此fragment的初始化
      */
     private void init(){
-        PowerManager powerManager = (PowerManager)getActivity().getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
+        powerManager = (PowerManager)getActivity().getSystemService(Context.POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
 
         state=0;
         changeBrightness(0);
 
-        light1=(ImageView)view.findViewById(R.id.light1);
-
-        //点击
-        light1.setOnClickListener(new View.OnClickListener() {
-            /**
-             *设置发送录音的暂停与开始请求，并更改灯泡亮度
-             * @param v view
-             */
+        playButton = (ImageView)view.findViewById(R.id.play_button);
+        stopButton = (ImageView)view.findViewById(R.id.stop_button);
+        playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (state!=0){
-                    //取消不锁屏
-                    wakeLock.release();
-                    state=0;
-                    changeBrightness(0);
-                    ToastManager.toast(getActivity(),"录音暂停中");
-                    audioRecorder.isGetVoiceRun = false;
+                if(getRecordingState()==STOP){
+                    recordingStart();
+                    playButton.setBackgroundResource(R.drawable.pause_on);
+                    stopButton.setBackgroundResource(R.drawable.stop_on);
+                }else if(getRecordingState()==PAUSE){
+                    recordingStart();
+                    playButton.setBackgroundResource(R.drawable.pause_on);
+                    stopButton.setBackgroundResource(R.drawable.stop_on);
                 }else{
-                    //设置不锁屏
-                    wakeLock.acquire();
-                    state=255;
-                    changeBrightness(255);
-                    ToastManager.toast(getActivity(),"录音已开始");
-                    loveLogBean = new LoveLogBean();
-                    loveLogBean.setSexStartTime(new Timestamp(System.currentTimeMillis()));
-                    audioRecorder.isGetVoiceRun = false;
-                    audioRecorder.getNoiseLevel(new AudioRecorderListener() {
-                        @Override
-                        public void onSuccess(double level) {
-                            Message message = new Message();
-                            message.obj = level;
-                            Log.d("out",""+level);
-                            handler.sendMessage(message);
-                            int voice = (int)level;
-                            Log.d("voice",voice+"");
-                            if (voice<10){
-                                sexFrameState += "0" + voice;
-                            }else{
-                                if (voice>=100){
-                                    sexFrameState += "99";
-                                }else {
-                                    sexFrameState += voice;
-                                }
-                            }
-                            Log.d("sexFrame",sexFrameState);
-                        }
-                    });
+                    recordingPause();
+                    playButton.setBackgroundResource(R.drawable.play_on);
+                    stopButton.setBackgroundResource(R.drawable.stop_on);
                 }
             }
         });
 
-        //长按
-        light1.setOnLongClickListener(new View.OnLongClickListener() {
-            /**
-             * 设置长按监听函数，用于处理长按关闭录音。
-             * 判断当前状态，如果出于录音状态则结束录音，否则不进行处理
-             * @param v view
-             * @return 当当前出于录音状态时，返回成功，否则返回失败
-             */
+        stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                if(state!=0){
-                    state=0;
-                    changeBrightness(0);
-                    audioRecorder.stopRecord();
-                    ToastManager.toast(getActivity(),"录音已结束");
-                    loveLogBean.setSexEndTime(new Timestamp(System.currentTimeMillis()));
-                    loveLogBean.setUserId(new SharedPreferencesManager(getActivity()).readString("UserID"));
-                    loveLogBean.setRecordFileName(audioRecorder.recordFileName);
-                    loveLogBean.setUpdateFlag(0);
-                    loveLogBean.setSexFrameState(sexFrameState);
-                    loveLogBean.setSexTime(new Timestamp(loveLogBean.getSexEndTime().getTime()-loveLogBean.getSexStartTime().getTime()));
-                    loveLogBean.setSexHighTime(new Timestamp(0));
-                    loveLogBean.setSexSubjectiveScore(0);
-                    loveLogBean.setSexObjectiveScore((int)(Math.random()*100));
-                    //SqlLiteManager sqlLiteManager = new SqlLiteManager(getActivity());
-                    //sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
+            public void onClick(View v) {
+                if (getRecordingState()==START){
+                    recordingStop();
+                    playButton.setBackgroundResource(R.drawable.play_on);
+                    stopButton.setBackgroundResource(R.drawable.stop_off);
+                }else if(getRecordingState()==PAUSE){
+                    recordingStop();
+                    playButton.setBackgroundResource(R.drawable.play_on);
+                    stopButton.setBackgroundResource(R.drawable.stop_off);
+                }else{
 
-                    showDialog();
-                    return true;
-                }else {
-                    return false;
                 }
-
             }
         });
+    }
 
+    /**
+     * 录音开始
+     */
+    public void recordingStart(){
+        setRecordingState(START);
+        //设置不锁屏
+        wakeLock.acquire();
+        changeBrightness(255);
+//        ToastManager.toast(getActivity(),"录音已开始");
+        loveLogBean = new LoveLogBean();
+        loveLogBean.setSexStartTime(new Timestamp(System.currentTimeMillis()));
+        audioRecorder.isGetVoiceRun = false;
+        audioRecorder.getNoiseLevel(new AudioRecorderListener() {
+            @Override
+            public void onSuccess(double level) {
+                Message message = new Message();
+                message.obj = level;
+                Log.d("out",""+level);
+                handler.sendMessage(message);
+                int voice = (int)level;
+                Log.d("voice",voice+"");
+                if (voice<10){
+                    sexFrameState += "0" + voice;
+                }else{
+                    if (voice>=100){
+                        sexFrameState += "99";
+                    }else {
+                        sexFrameState += voice;
+                    }
+                }
+                Log.d("sexFrame",sexFrameState);
+            }
+        });
+    }
+
+    public void recordingStop(){
+        //取消不锁屏
+        wakeLock.release();
+        setRecordingState(STOP);
+
+        changeBrightness(0);
+        audioRecorder.stopRecord();
+//        ToastManager.toast(getActivity(),"录音已结束");
+        loveLogBean.setSexEndTime(new Timestamp(System.currentTimeMillis()));
+        loveLogBean.setUserId(new SharedPreferencesManager(getActivity()).readString("UserID"));
+        loveLogBean.setRecordFileName(audioRecorder.recordFileName);
+        loveLogBean.setUpdateFlag(0);
+        loveLogBean.setSexFrameState(sexFrameState);
+        loveLogBean.setSexTime(new Timestamp(loveLogBean.getSexEndTime().getTime()-loveLogBean.getSexStartTime().getTime()));
+        loveLogBean.setSexHighTime(new Timestamp(0));
+        loveLogBean.setSexSubjectiveScore(0);
+        loveLogBean.setSexObjectiveScore((int)(Math.random()*100));
+
+        showDialog();
+    }
+
+    public void recordingPause(){
+        setRecordingState(PAUSE);
+        changeBrightness(0);
+//        ToastManager.toast(getActivity(),"录音暂停中");
+        audioRecorder.isGetVoiceRun = false;
     }
 
     /**
@@ -196,7 +227,6 @@ public class PageOne extends Fragment{
         light1=(ImageView)view.findViewById(R.id.light1);
         light1.getBackground().setAlpha(brightness);
     }
-
 
 
     /**
@@ -243,7 +273,7 @@ public class PageOne extends Fragment{
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ToastManager.toast(getActivity(),sexSubjectiveScore.getText()+"");
+//                        ToastManager.toast(getActivity(),sexSubjectiveScore.getText()+"");
                         loveLogBean.setSexSubjectiveScore(Integer.parseInt(sexSubjectiveScore.getText()+""));
                         SqlLiteManager sqlLiteManager = new SqlLiteManager(getActivity());
                         sqlLiteManager.updateOrInsertLoveLog(loveLogBean);
