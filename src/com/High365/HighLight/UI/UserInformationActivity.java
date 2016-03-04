@@ -160,7 +160,12 @@ public class UserInformationActivity extends Activity {
         }
         nicknameEditText.setText(userInfoBean.getUserName());
         usernameTextView.setText(userInfoBean.getUserId());
-        birthdayEditText.setText(new SimpleDateFormat("yyyyMMdd").format(userInfoBean.getUserBirthDay()));
+        try {
+            birthdayEditText.setText(new SimpleDateFormat("yyyyMMdd").format(userInfoBean.getUserBirthDay()));
+        }catch(Exception e){
+            birthdayEditText.setText("");
+            e.printStackTrace();
+        }
         emailEditText.setText(userInfoBean.getUserEmail());
         phoneEditText.setText(userInfoBean.getUserPhone());
         try{
@@ -263,8 +268,8 @@ public class UserInformationActivity extends Activity {
         try{
             userInfoBean.setUserBirthDay(new SimpleDateFormat("yyyyMMdd").parse(birthdayEditText.getText().toString()));
         }catch (Exception e){
-            ToastManager.toast(UserInformationActivity.this,"生日不合法");
-            return;
+            userInfoBean.setUserBirthDay(null);
+            //return;
         }
         userInfoBean.setUserEmail(emailEditText.getText().toString());
         UserInfoService userInfoService = new UserInfoService();
