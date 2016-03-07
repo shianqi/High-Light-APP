@@ -25,6 +25,8 @@ public class SetGraphPasswordActivity extends Activity {
     private boolean needverify = true;
     private Toast toast;
     TextView toastTv;
+    private Button buttonSave;
+    private Button tvReset;
 
     private void showToast(CharSequence message) {
         if (null == toast) {
@@ -44,12 +46,43 @@ public class SetGraphPasswordActivity extends Activity {
 
         toastTv = (TextView) findViewById(R.id.promptText);
         toastTv.setText("请先输入原密码");
+
+        buttonSave = (Button) this.findViewById(R.id.tvSave);
+        buttonSave.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (StringUtil.isNotEmpty(password)) {
+                    lpwv.resetPassWord(password);
+                    lpwv.clearPassword();
+                    showToast("密码修改成功,请记住密码.");
+                    startActivity(new Intent(SetGraphPasswordActivity.this,
+                            MyActivity.class));
+                    finish();
+                } else {
+                    lpwv.clearPassword();
+                    showToast("密码不能为空,请输入密码.");
+                }
+            }
+        });
+        tvReset = (Button) this.findViewById(R.id.tvReset);
+        tvReset.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lpwv.clearPassword();
+            }
+        });
+
+        buttonSave.setVisibility(View.INVISIBLE);
+        tvReset.setVisibility(View.INVISIBLE);
+
         lpwv.setOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(String mPassword) {
                 password = mPassword;
                 if (needverify) {
                     if (lpwv.verifyPassword(mPassword)) {
+                        buttonSave.setVisibility(View.VISIBLE);
+                        tvReset.setVisibility(View.VISIBLE);
                         showToast("密码输入正确,请输入新密码!");
                         toastTv.setText("请输入新密码");
                         lpwv.clearPassword();
@@ -63,33 +96,6 @@ public class SetGraphPasswordActivity extends Activity {
             }
         });
 
-        OnClickListener mOnClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.tvSave:
-                        if (StringUtil.isNotEmpty(password)) {
-                            lpwv.resetPassWord(password);
-                            lpwv.clearPassword();
-                            showToast("密码修改成功,请记住密码.");
-                            startActivity(new Intent(SetGraphPasswordActivity.this,
-                                    MyActivity.class));
-                            finish();
-                        } else {
-                            lpwv.clearPassword();
-                            showToast("密码不能为空,请输入密码.");
-                        }
-                        break;
-                    case R.id.tvReset:
-                        lpwv.clearPassword();
-                        break;
-                }
-            }
-        };
-        Button buttonSave = (Button) this.findViewById(R.id.tvSave);
-        buttonSave.setOnClickListener(mOnClickListener);
-        Button tvReset = (Button) this.findViewById(R.id.tvReset);
-        tvReset.setOnClickListener(mOnClickListener);
         // 如果密码为空,直接输入密码
         if (lpwv.isPasswordEmpty()) {
             this.needverify = false;
