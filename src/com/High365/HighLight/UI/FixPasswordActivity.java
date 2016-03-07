@@ -1,8 +1,10 @@
 package com.High365.HighLight.UI;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +21,8 @@ import com.High365.HighLight.Service.UserInfoService;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.SqlLiteManager;
 import com.High365.HighLight.Util.ToastManager;
+
+import java.util.List;
 
 /**
  * 修改密码界面<br>
@@ -175,4 +179,46 @@ public class FixPasswordActivity extends Activity{
         ToastManager.toast(FixPasswordActivity.this,msg);
     }
 
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+
+        Log.i("当前类名：",getCurrentClassName());
+        Log.i("栈顶类名：",getTopActivity(this));
+        Log.i("当前包名：",getTopActivityPackage(this));
+        Log.i("规定包名：","com.High365.HighLight");
+
+        if(getCurrentClassName().equals(getTopActivity(this))||!getTopActivityPackage(this).equals("com.High365.HighLight"))
+        {
+            Intent intent = new Intent(FixPasswordActivity.this, GraphLoginActivity.class);
+            FixPasswordActivity.this.startActivity(intent);
+        }
+    }
+
+    public static String getCurrentClassName() {
+        int level = 1;
+        StackTraceElement[] stacks = new Throwable().getStackTrace();
+        String className = stacks[level].getClassName();
+        return className;
+    }
+
+    String getTopActivity(Activity context) {
+        ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
+        List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
+        if(runningTaskInfos != null){
+            return runningTaskInfos.get(0).topActivity.getClassName();
+        }else
+            return null ;
+    }
+
+    public String getTopActivityPackage(Activity context) {
+        ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
+        List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
+        if(runningTaskInfos != null){
+            return runningTaskInfos.get(0).topActivity.getPackageName();
+        }else
+            return null ;
+    }
 }

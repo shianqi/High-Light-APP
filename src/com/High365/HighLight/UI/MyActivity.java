@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +17,8 @@ import android.widget.Button;
 import com.High365.HighLight.R;
 import com.High365.HighLight.Service.UserInfoService;
 import com.High365.HighLight.Util.ToastManager;
+
+import java.util.List;
 
 /**
  * 主页面
@@ -185,9 +189,6 @@ public class MyActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        menu.add(0, MYINFORMATION, 0, "我的信息");
-//        menu.add(0, EXIT, 1, "退出");
-//        return super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -199,20 +200,9 @@ public class MyActivity extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()){
-//            case MYINFORMATION:
-//                toUserInformation();
-//                break;
-//            case EXIT:
-//                exit();
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
         if(item.getItemId()==R.id.userInformation)
         {
-            Intent intent = new Intent();
-            intent.setClass(MyActivity.this, UserInformationActivity.class);
-            startActivity(intent);
+            toUserInformation();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -221,7 +211,7 @@ public class MyActivity extends Activity {
     public void toUserInformation(){
         Intent intent = new Intent(MyActivity.this, UserInformationActivity.class);
         MyActivity.this.startActivity(intent);
-        //MyActivity.this.finish();
+        MyActivity.this.finish();
     }
 
     /**
@@ -230,5 +220,47 @@ public class MyActivity extends Activity {
     public void exit(){
         finish();
         System.exit(0);
+    }
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+
+        Log.i("当前类名：",getCurrentClassName());
+        Log.i("当前包名：",getTopActivityPackage(this));
+
+        if(getCurrentClassName().equals(getTopActivity(this))||!getTopActivityPackage(this).equals("com.High365.HighLight"))
+        {
+            Log.e("类名错误","MainActivity");
+            Intent intent = new Intent(MyActivity.this, GraphLoginActivity.class);
+            MyActivity.this.startActivity(intent);
+        }
+    }
+
+    public static String getCurrentClassName() {
+        int level = 1;
+        StackTraceElement[] stacks = new Throwable().getStackTrace();
+        String className = stacks[level].getClassName();
+        return className;
+    }
+
+    String getTopActivity(Activity context) {
+        ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
+        List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
+        if(runningTaskInfos != null){
+            Log.i("栈顶元素：",runningTaskInfos.get(0).topActivity.getClassName());
+            return runningTaskInfos.get(0).topActivity.getClassName();
+        }else
+            return null ;
+    }
+
+    public String getTopActivityPackage(Activity context) {
+        ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
+        List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
+        if(runningTaskInfos != null){
+            return runningTaskInfos.get(0).topActivity.getPackageName();
+        }else
+            return null ;
     }
 }

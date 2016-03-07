@@ -1,6 +1,7 @@
 package com.High365.HighLight.UI;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.*;
@@ -25,6 +27,7 @@ import com.High365.HighLight.Util.*;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * 显示修改用户信息界面<br>
@@ -364,8 +367,8 @@ public class UserInformationActivity extends Activity {
      * 切换到主界面
      */
     public void goMainPage(){
-//        Intent intent = new Intent(UserInformationActivity.this, MyActivity.class);
-//        UserInformationActivity.this.startActivity(intent);
+        Intent intent = new Intent(UserInformationActivity.this, MyActivity.class);
+        UserInformationActivity.this.startActivity(intent);
         UserInformationActivity.this.finish();
     }
 
@@ -493,5 +496,48 @@ public class UserInformationActivity extends Activity {
      * */
     void onFailure(String msg){
         ToastManager.toast(UserInformationActivity.this,msg);
+    }
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+
+        Log.i("当前类名：",getCurrentClassName());
+        Log.i("栈顶类名：",getTopActivity(this));
+        Log.i("当前包名：",getTopActivityPackage(this));
+        Log.i("规定包名：","com.High365.HighLight");
+
+        if(getCurrentClassName().equals(getTopActivity(this))||!getTopActivityPackage(this).equals("com.High365.HighLight"))
+        {
+            Log.e("类名错误","UserInformationActivity");
+            Intent intent = new Intent(UserInformationActivity.this, GraphLoginActivity.class);
+            UserInformationActivity.this.startActivity(intent);
+        }
+    }
+
+    public static String getCurrentClassName() {
+        int level = 1;
+        StackTraceElement[] stacks = new Throwable().getStackTrace();
+        String className = stacks[level].getClassName();
+        return className;
+    }
+
+    String getTopActivity(Activity context) {
+        ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
+        List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
+        if(runningTaskInfos != null){
+            return runningTaskInfos.get(0).topActivity.getClassName();
+        }else
+            return null ;
+    }
+
+    public String getTopActivityPackage(Activity context) {
+        ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
+        List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
+        if(runningTaskInfos != null){
+            return runningTaskInfos.get(0).topActivity.getPackageName();
+        }else
+            return null ;
     }
 }
