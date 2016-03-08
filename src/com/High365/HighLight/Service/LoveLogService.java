@@ -237,11 +237,11 @@ public class LoveLogService {
 
                 @Override
                 public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                    Log.i("LoveLogService.updateFormDatabase","update fail");
+                    Log.i("updateFormDatabase","update fail");
                 }
             });
         }catch (Exception e){
-            Log.i("LoveLogService.updateFormDatabase","throw Exception:"  + e.getMessage());
+            Log.i(".updateFormDatabase","throw Exception:"  + e.getMessage());
         }
     }
 }
