@@ -53,17 +53,17 @@ public class UserInfoService{
         //登陆操作前首先判断
 
         //首先,判断用户名密码是否在本地数据库中,若在,判断密码的一致性,则直接登录成功
-        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
-        userInfoBean = sqlLiteManager.findUserInfoById(userID);
-        if (userInfoBean!=null){
-            if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(WP)){
-                SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
-                sharedPreferencesManager.writeString("UserID",userID);
-                sharedPreferencesManager.writeString("WP",WP);
-                listener.onSuccess();
-                return;
-            }
-        }
+//        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+//        userInfoBean = sqlLiteManager.findUserInfoById(userID);
+//        if (userInfoBean!=null){
+//            if (userInfoBean.getUserPwd()!=null && userInfoBean.getUserPwd().equals(WP)){
+//                SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
+//                sharedPreferencesManager.writeString("UserID",userID);
+//                sharedPreferencesManager.writeString("WP",WP);
+//                listener.onSuccess();
+//                return;
+//            }
+//        }
         //执行网络请求,在线判断密码的正确与否
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
         sharedPreferencesManager.writeString("UserID",userID);

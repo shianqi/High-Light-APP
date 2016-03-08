@@ -164,4 +164,38 @@ public class LoveLogService {
     }
 
 
+    /**
+     * 在第一次登录时，获取最新的10条记录插在本地数据库中
+     * @param context Activity上下文
+     * */
+    public void getLast10LoveLogs(Context context){
+        try {
+            String url = "getLoveLog.action";
+            params =  new RequestParams();
+            params.add("userId",new SharedPreferencesManager(context).readString("userID"));
+            HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                    Log.i("getLoveLog","success");
+                    httpResponseStr = new String(bytes);
+                    //json转实体
+                    List<LoveLogBean> loveLogBeens = new Gson().fromJson(httpResponseStr,new TypeToken<List<LoveLogBean>>(){}.getType());
+                    //写入数据库
+                    SqlLiteManager  sqlLiteManager = new SqlLiteManager(context);
+                    for (int j=0;j<loveLogBeens.size();j++){
+                        loveLogBeens.get(i).setLogID(null);
+                        sqlLiteManager.updateOrInsertLoveLog(loveLogBeens.get(j));
+                    }
+            }
+
+                @Override
+                public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                    Log.i("getLoveLog","error:" + throwable.getMessage());
+
+                }
+            });
+        }catch (Exception e){
+            Log.i("getLoveLog","throw Exception!" );
+        }
+    }
 }
