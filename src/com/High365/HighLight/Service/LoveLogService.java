@@ -170,13 +170,13 @@ public class LoveLogService {
      * */
     public void getLast10LoveLogs(Context context){
         try {
-            String url = "getLoveLog.action";
+            url = "getLoveLog.action";
             params =  new RequestParams();
             params.add("userId",new SharedPreferencesManager(context).readString("userID"));
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                    Log.i("getLoveLog","success");
+                   //Log.i("getLoveLog","success");
                     httpResponseStr = new String(bytes);
                     //json转实体
                     List<LoveLogBean> loveLogBeens = new Gson().fromJson(httpResponseStr,new TypeToken<List<LoveLogBean>>(){}.getType());
@@ -190,12 +190,58 @@ public class LoveLogService {
 
                 @Override
                 public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                    Log.i("getLoveLog","error:" + throwable.getMessage());
+                    Log.i("LoveLogService.getLoveLog","error:" + throwable.getMessage());
 
                 }
             });
         }catch (Exception e){
-            Log.i("getLoveLog","throw Exception!" );
+            Log.i("LoveLogService.LoveLogServicegetLoveLog","throw Exception!" );
+        }
+    }
+
+
+    /**
+     * 将数据库中之前没有指教成功的往服务器上提交
+     * @param context Activity上下文
+     * */
+    public void updateFormDataBase(Context context){
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
+        String userID = sharedPreferencesManager.readString("UserID");
+        String secretKey = sharedPreferencesManager.readString("secretKey");
+        SqlLiteManager sqLiteDatabase = new SqlLiteManager(context);
+
+        try{
+            url = "updateLoveLog.action";
+            params = new RequestParams();
+            params.add("userID",userID);
+            params.add("secretKey",secretKey);
+            LoveLogBean loveLogBeen= sqLiteDatabase.getOneLoveLogBeanByUserId(userID);
+            if(loveLogBeen==null){
+                return;
+            }
+            params.add("jsonString",new Gson().toJson(loveLogBeen));
+            HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                    httpResponseStr = new String(bytes);
+                    UpdateModel updateModel = new Gson().fromJson(httpResponseStr, UpdateModel.class);
+                    if (updateModel!=null){
+                        if (updateModel.getStatus() == 1){
+                            //当更新成功时,更新本地数据库中的updateFlag值,值为1时则已经成功上传到远程服务器
+                            loveLogBeen.setUpdateFlag(1);
+                            SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+                            sqlLiteManager.updateOrInsertLoveLog(loveLogBeen);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                    Log.i("LoveLogService.updateFormDatabase","update fail");
+                }
+            });
+        }catch (Exception e){
+            Log.i("LoveLogService.updateFormDatabase","throw Exception:"  + e.getMessage());
         }
     }
 }

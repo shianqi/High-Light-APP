@@ -283,4 +283,26 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         }
         highLightDB.close();
     }
+
+
+    public List<LoveLogBean>getUnUpdateListByUserId(String userId){
+        //用UserID获取List，在对此进行处理
+        List<LoveLogBean> list = getLoveLogsByUserID(userId);
+        List<LoveLogBean> newList = new ArrayList<>();
+        for (int i= 0;i<list.size();i++){
+            if (list.get(i).getUpdateFlag() == 0){
+                newList.add(list.get(i));
+            }
+        }
+        return newList;
+    }
+
+    public LoveLogBean getOneLoveLogBeanByUserId(String userId){
+        List<LoveLogBean>loveLogBeens = getUnUpdateListByUserId(userId);
+        if (loveLogBeens.size()>0){
+            return loveLogBeens.get(0);
+        }else{
+            return null;
+        }
+    }
 }
