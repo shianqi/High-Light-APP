@@ -190,12 +190,12 @@ public class LoveLogService {
 
                 @Override
                 public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                    Log.i("LoveLogService.getLoveLog","error:" + throwable.getMessage());
+                    Log.i("getLoveL","error:" + throwable.getMessage());
 
                 }
             });
         }catch (Exception e){
-            Log.i("LoveLogService.LoveLogServicegetLoveLog","throw Exception!" );
+            Log.i("LoveLog","throw Exception!" );
         }
     }
 
