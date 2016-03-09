@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,8 @@ public class PageThree extends Fragment {
      * 一个按钮组，用于让用户选择查看什么时间段的排名
      */
     private RadioGroup radioGroup;
+
+    private Message message;
     /**
      * 个人排行榜图像y轴数据
      */
@@ -69,6 +72,8 @@ public class PageThree extends Fragment {
      * 状态码，表示失败
      */
     final private int FAILURE = 0;
+
+    private List list2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -155,6 +160,7 @@ public class PageThree extends Fragment {
         // add a nice and smooth animation
         rankWorld.animateY(2500);
         rankWorld.getLegend().setEnabled(false);
+
     }
 
     /**
@@ -172,7 +178,9 @@ public class PageThree extends Fragment {
         loveLogService.getRankModelList(oper, getActivity(), new GetRankListener() {
             @Override
             public void onSuccess(List list) {
-                Message message = new Message();
+                list2 = list;
+
+                message = new Message();
                 if(oper<20){
                     yVals1 = new ArrayList<BarEntry>();
                     for (int i = 0; i < list.size(); i++) {
@@ -189,19 +197,7 @@ public class PageThree extends Fragment {
                     }
                 }
                 else{
-                    yVals2 = new ArrayList<BarEntry>();
-                    for (int i = 0; i < list.size(); i++) {
-                        RankModel model = (RankModel)list.get(i);
-                        int num = model.getSexObjectiveScore();
-                        yVals2.add(new BarEntry(num, i));
-                    }
-                    xVals2 = new ArrayList<String>();
-                    for (int i = 0; i < list.size(); i++) {
-                        RankModel model = (RankModel)list.get(i);
-                        String name = model.getUserID();
-                        xVals2.add(name);
-                        message.arg1 = 2;
-                    }
+                    getVals2();
                 }
                 message.what = SUCCESS;
                 message.obj = "获取成功";
@@ -217,6 +213,23 @@ public class PageThree extends Fragment {
             }
         });
     }
+
+    private void getVals2(){
+        yVals2 = new ArrayList<BarEntry>();
+        for (int i = 0; i < list2.size(); i++) {
+            RankModel model = (RankModel)list2.get(i);
+            int num = model.getSexObjectiveScore();
+            yVals2.add(new BarEntry(num, i));
+        }
+        xVals2 = new ArrayList<String>();
+        for (int i = 0; i < list2.size(); i++) {
+            RankModel model = (RankModel)list2.get(i);
+            String name = model.getUserID();
+            xVals2.add(name);
+            message.arg1 = 2;
+        }
+    }
+
 
     /**
      * 将数据绑定到图像上，并刷新UI
@@ -235,6 +248,10 @@ public class PageThree extends Fragment {
             rankMe.invalidate();
             rankMe.animateY(3000);
         } else {
+            if(yVals2==null){
+                getVals2();
+            }
+            Log.i("160309",yVals2.toString());
             BarDataSet set1 = new BarDataSet(yVals2, "Data Set");
             set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
             set1.setDrawValues(false);

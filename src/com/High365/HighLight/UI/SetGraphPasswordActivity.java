@@ -8,8 +8,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.High365.HighLight.Service.UserInfoService;
 import com.High365.HighLight.UI.LocusPassWordView.OnCompleteListener;
 import com.High365.HighLight.R;
+import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.StringUtil;
 
 /**
@@ -42,12 +44,23 @@ public class SetGraphPasswordActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setpassword_activity);
 
+        buttonSave = (Button) this.findViewById(R.id.tvSave);
+        tvReset = (Button) this.findViewById(R.id.tvReset);
+        toastTv = (TextView) findViewById(R.id.promptText);
+
         lpwv = (LocusPassWordView) this.findViewById(R.id.mLocusPassWordView);
 
-        toastTv = (TextView) findViewById(R.id.promptText);
-        toastTv.setText("请先输入原密码");
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(getApplication());
 
-        buttonSave = (Button) this.findViewById(R.id.tvSave);
+
+        if(new UserInfoService().isFirstLogin(sharedPreferencesManager.readString("UserID"),getApplication())){
+
+        }else {
+            toastTv.setText("请先输入原密码");
+            buttonSave.setVisibility(View.INVISIBLE);
+            tvReset.setVisibility(View.INVISIBLE);
+        }
+
         buttonSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +77,7 @@ public class SetGraphPasswordActivity extends Activity {
                 }
             }
         });
-        tvReset = (Button) this.findViewById(R.id.tvReset);
+
         tvReset.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,8 +85,7 @@ public class SetGraphPasswordActivity extends Activity {
             }
         });
 
-        buttonSave.setVisibility(View.INVISIBLE);
-        tvReset.setVisibility(View.INVISIBLE);
+
 
         lpwv.setOnCompleteListener(new OnCompleteListener() {
             @Override
