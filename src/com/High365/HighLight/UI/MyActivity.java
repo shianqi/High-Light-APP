@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import com.High365.HighLight.R;
+import com.High365.HighLight.Service.LoveLogService;
 import com.High365.HighLight.Service.UserInfoService;
 import com.High365.HighLight.Util.ToastManager;
 
@@ -89,6 +90,9 @@ public class MyActivity extends Activity {
         addOnClickListener();
         UserInfoService userInfoService = new UserInfoService();
         userInfoService.getUserInfo(MyActivity.this);
+        LoveLogService loveLogService = new LoveLogService();
+        loveLogService.getLast10LoveLogs(MyActivity.this);
+
     }
 
     /**

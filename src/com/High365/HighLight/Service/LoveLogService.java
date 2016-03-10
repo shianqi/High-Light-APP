@@ -10,6 +10,7 @@ import com.High365.HighLight.Util.HttpRequest;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.SqlLiteManager;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -17,6 +18,7 @@ import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author hupeng
@@ -169,23 +171,35 @@ public class LoveLogService {
      * @param context Activity上下文
      * */
     public void getLast10LoveLogs(Context context){
+        if (getLoveLogList(context).size()!=0){
+            return;
+        }
         try {
             url = "getLoveLog.action";
             params =  new RequestParams();
-            params.add("userId",new SharedPreferencesManager(context).readString("userID"));
+            params.add("userId",new SharedPreferencesManager(context).readString("UserID"));
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                   //Log.i("getLoveLog","success");
-                    httpResponseStr = new String(bytes);
-                    //json转实体
-                    List<LoveLogBean> loveLogBeens = new Gson().fromJson(httpResponseStr,new TypeToken<List<LoveLogBean>>(){}.getType());
-                    //写入数据库
-                    SqlLiteManager  sqlLiteManager = new SqlLiteManager(context);
-                    for (int j=0;j<loveLogBeens.size();j++){
-                        loveLogBeens.get(i).setLogID(null);
-                        sqlLiteManager.updateOrInsertLoveLog(loveLogBeens.get(j));
+                    try {
+                        //Log.i("getLoveLog","success");
+                        httpResponseStr = new String(bytes);
+                        Log.i("xxxxxxxxxxxxxxxxxxx",httpResponseStr);
+                        //json转实体
+                        Gson gson = new GsonBuilder()
+                                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .create();
+                        List<LoveLogBean> loveLogBeens = gson.fromJson(httpResponseStr,new TypeToken<List<LoveLogBean>>(){}.getType());
+                        //写入数据库----+++++
+                        SqlLiteManager  sqlLiteManager = new SqlLiteManager(context);
+                        for (int j=0;j<loveLogBeens.size();j++){
+                            loveLogBeens.get(j).setLogID(null);
+                            sqlLiteManager.updateOrInsertLoveLog(loveLogBeens.get(j));
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
+
             }
 
                 @Override
