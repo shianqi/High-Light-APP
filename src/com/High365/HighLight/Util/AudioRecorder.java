@@ -5,6 +5,9 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
 import com.High365.HighLight.Interface.AudioRecorderListener;
+import com.High365.HighLight.Interface.GetDBListener;
+import com.High365.HighLight.Interface.GetPowerListener;
+import com.High365.HighLight.Interface.LightLevelListener;
 
 /**
  * 此类主要实现录音</br>
@@ -31,11 +34,17 @@ public class AudioRecorder {
     Object mLock;
     RecordFileUtil recordFileUtil = null;
     public String recordFileName;
+
+    //监听器
+    public GetDBListener getDBListener;
+    public GetPowerListener getPowerListener;
+    public LightLevelListener lightLevelListener;
+
     public AudioRecorder(int loveLogID) {
         mLock = new Object();
         recordFileUtil = new RecordFileUtil(loveLogID);
     }
-    public void getNoiseLevel(final AudioRecorderListener audioRecorderListener) {
+    public void startRecord() {
         if (isGetVoiceRun) {
             Log.e(TAG, "还在录着呢");
             return;
@@ -66,7 +75,18 @@ public class AudioRecorder {
                     double mean = v / (double) r;
                     //Log.d(TAG,"能量数据:" + mean);
                     double volume = 10 * Math.log10(mean);
-                    audioRecorderListener.onSuccess(volume);
+                    //audioRecorderListener.onSuccess(volume);
+                    //以下给监听器设值
+                    if (getDBListener!=null){
+                        getDBListener.getValue(volume);
+                    }
+                    if (getPowerListener!=null){
+                        getPowerListener.getvalue(mean);
+                    }
+                    if (lightLevelListener!=null){
+                        int lightLevel = ((int)(volume/100*254))>254?254:((int)(volume/100*254));
+                        lightLevelListener.getValue(lightLevel);
+                    }
                     //Log.d(TAG, "分贝值:" + volume);
                     // 大概一秒二十次
                     synchronized (mLock) {
@@ -89,5 +109,30 @@ public class AudioRecorder {
         isGetVoiceRun = false;
         recordFileUtil.stopWriteBuffer();
         recordFileName = recordFileUtil.getFileName();
+    }
+
+
+    //以下是数据的获取方法
+    /**
+     * 得到分贝值
+     * */
+    public void getDB(GetDBListener getDBListener){
+        this.getDBListener = getDBListener;
+    }
+
+    /**
+     * 得到能量数据
+     * 能量的计算方法
+     * */
+    public void getPower(GetPowerListener getPowerListener){
+        this.getPowerListener = getPowerListener;
+    }
+
+    /**
+     * 得到灯泡亮度等级
+     * 范围 :0-255
+     * */
+    public void getLightLevel(LightLevelListener lightLevelListener){
+        this.lightLevelListener = lightLevelListener;
     }
 }

@@ -127,6 +127,25 @@ public class LoveLogService {
         for (int i=0;i<list.size();i++) {
             LoveLogBean loveLogBean = list.get(i);
             String sexState = loveLogBean.getSexFrameState();
+            String sexStateTemp = sexState;
+            sexState = "";
+            //处理
+            for (int k=0;k<sexStateTemp.split(":").length;k++){
+                double mean = Double.parseDouble(sexStateTemp.split(":")[k]);
+                //Log.d(TAG,"能量数据:" + mean);
+                double volume = 10 * Math.log10(mean);
+                //int lightLevel = ((int)(volume/100*254))>254?254:((int)(volume/100*254));
+                int volmeT = (int)volume;
+                if (volmeT > 99){
+                    volmeT = 99;
+                }
+                if (volmeT < 10){
+                    sexState += '0';
+                }
+                sexState += volmeT;
+            }
+
+
             int index = 0;
             int n = 0;
             int sum = 0;
@@ -160,13 +179,14 @@ public class LoveLogService {
                 }
                 Log.i("temp" + i, "?" + temp + "?");
                 loveLogBean.setSexFrameState(temp);
+            }else{
+                loveLogBean.setSexFrameState(sexState);
             }
         }
 
 
         return list;
     }
-
 
     /**
      * 在第一次登录时，获取最新的10条记录插在本地数据库中
@@ -263,11 +283,14 @@ public class LoveLogService {
 
 
     /**
-     * 找回密码的业务逻辑
+     * 找回密码的业务逻辑<br/>
+     * @param context Activity上下文
+     * @param userId 用户名
+     * @param listener 通用监听器，用以监听找回密码是否成功
      * */
     public void forgrtPasswd(Context context,String userId,Listener listener){
-        //判断userI格式的合法性
-        if (userId == null  || userId.length() <5){
+        //判断userId格式的合法性
+        if (userId == null  || userId.length() <3){
             listener.onFailure("请先输入用户名");
             return;
         }

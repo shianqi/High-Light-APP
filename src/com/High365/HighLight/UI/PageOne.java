@@ -16,6 +16,8 @@ import android.widget.*;
 import com.High365.HighLight.*;
 import com.High365.HighLight.Bean.LoveLogBean;
 import com.High365.HighLight.Interface.AudioRecorderListener;
+import com.High365.HighLight.Interface.GetPowerListener;
+import com.High365.HighLight.Interface.LightLevelListener;
 import com.High365.HighLight.Service.LoveLogService;
 import com.High365.HighLight.Util.AudioRecorder;
 import com.High365.HighLight.Util.SharedPreferencesManager;
@@ -153,25 +155,21 @@ public class PageOne extends Fragment{
         loveLogBean = new LoveLogBean();
         loveLogBean.setSexStartTime(new Timestamp(System.currentTimeMillis()));
         audioRecorder.isGetVoiceRun = false;
-        audioRecorder.getNoiseLevel(new AudioRecorderListener() {
+        audioRecorder.startRecord();
+        //设置灯泡亮度
+        audioRecorder.getLightLevel(new LightLevelListener() {
             @Override
-            public void onSuccess(double level) {
-                Message message = new Message();
-                message.obj = level;
-                Log.d("out",""+level);
-                handler.sendMessage(message);
-                int voice = (int)level;
-                Log.d("voice",voice+"");
-                if (voice<10){
-                    sexFrameState += "0" + voice;
-                }else{
-                    if (voice>=100){
-                        sexFrameState += "99";
-                    }else {
-                        sexFrameState += voice;
-                    }
-                }
-                Log.d("sexFrame",sexFrameState);
+            public void getValue(int v) {
+                Message msg = new Message();
+                msg.obj = v ;
+                handler.sendMessage(msg);
+            }
+        });
+        //获取能量数据
+        audioRecorder.getPower(new GetPowerListener() {
+            @Override
+            public void getvalue(double v) {
+                loveLogBean.addToSexFrameState(v);
             }
         });
     }
@@ -188,7 +186,7 @@ public class PageOne extends Fragment{
         loveLogBean.setUserId(new SharedPreferencesManager(getActivity()).readString("UserID"));
         loveLogBean.setRecordFileName(audioRecorder.recordFileName);
         loveLogBean.setUpdateFlag(0);
-        loveLogBean.setSexFrameState(sexFrameState);
+//        loveLogBean.setSexFrameState(sexFrameState);
         loveLogBean.setSexTime(new Timestamp(loveLogBean.getSexEndTime().getTime()-loveLogBean.getSexStartTime().getTime()));
         loveLogBean.setSexHighTime(new Timestamp(0));
         loveLogBean.setSexSubjectiveScore(0);
@@ -210,8 +208,7 @@ public class PageOne extends Fragment{
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            double volLevel = (Double)msg.obj;
-            int lightLevel = ((int)(volLevel/100*254))>254?254:((int)(volLevel/100*254));
+            int lightLevel = (Integer) msg.obj;
             //System.out.println(lightLevel);
             changeBrightness(lightLevel);
             super.handleMessage(msg);

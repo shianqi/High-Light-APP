@@ -163,11 +163,35 @@ public class LoveLogBean {
     }
 
     public int getSexFrameStateSize(){
-        Log.i("listdata.get(position)",sexFrameState.length()/2+"");
+        //Log.i("listdata.get(position)",sexFrameState.length()/2+"");
+        if (sexFrameState.contains(":")){
+            return sexFrameState.split(":").length;
+        }
         return sexFrameState.length()/2;
     }
 
     public int getSexFrameStateByNumber(int i){
+        if (sexFrameState.contains(":")){
+            String s =  sexFrameState.split(":")[i];
+            double d =  Double.parseDouble(s);
+            double volume = 10 * Math.log10(d);
+            return (int)volume;
+        }
         return Integer.parseInt(sexFrameState.substring(i*2,i*2+2));
+
+
+    }
+
+    /**
+     * 加入到性的状态帧
+     * */
+    public void addToSexFrameState(double v){
+        if (sexFrameState == null){
+            sexFrameState = "";
+            sexFrameState += v;
+        }else{
+            sexFrameState += ":";
+            sexFrameState += v;
+        }
     }
 }
