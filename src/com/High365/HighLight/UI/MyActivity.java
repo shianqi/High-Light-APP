@@ -74,6 +74,15 @@ public class MyActivity extends Activity {
     private final int EXIT = 1003;
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        ActivityManager manager = (ActivityManager)getApplication().getSystemService(ACTIVITY_SERVICE) ;
+        manager.killBackgroundProcesses(getPackageName());
+        Log.e(getPackageName(),"::getCurrentClassName");
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -239,6 +248,7 @@ public class MyActivity extends Activity {
             Log.e("类名错误","MainActivity");
             Intent intent = new Intent(MyActivity.this, GraphLoginActivity.class);
             MyActivity.this.startActivity(intent);
+            MyActivity.this.finish();
         }
     }
 
@@ -267,4 +277,7 @@ public class MyActivity extends Activity {
         }else
             return null ;
     }
+
+
 }
+
