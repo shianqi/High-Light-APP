@@ -2,10 +2,7 @@ package com.High365.HighLight.Service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.High365.HighLight.Bean.LoginModel;
-import com.High365.HighLight.Bean.RegisterModel;
-import com.High365.HighLight.Bean.UpdateModel;
-import com.High365.HighLight.Bean.UserInfoBean;
+import com.High365.HighLight.Bean.*;
 import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Util.HttpRequest;
 import com.High365.HighLight.Util.MD5;
@@ -267,4 +264,46 @@ public class UserInfoService{
         }
     }
 
+    /**
+     * 找回密码的业务逻辑<br/>
+     * @param context Activity上下文
+     * @param userId 用户名
+     * @param listener 通用监听器，用以监听找回密码是否成功
+     * */
+    public void forgrtPasswd(Context context,String userId,String email,Listener listener){
+        //判断userId格式的合法性
+        if (userId == null  || userId.length() <3){
+            listener.onFailure("请先输入用户名");
+            return;
+        }
+
+        url = "sendForgetEmail.action";
+        params = new RequestParams();
+        params.add("userId",userId);
+        params.add("email",email);
+        HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                //获取返回的Json串
+                httpResponseOutputStreamString = new String(bytes);
+                //构造实体类
+                try {
+                    SimpleModel simpleModel = new Gson().fromJson(httpResponseOutputStreamString,SimpleModel.class);
+                    if (simpleModel.getStatus() == 1){
+                        //验证成功
+                        listener.onSuccess();
+                    }else{
+                        listener.onFailure("找回密码失败，原因："+ simpleModel.getMsg());
+                    }
+                }catch (Exception e){
+                    listener.onFailure("找回密码失败，原因：" + "服务器发生错误");
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                listener.onFailure("找回密码失败，原因：" + throwable.getLocalizedMessage());
+            }
+        });
+    }
 }
