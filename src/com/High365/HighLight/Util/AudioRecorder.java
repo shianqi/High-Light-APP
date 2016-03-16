@@ -4,10 +4,10 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
-import com.High365.HighLight.Interface.AudioRecorderListener;
-import com.High365.HighLight.Interface.GetDBListener;
-import com.High365.HighLight.Interface.GetPowerListener;
-import com.High365.HighLight.Interface.LightLevelListener;
+import com.High365.HighLight.Interface.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 此类主要实现录音</br>
@@ -39,6 +39,10 @@ public class AudioRecorder {
     public GetDBListener getDBListener;
     public GetPowerListener getPowerListener;
     public LightLevelListener lightLevelListener;
+    public GetBuferrListener getBuferrListener;
+
+    //数据队列
+    List<short[]> list = new ArrayList<>();
 
     public AudioRecorder(int loveLogID) {
         mLock = new Object();
@@ -66,6 +70,8 @@ public class AudioRecorder {
                     //r是实际读取的数据长度，一般而言r会小于buffersize
                     int r = mAudioRecord.read(buffer, 0, BUFFER_SIZE);
                     long v = 0;
+                    //将buffer加入数据队列中
+                    addToList(buffer);
                     // 将 buffer 内容取出，进行平方和运算
                     for (int i = 0; i < buffer.length; i++) {
                         v += buffer[i] * buffer[i];
@@ -86,6 +92,9 @@ public class AudioRecorder {
                     if (lightLevelListener!=null){
                         int lightLevel = ((int)(volume/100*254))>254?254:((int)(volume/100*254));
                         lightLevelListener.getValue(lightLevel);
+                    }
+                    if (getBuferrListener!=null){
+                        getBuferrListener.getValue(buffer);
                     }
                     //Log.d(TAG, "分贝值:" + volume);
                     // 大概一秒二十次
@@ -135,4 +144,48 @@ public class AudioRecorder {
     public void getLightLevel(LightLevelListener lightLevelListener){
         this.lightLevelListener = lightLevelListener;
     }
-}
+
+    /**
+     * 往数据队列里面存数据
+     * */
+    private void addToList(short[] buffer){
+        if (list == null){
+            list = new ArrayList<>();
+        }
+        if (list.size()>100){
+            list.remove(0);
+        }
+        list.add(buffer);
+    }
+
+    /**
+     * 从数据队列里面读取buffer
+     * @param n 要从队列里面取得的buffer[]的数量
+     * */
+
+    public short[] readBuffer(int n){
+        if (n>list.size()){
+            n = list.size();
+        }
+        int sum = 0;
+        for (int i=0;i<n;i++){
+            sum += list.get(i).length;
+        }
+
+        int t = 0;
+        short[] dataBuffer = new short[sum];
+        for (int i=0;i<n;i++){
+            for (int j=0;j<list.get(i).length;j++){
+                dataBuffer[t++] = list.get(i)[j];
+            }
+        }
+        return dataBuffer;
+    }
+
+    /**
+     * 使用监听者模式从List中读取数据
+     * */
+    public void readBuffer(GetBuferrListener getBuferrListener){
+        this.getBuferrListener = getBuferrListener;
+    }
+ }
