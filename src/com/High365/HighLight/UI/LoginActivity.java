@@ -152,7 +152,9 @@ public class LoginActivity extends Activity{
         forgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //do something
+                Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                LoginActivity.this.startActivity(intent);
+                LoginActivity.this.finish();
             }
         });
     }
