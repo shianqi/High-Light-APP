@@ -11,7 +11,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.R;
+import com.High365.HighLight.Service.UserInfoService;
 import com.High365.HighLight.Util.ToastManager;
 
 /**
@@ -22,7 +24,7 @@ public class ForgotPasswordActivity extends Activity{
     private EditText username;
     private EditText email;
     private Button button;
-
+    private UserInfoService userInfoService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +37,23 @@ public class ForgotPasswordActivity extends Activity{
         username = (EditText)findViewById(R.id.forgotPasswordUsername);
         email = (EditText)findViewById(R.id.forgotPasswordEmailAddress);
         button = (Button)findViewById(R.id.forgetPasswordButton);
-
+        userInfoService = new UserInfoService();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+
+                userInfoService.forgrtPasswd(getApplicationContext(), username.getText().toString(), email.getText().toString(), new Listener() {
+                    @Override
+                    public void onSuccess() {
+                        showDialog("验证邮件已经发送到您的邮箱，请注意查收。");
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        showDialog(msg);
+                    }
+                });
+
             }
         });
     }
@@ -47,10 +61,10 @@ public class ForgotPasswordActivity extends Activity{
     /**
      * 是否保存Dialog显示
      */
-    public void showDialog(){
+    public void showDialog(String msg){
         new AlertDialog.Builder(ForgotPasswordActivity.this)
                 .setTitle("提示")
-                .setMessage("验证邮件已经发送到您的邮箱，请注意查收。")
+                .setMessage(msg)
                 .setPositiveButton("确定", null)
                 .show();
     }

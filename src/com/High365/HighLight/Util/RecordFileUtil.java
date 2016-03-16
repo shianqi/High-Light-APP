@@ -63,20 +63,20 @@ public class RecordFileUtil {
      * @param buffer 音频数据
      */
     public void writeBuffer(short buffer){
-        if (dos==null){
-            try {
-                audioFile = File.createTempFile("file_" + loveLogID+"", ".pcm", fpath);
-                dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(audioFile)));
-                fileName = audioFile.getName();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        try{
-            dos.writeShort(buffer);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        if (dos==null){
+//            try {
+//                audioFile = File.createTempFile("file_" + loveLogID+"", ".pcm", fpath);
+//                dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(audioFile)));
+//                fileName = audioFile.getName();
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
+//        }
+//        try{
+//            dos.writeShort(buffer);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     /**
