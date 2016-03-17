@@ -70,8 +70,13 @@ public class LoveLogBean {
     }
 
     public String getSexTimeToString(){
-        DateFormat format=new SimpleDateFormat("mm′ss″");
-        return format.format(new Date(sexTime.getTime()))+"";
+        try{
+            DateFormat format=new SimpleDateFormat("mm′ss″");
+            return format.format(new Date(sexTime.getTime()))+"";
+        }catch (Exception e){
+            return "0'00''";
+        }
+
     }
 
     public Integer getLogID() {
