@@ -33,6 +33,9 @@ public class ForgotPasswordActivity extends Activity{
         init();
     }
 
+    /**
+     * 初始化组件，渲染界面
+     */
     public void init(){
         username = (EditText)findViewById(R.id.forgotPasswordUsername);
         email = (EditText)findViewById(R.id.forgotPasswordEmailAddress);

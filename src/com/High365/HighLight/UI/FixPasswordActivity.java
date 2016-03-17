@@ -46,6 +46,9 @@ public class FixPasswordActivity extends Activity{
         init();
     }
 
+    /**
+     * 初始化组件，渲染界面
+     */
     public void init(){
         verifyFix=(Button)findViewById(R.id.verifyFixButton);
         oldPassword=(EditText)findViewById(R.id.oldPassword);
@@ -113,6 +116,12 @@ public class FixPasswordActivity extends Activity{
         });
     }
 
+    /**
+     * 监听返回键
+     * @param keyCode 按键
+     * @param event 事件
+     * @return 按键
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK&&event.getAction()==KeyEvent.ACTION_DOWN){
@@ -197,6 +206,10 @@ public class FixPasswordActivity extends Activity{
         }
     }
 
+    /**
+     * 获得包名
+     * @return 包名
+     */
     public static String getCurrentClassName() {
         int level = 1;
         StackTraceElement[] stacks = new Throwable().getStackTrace();
@@ -204,6 +217,11 @@ public class FixPasswordActivity extends Activity{
         return className;
     }
 
+    /**
+     * 获取最上方Activity
+     * @param context context对象
+     * @return activity名字
+     */
     String getTopActivity(Activity context) {
         ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
         List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
@@ -213,6 +231,11 @@ public class FixPasswordActivity extends Activity{
             return null ;
     }
 
+    /**
+     * 获取最上方包名
+     * @param context context对象
+     * @return 包名
+     */
     public String getTopActivityPackage(Activity context) {
         ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
         List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;

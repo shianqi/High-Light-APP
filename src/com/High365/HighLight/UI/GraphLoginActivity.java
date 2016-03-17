@@ -102,6 +102,12 @@ public class GraphLoginActivity extends Activity {
         GraphLoginActivity.this.finish();
     }
 
+    /**
+     * 监听返回键
+     * @param keyCode 按键
+     * @param event 事件
+     * @return 按键
+     */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
             goLoginActivity();

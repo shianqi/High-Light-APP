@@ -185,6 +185,12 @@ public class MyActivity extends Activity {
         transaction.commit();
     }
 
+    /**
+     * 监听返回键
+     * @param keyCode 按键
+     * @param event 事件
+     * @return 按键
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
@@ -221,6 +227,9 @@ public class MyActivity extends Activity {
     }
 
 
+    /**
+     * 去用户信息界面
+     */
     public void toUserInformation(){
         Intent intent = new Intent(MyActivity.this, UserInformationActivity.class);
         MyActivity.this.startActivity(intent);
@@ -252,6 +261,10 @@ public class MyActivity extends Activity {
         }
     }
 
+    /**
+     * 获得包名
+     * @return 包名
+     */
     public static String getCurrentClassName() {
         int level = 1;
         StackTraceElement[] stacks = new Throwable().getStackTrace();
@@ -259,6 +272,11 @@ public class MyActivity extends Activity {
         return className;
     }
 
+    /**
+     * 获取最上方Activity
+     * @param context context对象
+     * @return activity名字
+     */
     String getTopActivity(Activity context) {
         ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
         List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
@@ -269,6 +287,11 @@ public class MyActivity extends Activity {
             return null ;
     }
 
+    /**
+     * 获取最上方包名
+     * @param context context对象
+     * @return 包名
+     */
     public String getTopActivityPackage(Activity context) {
         ActivityManager manager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE) ;
         List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
