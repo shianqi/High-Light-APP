@@ -45,6 +45,10 @@ public class UserInformationActivity extends Activity {
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int RESULT_REQUEST_CODE = 2;
     /**
+     * 锁定状态
+     */
+    private int lockState = 2;
+    /**
      * 状态码，表示成功
      */
     final private int SUCCESS = 1;
@@ -185,6 +189,16 @@ public class UserInformationActivity extends Activity {
         userPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userInfoBean.setFixAble(true);
+                nicknameEditText.setEnabled(true);
+                birthdayEditText.setEnabled(true);
+                emailEditText.setEnabled(true);
+                phoneEditText.setEnabled(true);
+                birthdayEditText.setEnabled(true);
+                fixUserInformationButton.setBackgroundColor(0xffaddb18);
+                fixUserInformationButton.setText("确认修改");
+                ToastManager.toast(getApplicationContext(),"信息已可修改");
+                lockState = 0;
                 showDialog();
             }
         });
@@ -499,6 +513,12 @@ public class UserInformationActivity extends Activity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        lockState++;
+    }
+
+    @Override
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
@@ -508,11 +528,13 @@ public class UserInformationActivity extends Activity {
         Log.i("当前包名：",getTopActivityPackage(this));
         Log.i("规定包名：","com.High365.HighLight");
 
-        if(getCurrentClassName().equals(getTopActivity(this))||!getTopActivityPackage(this).equals("com.High365.HighLight"))
-        {
-            Log.e("类名错误","UserInformationActivity");
-            Intent intent = new Intent(UserInformationActivity.this, GraphLoginActivity.class);
-            UserInformationActivity.this.startActivity(intent);
+        if(lockState>=2){
+            if(getCurrentClassName().equals(getTopActivity(this))||!getTopActivityPackage(this).equals("com.High365.HighLight"))
+            {
+                Log.e("类名错误","UserInformationActivity");
+                Intent intent = new Intent(UserInformationActivity.this, GraphLoginActivity.class);
+                UserInformationActivity.this.startActivity(intent);
+            }
         }
     }
 
