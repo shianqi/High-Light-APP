@@ -97,11 +97,11 @@ public class MyActivity extends Activity {
 
         setDefaultFragment();
         addOnClickListener();
+
         UserInfoService userInfoService = new UserInfoService();
         userInfoService.getUserInfo(MyActivity.this);
         LoveLogService loveLogService = new LoveLogService();
         loveLogService.getLast10LoveLogs(MyActivity.this);
-
     }
 
     /**
@@ -137,7 +137,6 @@ public class MyActivity extends Activity {
                 FragmentManager fm = getFragmentManager();
                 // 开启Fragment事务
                 FragmentTransaction transaction = fm.beginTransaction();
-
                 pageTwo.init();
 
                 transaction.show(pageTwo);
@@ -174,9 +173,7 @@ public class MyActivity extends Activity {
     {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        pageOne=new PageOne();
-        pageTwo=new PageTwo();
-        pageThree=new PageThree();
+
         transaction.replace(R.id.fragment_main1, pageOne);
         transaction.replace(R.id.fragment_main2, pageTwo);
         transaction.replace(R.id.fragment_main3, pageThree);

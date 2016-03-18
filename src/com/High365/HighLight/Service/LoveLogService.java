@@ -132,9 +132,7 @@ public class LoveLogService {
             //处理
             for (int k=0;k<sexStateTemp.split(":").length;k++){
                 double mean = Double.parseDouble(sexStateTemp.split(":")[k]);
-                //Log.d(TAG,"能量数据:" + mean);
                 double volume = 10 * Math.log10(mean);
-                //int lightLevel = ((int)(volume/100*254))>254?254:((int)(volume/100*254));
                 int volmeT = (int)volume;
                 if (volmeT > 99){
                     volmeT = 99;
@@ -169,15 +167,12 @@ public class LoveLogService {
                         sum = 0;
                         n = 0;
 
-
                         tmp = "";
                         tmp = tmp + sexState.charAt(j) + sexState.charAt(j + 1);
                         sum += Integer.parseInt(tmp);
                         n++;
                     }
-                    Log.i("temp" + j, "?" + temp + "?");
                 }
-                Log.i("temp" + i, "?" + temp + "?");
                 loveLogBean.setSexFrameState(temp);
             }else{
                 loveLogBean.setSexFrameState(sexState);
@@ -197,6 +192,7 @@ public class LoveLogService {
             return;
         }
         try {
+            Log.e("判断条数","不为0");
             url = "getLoveLog.action";
             params =  new RequestParams();
             params.add("userId",new SharedPreferencesManager(context).readString("UserID"));
@@ -214,7 +210,7 @@ public class LoveLogService {
                         List<LoveLogBean> loveLogBeens = gson.fromJson(httpResponseStr,new TypeToken<List<LoveLogBean>>(){}.getType());
                         //写入数据库----+++++
                         SqlLiteManager  sqlLiteManager = new SqlLiteManager(context);
-                        for (int j=0;j<loveLogBeens.size();j++){
+                        for(int j=0;j<loveLogBeens.size();j++){
                             loveLogBeens.get(j).setLogID(null);
                             sqlLiteManager.updateOrInsertLoveLog(loveLogBeens.get(j));
                         }

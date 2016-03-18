@@ -2,10 +2,8 @@ package com.High365.HighLight.UI;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,23 +16,17 @@ import com.High365.HighLight.Service.LoveLogService;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.SqlLiteManager;
 import com.High365.HighLight.Util.ToastManager;
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -48,15 +40,13 @@ public class PageTwo extends Fragment{
      * 获取到的用户日志
      */
     private List<LoveLogBean> listdata;
+
+    private List<LoveLogBean> listDataMain;
     /**
      * sharedPreferences管理封装类实例
      * @see SharedPreferencesManager
      */
     private SharedPreferencesManager sharedPreferencesManager;
-    /**
-     * 用户ID
-     */
-    private String UserID;
     /**
      * 数据库管理封装实例
      * @see SqlLiteManager
@@ -87,6 +77,8 @@ public class PageTwo extends Fragment{
         init();
     }
 
+
+
     /**
      * 初始化过程，负责类的实例化和组件的绑定
      */
@@ -113,33 +105,62 @@ public class PageTwo extends Fragment{
         paintGraph();
     }
 
+
+    public void addListDate(){
+        int nowListNumber = listItem.size();
+        for(int i = nowListNumber; i<nowListNumber+5;i++){
+            if(listItem.size()>=listdata.size()){
+                ToastManager.toast(getActivity(),"已经浏览到最后啦");
+                break;
+            }else {
+                HashMap<String, Object> map = new HashMap<String, Object>();
+                map.put("list_item_date",listdata.get(i).getSexDateToString());
+                map.put("list_item_beginning_time"," "+listdata.get(i).getSexStartTimeToString());
+                map.put("list_item_time"," "+listdata.get(i).getSexTimeToString());
+                map.put("list_item_score",listdata.get(i).getSexObjectiveScore()+"");
+                listItem.add(map);
+            }
+        }
+    }
     /**
      * 绘制图像
      */
     public void paintGraph(){
         Log.i("日志数量：",""+listdata.size());
 
-        for (int i = 0; i < listdata.size(); i++) {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("list_item_date",listdata.get(i).getSexDateToString());
-            map.put("list_item_beginning_time"," "+listdata.get(i).getSexStartTimeToString());
-            map.put("list_item_time"," "+listdata.get(i).getSexTimeToString());
-            map.put("list_item_score",listdata.get(i).getSexObjectiveScore()+"");
-            listItem.add(map);
-        }
+        addListDate();
 
         listView.setAdapter(listAdatper);
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                switch (scrollState) {
+                    // 当不滚动时
+                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+                        // 判断滚动到底部
+                        if (view.getLastVisiblePosition() == (view.getCount() - 1)) {
+//                            ToastManager.toast(getActivity(),"滚动到最底部");
+                            addListDate();
+                            listAdatper.notifyDataSetChanged();
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
+
         /**
          * 设置点击事件
          */
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastManager.toast(getActivity(),"点击第:"+position+"个");
-
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 final View evaluateDialogView = inflater.inflate(R.layout.line_chart_dialog,null);
-
 
                 mChart = (LineChart)evaluateDialogView.findViewById(R.id.list_item_chart);
                 mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
@@ -156,7 +177,7 @@ public class PageTwo extends Fragment{
 
                 // no description text
                 mChart.setDescription("");
-                mChart.setNoDataTextDescription("You need to provide data for the chart.");
+                mChart.setNoDataTextDescription("分数曲线走丢了::>_<::");
 
                 // enable touch gestures
                 mChart.setTouchEnabled(true);
@@ -190,7 +211,6 @@ public class PageTwo extends Fragment{
                 l.setTextSize(11f);
                 l.setTextColor(Color.WHITE);
                 l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-//        l.setYOffset(11f);
 
                 XAxis xAxis = mChart.getXAxis();
 
@@ -229,32 +249,6 @@ public class PageTwo extends Fragment{
                         .show();
             }
         });
-
-//        /**
-//         * 设置长按响应事件
-//         */
-////        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-////            @Override
-////            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-////                new AlertDialog.Builder(getActivity())
-////                        .setTitle("操作")
-////                        .setNegativeButton("取消", new DialogInterface.OnClickListener(){
-////                            @Override
-////                            public void onClick(DialogInterface dialog, int which) {
-////
-////                            }
-////                        })
-////                        .setPositiveButton("分享", new DialogInterface.OnClickListener() {
-////                            @Override
-////                            public void onClick(DialogInterface dialog, int which) {
-////                                ToastManager.toast(getActivity(),"请申请合适的api来实现分享");
-////                                //没有申请合适的api来实现分享
-////                            }
-////                        })
-////                        .show();
-////                return true;
-////            }
-////        });
     }
 
     /**
@@ -266,16 +260,6 @@ public class PageTwo extends Fragment{
     }
 
     private void setData(int position) {
-
-//        for (int i = 0; i < listdata.size(); i++) {
-//            HashMap<String, Object> map = new HashMap<String, Object>();
-//            map.put("list_item_date",listdata.get(i).getSexDateToString());
-//            map.put("list_item_beginning_time"," "+listdata.get(i).getSexStartTimeToString());
-//            map.put("list_item_time"," "+listdata.get(i).getSexTimeToString());
-//            map.put("list_item_score",listdata.get(i).getSexObjectiveScore()+"");
-//            listItem.add(map);
-//        }
-
         ArrayList<String> xVals = new ArrayList<String>();
         for (int i = 0; i < listdata.get(position).getSexFrameStateSize(); i++) {
             xVals.add(i + "");
@@ -300,10 +284,6 @@ public class PageTwo extends Fragment{
         set1.setFillColor(ColorTemplate.getHoloBlue());
         set1.setHighLightColor(Color.rgb(244, 117, 117));
         set1.setDrawCircleHole(false);
-        //set1.setFillFormatter(new MyFillFormatter(0f));
-//        set1.setDrawHorizontalHighlightIndicator(false);
-//        set1.setVisible(false);
-//        set1.setCircleHoleColor(Color.WHITE);
 
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
