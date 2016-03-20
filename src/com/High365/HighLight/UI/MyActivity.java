@@ -17,6 +17,7 @@ import android.widget.Button;
 import com.High365.HighLight.R;
 import com.High365.HighLight.Service.LoveLogService;
 import com.High365.HighLight.Service.UserInfoService;
+import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.ToastManager;
 
 import java.util.List;
@@ -99,6 +100,9 @@ public class MyActivity extends Activity {
         addOnClickListener();
 
         UserInfoService userInfoService = new UserInfoService();
+        if(userInfoService.isFirstLogin(new SharedPreferencesManager(getApplicationContext()).readString("UserID"),getApplicationContext())){
+
+        }
         //userInfoService.getUserInfo(MyActivity.this);
         LoveLogService loveLogService = new LoveLogService();
         loveLogService.getLast10LoveLogs(MyActivity.this);
