@@ -110,7 +110,7 @@ public class PageTwo extends Fragment{
         int nowListNumber = listItem.size();
         for(int i = nowListNumber; i<nowListNumber+5;i++){
             if(listItem.size()>=listdata.size()){
-                ToastManager.toast(getActivity(),"已经浏览到最后啦");
+                //ToastManager.toast(getActivity(),"已经浏览到最后啦");
                 break;
             }else {
                 HashMap<String, Object> map = new HashMap<String, Object>();

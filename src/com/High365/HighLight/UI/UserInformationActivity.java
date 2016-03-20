@@ -59,7 +59,7 @@ public class UserInformationActivity extends Activity {
     /**
      * 图片文件名字
      */
-    private static final String IMAGE_FILE_NAME = "faceImage.jpg";
+    private static final String IMAGE_FILE_NAME = "faceImage_11.jpg";
 
     /**
      * 用户头像控件
@@ -421,14 +421,14 @@ public class UserInformationActivity extends Activity {
                     break;
                 case CAMERA_REQUEST_CODE:
                     if (SdUtil.hasSdcard()) {
-                        File tempFile = new File(
-                                Environment.getExternalStorageDirectory()
-                                        + IMAGE_FILE_NAME);
-                        startPhotoZoom(Uri.fromFile(tempFile));
+                        startPhotoZoom(Uri.fromFile(new File(Environment
+                                .getExternalStorageDirectory(),
+                                IMAGE_FILE_NAME)));
                     } else {
                         Toast.makeText(UserInformationActivity.this, "未找到存储卡，无法存储照片！",
                                 Toast.LENGTH_LONG).show();
                     }
+
 
                     break;
                 case RESULT_REQUEST_CODE:
