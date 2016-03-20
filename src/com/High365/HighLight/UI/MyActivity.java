@@ -101,9 +101,8 @@ public class MyActivity extends Activity {
 
         UserInfoService userInfoService = new UserInfoService();
         if(userInfoService.isFirstLogin(new SharedPreferencesManager(getApplicationContext()).readString("UserID"),getApplicationContext())){
-
+            userInfoService.getUserInfo(MyActivity.this);
         }
-        //userInfoService.getUserInfo(MyActivity.this);
         LoveLogService loveLogService = new LoveLogService();
         loveLogService.getLast10LoveLogs(MyActivity.this);
     }
