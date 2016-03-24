@@ -51,6 +51,12 @@ public class MyActivity extends Activity {
     private Button button3;
 
     /**
+     * 底部按钮组第四个按钮，发现界面
+     */
+    private Button button4;
+
+
+    /**
      * 录音界面
      * @see PageOne
      */
@@ -65,6 +71,13 @@ public class MyActivity extends Activity {
      * @see PageThree
      */
     private PageThree pageThree;
+    /**
+     * 发现界面
+     * @see PageFour
+     */
+    private PageFour pageFour;
+
+
 
     /**
      * 退出按键时长
@@ -91,10 +104,12 @@ public class MyActivity extends Activity {
         button1=(Button)findViewById(R.id.button1);
         button2=(Button)findViewById(R.id.button2);
         button3=(Button)findViewById(R.id.button3);
+        button4=(Button)findViewById(R.id.button4);
 
         pageOne=new PageOne();
         pageTwo=new PageTwo();
         pageThree=new PageThree();
+        pageFour=new PageFour();
 
         setDefaultFragment();
         addOnClickListener();
@@ -127,6 +142,7 @@ public class MyActivity extends Activity {
                 transaction.show(pageOne);
                 transaction.hide(pageTwo);
                 transaction.hide(pageThree);
+                transaction.hide(pageFour);
                 transaction.commit();
             }
         });
@@ -145,6 +161,7 @@ public class MyActivity extends Activity {
                 transaction.show(pageTwo);
                 transaction.hide(pageOne);
                 transaction.hide(pageThree);
+                transaction.hide(pageFour);
                 transaction.attach(pageTwo);
                 transaction.commit();
             }
@@ -163,7 +180,23 @@ public class MyActivity extends Activity {
                 transaction.show(pageThree);
                 transaction.hide(pageTwo);
                 transaction.hide(pageOne);
+                transaction.hide(pageFour);
                 transaction.attach(pageThree);
+                transaction.commit();
+            }
+        });
+
+        button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = getFragmentManager();
+                // 开启Fragment事务
+                FragmentTransaction transaction = fm.beginTransaction();
+
+                transaction.show(pageFour);
+                transaction.hide(pageOne);
+                transaction.hide(pageTwo);
+                transaction.hide(pageThree);
                 transaction.commit();
             }
         });
@@ -180,8 +213,10 @@ public class MyActivity extends Activity {
         transaction.replace(R.id.fragment_main1, pageOne);
         transaction.replace(R.id.fragment_main2, pageTwo);
         transaction.replace(R.id.fragment_main3, pageThree);
+        transaction.replace(R.id.fragment_main4, pageFour);
         transaction.hide(pageTwo);
         transaction.hide(pageThree);
+        transaction.hide(pageFour);
         transaction.commit();
     }
 

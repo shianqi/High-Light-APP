@@ -29,6 +29,11 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
             </FrameLayout>
+            <FrameLayout
+                    android:id="@+id/fragment_main4"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+            </FrameLayout>
         </RelativeLayout >
         <!--此处是下面三个按钮的布局-->
         <LinearLayout
@@ -70,6 +75,18 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:text="排行榜"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_weight="1">
+                <Button
+                        android:id="@+id/button4"
+                        android:layout_marginLeft="1dip"
+                        android:background="@drawable/button_select_change"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="发现"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
