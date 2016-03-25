@@ -80,6 +80,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
 		initAnimation();
 	}
 
+
 	/**
 	 * 获得系统的最新时间
 	 *
