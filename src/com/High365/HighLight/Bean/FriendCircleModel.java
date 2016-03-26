@@ -11,38 +11,20 @@ import java.sql.Timestamp;
  * Friendcircle entity. @author MyEclipse Persistence Tools
  */
 
-public class FriendCircleModel implements java.io.Serializable {
+public class FriendCircleModel {
 
     // Fields
-    /**
-     * 在数据库中的唯一标识符
-     * */
-    private Integer circleId;
-    /**
-     * 用户的ID,是用户的唯一凭证
-     * */
-    private String userId;
-    /**
-     * 性的时间,是开始时间与结束时间的间隔
-     * */
-    private Timestamp sexTime;
-    /**
-     * 性的主观分数
-     * */
-    private Integer sexSubjectiveScore;
-    /**
-     * 性的客观得分
-     * */
-    private Integer sexObjectiveScore;
-    /**
-     * 性的状态帧
-     * */
-    private String sexFrameState;
-    /**
-     * 城市,以ip来获取,在服务器端进行获取,不在Android端获取
-     * */
-    private String city;
 
+    private Integer circleId;
+    private String userId;
+    private Timestamp sexTime;
+    private Integer sexSubjectiveScore;
+    private Integer sexObjectiveScore;
+    private String sexFrameState;
+    private String city;
+    private String shareText;
+    private String upvoteText;
+    private boolean upvoteFlag;
     // Constructors
 
     /** default constructor */
@@ -52,13 +34,14 @@ public class FriendCircleModel implements java.io.Serializable {
     /** full constructor */
     public FriendCircleModel(String userId, Timestamp sexTime,
                         Integer sexSubjectiveScore, Integer sexObjectiveScore,
-                        String sexFrameState, String city) {
+                        String sexFrameState, String city, String shareText) {
         this.userId = userId;
         this.sexTime = sexTime;
         this.sexSubjectiveScore = sexSubjectiveScore;
         this.sexObjectiveScore = sexObjectiveScore;
         this.sexFrameState = sexFrameState;
         this.city = city;
+        this.shareText = shareText;
     }
 
     // Property accessors
@@ -72,7 +55,7 @@ public class FriendCircleModel implements java.io.Serializable {
     }
 
     public String getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public void setUserId(String userId) {
@@ -119,4 +102,27 @@ public class FriendCircleModel implements java.io.Serializable {
         this.city = city;
     }
 
+    public String getShareText() {
+        return this.shareText;
+    }
+
+    public void setShareText(String shareText) {
+        this.shareText = shareText;
+    }
+
+    public String getUpvoteText() {
+        return upvoteText;
+    }
+
+    public void setUpvoteText(String upvoteText) {
+        this.upvoteText = upvoteText;
+    }
+
+    public boolean isUpvoteFlag() {
+        return upvoteFlag;
+    }
+
+    public void setUpvoteFlag(boolean upvoteFlag) {
+        this.upvoteFlag = upvoteFlag;
+    }
 }

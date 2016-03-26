@@ -2,6 +2,7 @@ package com.High365.HighLight.Service;
 
 import android.content.Context;
 import com.High365.HighLight.Bean.FriendCircleModel;
+import com.High365.HighLight.Bean.LoveLogBean;
 import com.High365.HighLight.Bean.UpdateModel;
 import com.High365.HighLight.Interface.GetListListener;
 import com.High365.HighLight.Interface.Listener;
@@ -92,10 +93,15 @@ public class FriendCircleService {
      * 一旦获取成功则进行成功回调,一般发生异常抛出就进行失败回调.<br/>
      * */
     public void getDownPullList(Context context,GetListListener getListListener){
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
+        int begin = sharedPreferencesManager.readInteger("bigCircleId");
+        String userId = sharedPreferencesManager.readString("UserID");
         //初始化请求参数
         url = "getFriendCircle.action";
         params = new RequestParams();
         params.add("oper","0");
+        params.add("userId",userId);
+        params.add("begin",begin+"");
         try{
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
                 @Override
@@ -104,6 +110,9 @@ public class FriendCircleService {
                         httpResponseStr = new String(bytes);
                         //将返回的对象转换成List
                         List<FriendCircleModel>list = new Gson().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
+                        if (list.size()!=0){
+                            sharedPreferencesManager.writeInteger("bigCircleId",list.get(0).getCircleId());
+                        }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
                         getListListener.onFailure("网络请求失败");
@@ -124,13 +133,16 @@ public class FriendCircleService {
      * 获取上拉加载的List的逻辑代码;<br/>
      * */
 
-    public void getUpPulllist(Integer begin,Context context,GetListListener getListListener){
-
+    public void getUpPulllist(Context context,GetListListener getListListener){
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
+        int begin = sharedPreferencesManager.readInteger("smallCircleId");
+        String userId = sharedPreferencesManager.readString("UserID");
         //初始化请求参数
         url = "getFriendCircle.action";
         params = new RequestParams();
         params.add("oper","0");
         params.add("begin",begin+"");
+        params.add("userId",userId);
         try{
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
                 @Override
@@ -139,6 +151,9 @@ public class FriendCircleService {
                         httpResponseStr = new String(bytes);
                         //将返回的对象转换成List
                         List<FriendCircleModel>list = new Gson().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
+                        if (list.size()!=0){
+                            sharedPreferencesManager.writeInteger("smallCircleId",list.get(list.size()-1).getCircleId());
+                        }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
                         getListListener.onFailure("网络请求失败");
@@ -155,6 +170,21 @@ public class FriendCircleService {
         }
     }
 
+    /**
+     * 将LoveLog对象转换成FriendCircle对象
+     * @param loveLogBean lvoeLog对象模型
+     * @param shareText 用户要分享的文字
+     * */
+    public FriendCircleModel fromLoveLog(String shareText,LoveLogBean loveLogBean){
 
+        FriendCircleModel friendCircleModel = new FriendCircleModel();
+        friendCircleModel.setUserId(loveLogBean.getUserId());
+        friendCircleModel.setSexTime(loveLogBean.getSexTime());
+        friendCircleModel.setSexSubjectiveScore(loveLogBean.getSexSubjectiveScore());
+        friendCircleModel.setSexObjectiveScore(loveLogBean.getSexObjectiveScore());
+        friendCircleModel.setSexFrameState(loveLogBean.getSexFrameState());
+        friendCircleModel.setShareText(shareText);
+        return friendCircleModel;
+    }
 
 }

@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.High365.HighLight.*;
 import com.High365.HighLight.Bean.LoveLogBean;
+import com.High365.HighLight.Interface.Listener;
+import com.High365.HighLight.Service.FriendCircleService;
 import com.High365.HighLight.Service.LoveLogService;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.SqlLiteManager;
@@ -65,7 +67,10 @@ public class PageTwo extends Fragment{
      */
     private ArrayList<HashMap<String,Object>> listItem;
     private LineChart mChart;
-
+    /**
+     * 朋友圈业务逻辑类
+     * */
+    FriendCircleService friendCircleService;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.second_fragment, container, false);
@@ -100,6 +105,7 @@ public class PageTwo extends Fragment{
                         R.id.list_item_score
                 });
         sharedPreferencesManager=new SharedPreferencesManager(getActivity());
+        friendCircleService = new FriendCircleService();
         sqlLiteManager = new SqlLiteManager(getActivity());
         listdata = getListItem();
         paintGraph();
@@ -237,7 +243,19 @@ public class PageTwo extends Fragment{
                         .setNegativeButton("分享",new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ToastManager.toast(getActivity(),"分享未开放");
+                                //ToastManager.toast(getActivity(),  "分享未开放");
+                                //执行分享逻辑
+                                friendCircleService.shareToFriendCircle(getActivity(), friendCircleService.fromLoveLog("我要分享的文字",listdata.get(position)), new Listener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        ToastManager.toast(getActivity(),"分享成功！");
+                                    }
+
+                                    @Override
+                                    public void onFailure(String msg) {
+                                        ToastManager.toast(getActivity(),"分享失败："+msg);
+                                    }
+                                });
                             }
                         })
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
