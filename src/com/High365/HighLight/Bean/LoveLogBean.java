@@ -59,6 +59,11 @@ public class LoveLogBean {
      * */
     private Integer updateFlag;
 
+    /**
+     * 简易状态帧
+     * */
+    private String simpleSexFrameState;
+
     public String getSexDateToString(){
         DateFormat format=new SimpleDateFormat("yyyy/MM/dd");
         return format.format(new Date(sexStartTime.getTime()))+"";
@@ -78,6 +83,8 @@ public class LoveLogBean {
         }
 
     }
+
+
 
     public Integer getLogID() {
         return logID;
@@ -167,20 +174,23 @@ public class LoveLogBean {
         this.updateFlag = updateFlag;
     }
 
+
     public int getSexFrameStateSize(){
         //Log.i("listdata.get(position)",sexFrameState.length()/2+"");
         if (sexFrameState.contains(":")){
-            return sexFrameState.split(":").length;
+//            return sexFrameState.split(":").length;
+            return getSimpleState().length()/2;
         }
         return sexFrameState.length()/2;
     }
 
     public int getSexFrameStateByNumber(int i){
         if (sexFrameState.contains(":")){
-            String s =  sexFrameState.split(":")[i];
-            double d =  Double.parseDouble(s);
-            double volume = 10 * Math.log10(d);
-            return (int)volume;
+//            String s =  sexFrameState.split(":")[i];
+//            double d =  Double.parseDouble(s);
+//            double volume = 10 * Math.log10(d);
+//            return (int)volume;
+            return  Integer.parseInt(getSimpleState().substring(i*2,i*2+2));
         }
         return Integer.parseInt(sexFrameState.substring(i*2,i*2+2));
 
@@ -199,4 +209,66 @@ public class LoveLogBean {
             sexFrameState += v;
         }
     }
+
+    private String getSimpleState(){
+        if (simpleSexFrameState!=null){
+            return simpleSexFrameState;
+        }else {
+            String sexState = sexFrameState;
+            String sexStateTemp = sexState;
+            sexState = "";
+            //处理
+            for (int k=0;k<sexStateTemp.split(":").length;k++){
+                double mean = Double.parseDouble(sexStateTemp.split(":")[k]);
+                double volume = 10 * Math.log10(mean);
+                int volmeT = (int)volume;
+                if (volmeT > 99){
+                    volmeT = 99;
+                }
+                if (volmeT < 10){
+                    sexState += '0';
+                }
+                sexState += volmeT;
+            }
+
+
+            int index = 0;
+            int n = 0;
+            int sum = 0;
+            String temp = "";
+            String tmp = "";
+            if (sexState.length() > 100) {
+                for (int j = 0; j < sexState.length(); j = j + 2) {
+
+                    if (index == j * 51 / sexState.length()) {
+                        tmp = "";
+                        tmp = tmp + sexState.charAt(j) + sexState.charAt(j + 1);
+                        sum += Integer.parseInt(tmp);
+                        n++;
+                    } else {
+                        index = j * 51 / sexState.length();
+                        if (sum / n < 10) {
+                            temp += "0" + sum / n;
+                        } else {
+                            temp += sum / n;
+                        }
+                        sum = 0;
+                        n = 0;
+
+                        tmp = "";
+                        tmp = tmp + sexState.charAt(j) + sexState.charAt(j + 1);
+                        sum += Integer.parseInt(tmp);
+                        n++;
+                    }
+                }
+                //loveLogBean.setSexFrameState(temp);
+                simpleSexFrameState = temp;
+            }else{
+//                loveLogBean.setSexFrameState(sexState);
+                simpleSexFrameState = sexState;
+            }
+        }
+        return  simpleSexFrameState;
+    }
+
 }
