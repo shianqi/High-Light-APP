@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.RegistActivity"/>
+      <point      
+        x = "1708"      
+        y = "2280"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.ForgotPasswordActivity"/>
+      <point      
+        x = "2304"      
+        y = "1700"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.GraphLoginActivity"/>
+      <point      
+        x = "200"      
+        y = "1980"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.LoginActivity"/>
+      <point      
+        x = "3196"      
+        y = "1872"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.MyActivity"/>
+      <point      
+        x = "500"      
+        y = "100"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "com.High365.HighLight.UI.MyActivity"/>
+      <point      
+        x = "1768"      
+        y = "100"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.SetGraphPasswordActivity"/>
+      <point      
+        x = "212"      
+        y = "1532"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.UserInformationActivity"/>
+      <point      
+        x = "908"      
+        y = "2496"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.FixPasswordActivity"/>
+      <point      
+        x = "2184"      
+        y = "2036"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.High365.HighLight.UI.WelcomeActivity"/>
+      <point      
+        x = "1320"      
+        y = "1568"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>

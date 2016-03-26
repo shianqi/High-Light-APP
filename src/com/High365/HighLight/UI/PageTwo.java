@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +44,9 @@ public class PageTwo extends Fragment{
      * 获取到的用户日志
      */
     private List<LoveLogBean> listdata;
+
+    private EditText discoveryEditText;
+    private TextView discoveryTextView;
 
     private List<LoveLogBean> listDataMain;
     /**
@@ -244,18 +249,55 @@ public class PageTwo extends Fragment{
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //ToastManager.toast(getActivity(),  "分享未开放");
-                                //执行分享逻辑
-                                friendCircleService.shareToFriendCircle(getActivity(), friendCircleService.fromLoveLog("我要分享的文字",listdata.get(position)), new Listener() {
+                                final View discoveryDialogView = inflater.inflate(R.layout.discovery_dialog,null);
+                                discoveryEditText = (EditText)discoveryDialogView.findViewById(R.id.discovery_text);
+                                discoveryTextView = (TextView)discoveryDialogView.findViewById(R.id.discovery_text_size);
+                                discoveryEditText.setText("今天嗨了"+listdata.get(position).getSexObjectiveScore()+"分！");
+                                discoveryTextView.setText("还可以输入："+(140-discoveryEditText.length()));
+                                discoveryEditText.addTextChangedListener(new TextWatcher() {
                                     @Override
-                                    public void onSuccess() {
-                                        ToastManager.toast(getActivity(),"分享成功！");
+                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
                                     }
 
                                     @Override
-                                    public void onFailure(String msg) {
-                                        ToastManager.toast(getActivity(),"分享失败："+msg);
+                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                        discoveryTextView.setText("还可以输入："+(140-discoveryEditText.length()));
+                                    }
+
+                                    @Override
+                                    public void afterTextChanged(Editable s) {
+
                                     }
                                 });
+                                new AlertDialog.Builder(getActivity())
+                                        .setTitle("分享")
+                                        .setView(discoveryDialogView)
+                                        .setNegativeButton("取消",new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .setPositiveButton("发布", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                friendCircleService.shareToFriendCircle(getActivity(), friendCircleService.fromLoveLog(""+discoveryEditText.getText(),listdata.get(position)), new Listener() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        ToastManager.toast(getActivity(),"分享成功！");
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(String msg) {
+                                                        ToastManager.toast(getActivity(),"分享失败："+msg);
+                                                    }
+                                                });
+                                            }
+                                        })
+                                        .show();
+                                //执行分享逻辑
+
                             }
                         })
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
