@@ -2,6 +2,7 @@ package com.High365.HighLight.UI;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -124,7 +125,8 @@ public class PageFour extends Fragment implements OnRefreshListener {
         rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                
+                Intent intent = new Intent(getActivity(), CommentaryActivity.class);
+                getActivity().startActivity(intent);
             }
         });
 
@@ -162,11 +164,8 @@ public class PageFour extends Fragment implements OnRefreshListener {
 
             @Override
             protected Void doInBackground(Void... params) {
-                SystemClock.sleep(5000);
+                SystemClock.sleep(2000);
 
-                //textList.add("这是加载更多出来的数据1");
-                //textList.add("这是加载更多出来的数据2");
-                //textList.add("这是加载更多出来的数据3");
                 return null;
             }
 
