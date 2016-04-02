@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.High365.HighLight.Interface.GetListListener;
 import com.High365.HighLight.Interface.OnRefreshListener;
 import com.High365.HighLight.R;
+import com.High365.HighLight.Service.FriendCircleService;
 import com.High365.HighLight.Util.ToastManager;
 
 import java.util.ArrayList;
@@ -38,6 +40,8 @@ public class PageFour extends Fragment implements OnRefreshListener {
      * 用于将数据绑定到ListView的适配器
      */
     private MyAdapter listAdatper;
+
+    private FriendCircleService friendCircleService;
 
     public class MyAdapter extends SimpleAdapter{
 
@@ -87,6 +91,8 @@ public class PageFour extends Fragment implements OnRefreshListener {
         view = inflater.inflate(R.layout.fourth_fragment, container, false);
         Log.e("加载界面4","");
 
+        friendCircleService = new FriendCircleService();
+
         rListView = (RefreshListView)view.findViewById(R.id.refreshlistview);
         listItem = new ArrayList<HashMap<String, Object>>();
 
@@ -119,6 +125,25 @@ public class PageFour extends Fragment implements OnRefreshListener {
             map.put("glorification_state","信息4");
             listItem.add(map);
         }
+
+//        //获取下拉刷新的内容
+//
+//        friendCircleService.getDownPullList(getActivity(), new GetListListener() {
+//            @Override
+//            public void onSuccess(List list) {
+//                for (int i=0;i<list.size();i++)  {
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//
+//            }
+//        });
+
+
+
         rListView.setAdapter(listAdatper);
         rListView.setOnRefreshListener(this);
 
