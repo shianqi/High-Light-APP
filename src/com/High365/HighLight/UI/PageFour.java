@@ -13,10 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.High365.HighLight.Bean.FriendCircleModel;
 import com.High365.HighLight.Interface.GetListListener;
 import com.High365.HighLight.Interface.OnRefreshListener;
 import com.High365.HighLight.R;
 import com.High365.HighLight.Service.FriendCircleService;
+import com.High365.HighLight.Service.TimeService;
+import com.High365.HighLight.Util.BitmapUtil;
+import com.High365.HighLight.Util.ImageEncodeUtil;
 import com.High365.HighLight.Util.ToastManager;
 
 import java.util.ArrayList;
@@ -116,31 +120,48 @@ public class PageFour extends Fragment implements OnRefreshListener {
                 });
 
 
-        for(int i = 0; i<10;i++){
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("discovery_icon",R.drawable.glorification_false);
-            map.put("discovery_username","信息1");
-            map.put("list_item_main","信息2");
-            map.put("list_item_time"," "+"20分钟前");
-            map.put("glorification_state","信息4");
-            listItem.add(map);
-        }
+//        for(int i = 0; i<10;i++){
+//            HashMap<String, Object> map = new HashMap<String, Object>();
+//            map.put("discovery_icon",R.drawable.glorification_false);
+//            map.put("discovery_username","信息1");
+//            map.put("list_item_main","信息2");
+//            map.put("list_item_time"," "+"20分钟前");
+//            map.put("glorification_state","信息4");
+//            listItem.add(map);
+//        }
 
-//        //获取下拉刷新的内容
-//
-//        friendCircleService.getDownPullList(getActivity(), new GetListListener() {
-//            @Override
-//            public void onSuccess(List list) {
-//                for (int i=0;i<list.size();i++)  {
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//
-//            }
-//        });
+        //获取下拉刷新的内容
+
+        friendCircleService.getDownPullList(getActivity(), new GetListListener() {
+            @Override
+            public void onSuccess(List list) {
+                for (int i=0;i<list.size();i++)  {
+                    FriendCircleModel friendCircleModel = (FriendCircleModel) list.get(i);
+                    HashMap<String, Object> map = new HashMap<String, Object>();
+                    try{
+                        map.put("discovery_icon",ImageEncodeUtil.base64ToBitmap(friendCircleModel.getUserPhoto()));
+                    }catch (Exception e){
+                        map.put("discovery_icon",R.drawable.glorification_false);
+                        e.printStackTrace();
+                    }
+
+                    map.put("discovery_username",friendCircleModel.getUserId());
+                    map.put("list_item_main",friendCircleModel.getShareText());
+                    map.put("list_item_time", TimeService.getIntervalTime(friendCircleModel.getShareTime()));
+                    if (Integer.parseInt(friendCircleModel.getVoteText().split(":")[1])>5){
+                        map.put("glorification_state",friendCircleModel.getVoteText().split(":")[0] + "等" + Integer.parseInt(friendCircleModel.getVoteText().split(":")[1]) + "觉得很赞");
+                    }else{
+                        map.put("glorification_state",friendCircleModel.getVoteText().split(":")[0] + Integer.parseInt(friendCircleModel.getVoteText().split(":")[1]) + "觉得很赞");
+                    }
+                    listItem.add(map);
+                }
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                ToastManager.toast(getActivity(),msg);
+            }
+        });
 
 
 

@@ -9,6 +9,7 @@ import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Util.HttpRequest;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -127,12 +128,15 @@ public class FriendCircleService {
                     try{
                         httpResponseStr = new String(bytes);
                         //将返回的对象转换成List
-                        List<FriendCircleModel>list = new Gson().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
+                        List<FriendCircleModel>list = new GsonBuilder()
+                                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .create().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
                         if (list.size()!=0){
                             bigID = list.get(0).getCircleId();
                         }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
+                        e.printStackTrace();
                         getListListener.onFailure("网络请求失败");
                     }
                 }
