@@ -64,6 +64,16 @@ public class LoveLogBean {
      * */
     private String simpleSexFrameState;
 
+    /**
+     * 构造函数
+     * */
+    public LoveLogBean(){
+        if (simpleSexFrameState == null && sexFrameState != null){
+            getSimpleState();
+        }
+        int i;
+    }
+
     public String getSexDateToString(){
         DateFormat format=new SimpleDateFormat("yyyy/MM/dd");
         return format.format(new Date(sexStartTime.getTime()))+"";
@@ -174,33 +184,33 @@ public class LoveLogBean {
         this.updateFlag = updateFlag;
     }
 
+    public String getSimpleSexFrameState() {
+        if (simpleSexFrameState==null){
+            simpleSexFrameState = getSimpleState();
+        }
+        return simpleSexFrameState;
+    }
+
+    public void setSimpleSexFrameState(String simpleSexFrameState) {
+        this.simpleSexFrameState = simpleSexFrameState;
+    }
 
     public int getSexFrameStateSize(){
-        //Log.i("listdata.get(position)",sexFrameState.length()/2+"");
-        if (sexFrameState.contains(":")){
-//            return sexFrameState.split(":").length;
-            return getSimpleState().length()/2;
-        }
-        return sexFrameState.length()/2;
+        return getSimpleState().length()/2;
     }
 
     public int getSexFrameStateByNumber(int i){
-        if (sexFrameState.contains(":")){
-//            String s =  sexFrameState.split(":")[i];
-//            double d =  Double.parseDouble(s);
-//            double volume = 10 * Math.log10(d);
-//            return (int)volume;
             return  Integer.parseInt(getSimpleState().substring(i*2,i*2+2));
-        }
-        return Integer.parseInt(sexFrameState.substring(i*2,i*2+2));
-
-
     }
 
     /**
      * 加入到性的状态帧
      * */
     public void addToSexFrameState(double v){
+
+
+        // 加入到正常的状态帧
+
         if (sexFrameState == null){
             sexFrameState = "";
             sexFrameState += v;
@@ -208,6 +218,8 @@ public class LoveLogBean {
             sexFrameState += ":";
             sexFrameState += v;
         }
+
+
     }
 
     private String getSimpleState(){
@@ -270,5 +282,6 @@ public class LoveLogBean {
         }
         return  simpleSexFrameState;
     }
+
 
 }

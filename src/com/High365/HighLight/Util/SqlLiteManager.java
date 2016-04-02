@@ -29,7 +29,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE UserInfo (UserID varchar(100),UserPWD varchar(20),UserGesturePWD varchar(20),UserName varchar(20),UserEmail varchar(100),UserBirthDay Date,UserPhoto varchar(1000000),UserGender Int,UserSPhysiologicalDay Date,UserEPhysiologicalDay Date,UserPhone varchar(20))");
-        sqLiteDatabase.execSQL("CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000),RecordFileName varchar(100),UpdateFlag integer)");
+        sqLiteDatabase.execSQL("CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000),SimpleSexFrameState varchar(100000),RecordFileName varchar(100),UpdateFlag integer)");
     }
 
     @Override
@@ -210,6 +210,7 @@ public class SqlLiteManager extends SQLiteOpenHelper {
             loveLogBean.setSexObjectiveScore(cursor.getInt(cursor.getColumnIndex("SexObjectiveScore")));
         }
         loveLogBean.setSexFrameState(cursor.getString(cursor.getColumnIndex("SexFrameState")));
+        loveLogBean.setSimpleSexFrameState(cursor.getString(cursor.getColumnIndex("SimpleSexFrameState")));
         loveLogBean.setRecordFileName(cursor.getString(cursor.getColumnIndex("RecordFileName")));
         loveLogBean.setUpdateFlag(cursor.getInt(cursor.getColumnIndex("UpdateFlag")));
         highLightDB.close();
@@ -265,6 +266,9 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         }
         if (loveLogBean.getSexFrameState()!=null){
             cv.put("SexFrameState",loveLogBean.getSexFrameState());
+        }
+        if (loveLogBean.getSimpleSexFrameState()!=null){
+            cv.put("SimpleSexFrameState",loveLogBean.getSimpleSexFrameState());
         }
         if (loveLogBean.getRecordFileName()!=null){
             cv.put("RecordFileName",loveLogBean.getRecordFileName());

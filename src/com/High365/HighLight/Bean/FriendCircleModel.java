@@ -23,8 +23,11 @@ public class FriendCircleModel {
     private String sexFrameState;
     private String city;
     private String shareText;
-    private String upvoteText;
-    private boolean upvoteFlag;
+    private Timestamp shareTime;
+    private String userPhoto;
+    private Integer upvoteFlag;
+    private String voteText;
+
     // Constructors
 
     /** default constructor */
@@ -34,7 +37,9 @@ public class FriendCircleModel {
     /** full constructor */
     public FriendCircleModel(String userId, Timestamp sexTime,
                         Integer sexSubjectiveScore, Integer sexObjectiveScore,
-                        String sexFrameState, String city, String shareText) {
+                        String sexFrameState, String city, String shareText,
+                        Timestamp shareTime, String userPhoto, Integer upvoteFlag,
+                        String voteText) {
         this.userId = userId;
         this.sexTime = sexTime;
         this.sexSubjectiveScore = sexSubjectiveScore;
@@ -42,6 +47,10 @@ public class FriendCircleModel {
         this.sexFrameState = sexFrameState;
         this.city = city;
         this.shareText = shareText;
+        this.shareTime = shareTime;
+        this.userPhoto = userPhoto;
+        this.upvoteFlag = upvoteFlag;
+        this.voteText = voteText;
     }
 
     // Property accessors
@@ -110,19 +119,35 @@ public class FriendCircleModel {
         this.shareText = shareText;
     }
 
-    public String getUpvoteText() {
-        return upvoteText;
+    public Timestamp getShareTime() {
+        return this.shareTime;
     }
 
-    public void setUpvoteText(String upvoteText) {
-        this.upvoteText = upvoteText;
+    public void setShareTime(Timestamp shareTime) {
+        this.shareTime = shareTime;
     }
 
-    public boolean isUpvoteFlag() {
-        return upvoteFlag;
+    public String getUserPhoto() {
+        return this.userPhoto;
     }
 
-    public void setUpvoteFlag(boolean upvoteFlag) {
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public Integer getUpvoteFlag() {
+        return this.upvoteFlag;
+    }
+
+    public void setUpvoteFlag(Integer upvoteFlag) {
         this.upvoteFlag = upvoteFlag;
+    }
+
+    public String getVoteText() {
+        return this.voteText;
+    }
+
+    public void setVoteText(String voteText) {
+        this.voteText = voteText;
     }
 }

@@ -34,6 +34,25 @@ public class FriendCircleService {
      * 此私有成员保存http请求的结果;
      * */
     private String httpResponseStr;
+    /**
+     * 显示在界面上的最大的朋友圈ID(最新的朋友圈ID)
+     * */
+    private Integer bigID;
+
+    /**
+     * 显示在界面上的最小的朋友圈ID(最旧的朋友圈ID)
+     * */
+    private Integer smallID;
+
+
+    /**
+     * 构造函数,初始化一些参数
+     * */
+    public FriendCircleService(){
+        smallID = 0;
+        bigID = 0;
+    }
+
 
     /**
      * 分享到朋友圈的逻辑代码;<br/>
@@ -94,14 +113,13 @@ public class FriendCircleService {
      * */
     public void getDownPullList(Context context,GetListListener getListListener){
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
-        int begin = sharedPreferencesManager.readInteger("bigCircleId");
         String userId = sharedPreferencesManager.readString("UserID");
         //初始化请求参数
         url = "getFriendCircle.action";
         params = new RequestParams();
         params.add("oper","0");
         params.add("userId",userId);
-        params.add("begin",begin+"");
+        params.add("begin",bigID+"");
         try{
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
                 @Override
@@ -111,7 +129,7 @@ public class FriendCircleService {
                         //将返回的对象转换成List
                         List<FriendCircleModel>list = new Gson().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
                         if (list.size()!=0){
-                            sharedPreferencesManager.writeInteger("bigCircleId",list.get(0).getCircleId());
+                            bigID = list.get(0).getCircleId();
                         }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
@@ -135,13 +153,12 @@ public class FriendCircleService {
 
     public void getUpPulllist(Context context,GetListListener getListListener){
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
-        int begin = sharedPreferencesManager.readInteger("smallCircleId");
         String userId = sharedPreferencesManager.readString("UserID");
         //初始化请求参数
         url = "getFriendCircle.action";
         params = new RequestParams();
         params.add("oper","0");
-        params.add("begin",begin+"");
+        params.add("begin",smallID+"");
         params.add("userId",userId);
         try{
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
@@ -152,7 +169,7 @@ public class FriendCircleService {
                         //将返回的对象转换成List
                         List<FriendCircleModel>list = new Gson().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
                         if (list.size()!=0){
-                            sharedPreferencesManager.writeInteger("smallCircleId",list.get(list.size()-1).getCircleId());
+                           smallID = list.get(list.size()-1).getCircleId();
                         }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
@@ -182,7 +199,7 @@ public class FriendCircleService {
         friendCircleModel.setSexTime(loveLogBean.getSexTime());
         friendCircleModel.setSexSubjectiveScore(loveLogBean.getSexSubjectiveScore());
         friendCircleModel.setSexObjectiveScore(loveLogBean.getSexObjectiveScore());
-        friendCircleModel.setSexFrameState(loveLogBean.getSexFrameState());
+        friendCircleModel.setSexFrameState(loveLogBean.getSimpleSexFrameState());
         friendCircleModel.setShareText(shareText);
         return friendCircleModel;
     }
