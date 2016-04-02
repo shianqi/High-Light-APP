@@ -103,16 +103,16 @@ public class PageFour extends Fragment implements OnRefreshListener {
                 new String[]{
                         "discovery_icon",
                         "discovery_username",
-                        "list_item_beginning_time",
+                        "list_item_main",
                         "list_item_time",
-                        "list_item_score"
+                        "glorification_state"
                 },
                 new int[]{
                         R.id.glorification,
-                        R.id.list_item_date,
-                        R.id.list_item_beginning_time,
+                        R.id.discovery_username,
+                        R.id.list_item_main,
                         R.id.list_item_time,
-                        R.id.list_item_score
+                        R.id.glorification_state
                 });
 
 
