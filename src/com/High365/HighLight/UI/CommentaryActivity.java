@@ -6,17 +6,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.*;
 import com.High365.HighLight.Bean.CommentModel;
 import com.High365.HighLight.Interface.GetListListener;
 import com.High365.HighLight.R;
 import com.High365.HighLight.Service.CommentService;
 import com.High365.HighLight.Util.ImageEncodeUtil;
-import com.High365.HighLight.Util.ToastManager;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -43,6 +38,9 @@ public class CommentaryActivity extends Activity {
     private ArrayList<HashMap<String,Object>> listItem;
     private SimpleAdapter listAdapter;
     private CommentService commentService;
+
+    private Button button;
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +183,18 @@ public class CommentaryActivity extends Activity {
 
 
         listView.setAdapter(listAdapter);
+
+
+        button = (Button)findViewById(R.id.sendButton);
+        editText = (EditText)findViewById(R.id.commentary_text);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String commentaryText = editText.getText().toString();
+                //提交评论
+            }
+        });
     }
 
     private void setData(int position) {

@@ -27,6 +27,7 @@
                     android:layout_centerVertical="true"
                     android:layout_height="40dip"/>
             <EditText
+                    android:id="@+id/commentary_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dip"
