@@ -9,8 +9,10 @@ import android.view.View;
 import android.widget.*;
 import com.High365.HighLight.Bean.CommentModel;
 import com.High365.HighLight.Interface.GetListListener;
+import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.R;
 import com.High365.HighLight.Service.CommentService;
+import com.High365.HighLight.Service.UserInfoService;
 import com.High365.HighLight.Util.ImageEncodeUtil;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -41,6 +43,8 @@ public class CommentaryActivity extends Activity {
 
     private Button button;
     private EditText editText;
+
+    private Integer circleId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +150,7 @@ public class CommentaryActivity extends Activity {
 
         //获得上一个状态帧的朋友圈id数据
         Bundle extras  = getIntent().getExtras();
-        Integer circleId = extras.getInt("circleId");
+        circleId = extras.getInt("circleId");
         if (circleId != null){
             commentService.getCommentList(circleId, this, new GetListListener() {
                 @Override
@@ -193,6 +197,34 @@ public class CommentaryActivity extends Activity {
             public void onClick(View v) {
                 String commentaryText = editText.getText().toString();
                 //提交评论
+                commentService.addComment(circleId, commentaryText, CommentaryActivity.this, new Listener() {
+                    @Override
+                    public void onSuccess() {
+                        HashMap<String, Object> map = new HashMap<String, Object>();
+
+//                        map.put("discovery_username",new UserInfoService().getCurrentUserId(CommentaryActivity.this));
+//                        map.put("list_item_main",commentModel.getCommentText());
+//                        //加载图片
+//                        map.put("discovery_icon", ImageEncodeUtil.base64ToBitmap(commentModel.getUserPhoto()));
+//                        listAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+//                            @Override
+//                            public boolean setViewValue(View view, Object data, String s) {
+//                                if(view instanceof ImageView && data instanceof Bitmap){
+//                                    ImageView i = (ImageView)view;
+//                                    i.setImageBitmap((Bitmap) data);
+//                                    return true;
+//                                }
+//                                return false;
+//                            }
+//                        });
+                        listItem.add(map);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+
+                    }
+                });
             }
         });
     }

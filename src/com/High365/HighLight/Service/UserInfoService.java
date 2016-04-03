@@ -2,12 +2,10 @@ package com.High365.HighLight.Service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import com.High365.HighLight.Bean.*;
 import com.High365.HighLight.Interface.Listener;
-import com.High365.HighLight.Util.HttpRequest;
-import com.High365.HighLight.Util.MD5;
-import com.High365.HighLight.Util.SharedPreferencesManager;
-import com.High365.HighLight.Util.SqlLiteManager;
+import com.High365.HighLight.Util.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -306,4 +304,21 @@ public class UserInfoService{
             }
         });
     }
+
+    /**
+     * 获得当前用户的用户Id
+     * */
+    public String getCurrentUserId(Context context){
+        return new SharedPreferencesManager(context).readString("UserID");
+    }
+
+    /**
+     * 获得当前用户的头像
+     * */
+    public Bitmap getUserPhoto(Context context){
+        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+        UserInfoBean userInfoBean = sqlLiteManager.findUserInfoById(getCurrentUserId(context));
+        return ImageEncodeUtil.base64ToBitmap(userInfoBean.getUserPhoto());
+    }
+
 }

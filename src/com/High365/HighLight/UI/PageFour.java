@@ -161,15 +161,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
                 });
 
 
-//        for(int i = 0; i<10;i++){
-//            HashMap<String, Object> map = new HashMap<String, Object>();
-//            map.put("discovery_icon",R.drawable.glorification_false);
-//            map.put("discovery_username","信息1");
-//            map.put("list_item_main","信息2");
-//            map.put("list_item_time"," "+"20分钟前");
-//            map.put("glorification_state","信息4");
-//            listItem.add(map);
-//        }
+
 
         //获取下拉刷新的内容
 
@@ -255,6 +247,11 @@ public class PageFour extends Fragment implements OnRefreshListener {
             @Override
             protected Void doInBackground(Void... params) {
                 SystemClock.sleep(2000);
+
+
+
+
+
 
 
                 for (int i = 0; i < 2; i++) {
