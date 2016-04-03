@@ -220,6 +220,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
 
                     listItem.add(map);
                 }
+                listAdatper.notifyDataSetChanged();
             }
 
             @Override
@@ -243,8 +244,9 @@ public class PageFour extends Fragment implements OnRefreshListener {
 
             @Override
             protected void onPostExecute(Void result) {
+               listItem.clear();
                 getData();
-                listAdatper.notifyDataSetChanged();
+
                 rListView.setEnabled(true);
                 rListView.hideHeaderView();
             }
