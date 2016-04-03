@@ -36,11 +36,14 @@ public class PageFour extends Fragment implements OnRefreshListener {
      * 发现界面view
      */
     private View view;
+    private int state1 = 1;
 
     /**
      * 存放在界面显示的列表
      * */
     List<FriendCircleModel>dateList;
+
+    AsyncTask asyncTask;
 
     private ArrayList<HashMap<String,Object>> listItem;
     private RefreshListView rListView;
@@ -220,12 +223,14 @@ public class PageFour extends Fragment implements OnRefreshListener {
 
                     listItem.add(map);
                 }
+                rListView.hideHeaderView();
                 listAdatper.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(String msg) {
                 //ToastManager.toast(getActivity(),msg);
+                state1 = -1;
             }
         });
     }
@@ -235,10 +240,11 @@ public class PageFour extends Fragment implements OnRefreshListener {
     @Override
     public void onDownPullRefresh() {
         rListView.setEnabled(false);
-        new AsyncTask<Void, Void, Void>() {
+        state1 = 0;
+        asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                SystemClock.sleep(1000);
+
                 return null;
             }
 
@@ -246,7 +252,6 @@ public class PageFour extends Fragment implements OnRefreshListener {
             protected void onPostExecute(Void result) {
                 getData();
                 rListView.setEnabled(true);
-                rListView.hideHeaderView();
             }
         }.execute(new Void[] {});
     }
