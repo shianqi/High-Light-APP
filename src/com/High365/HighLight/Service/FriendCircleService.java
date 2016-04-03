@@ -120,7 +120,7 @@ public class FriendCircleService {
         params = new RequestParams();
         params.add("oper","0");
         params.add("userId",userId);
-        params.add("begin",bigID+"");
+        params.add("begin","0");
         try{
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
                 @Override
