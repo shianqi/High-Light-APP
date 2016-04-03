@@ -222,6 +222,7 @@ public class CommentaryActivity extends Activity {
                             }
                         });
                         listItem.add(map);
+                        listAdapter.notifyDataSetChanged();
                     }
 
                     @Override
