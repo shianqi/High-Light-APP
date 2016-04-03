@@ -185,6 +185,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
                     FriendCircleModel friendCircleModel = (FriendCircleModel) list.get(i);
                     HashMap<String, Object> map = new HashMap<String, Object>();
 
+                    map.put("discovery_username",friendCircleModel.getUserId());
                     try{
                         map.put("user_img",(ImageEncodeUtil.base64ToBitmap(friendCircleModel.getUserPhoto())));
                     }catch (Exception e){
@@ -204,7 +205,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
                             return false;
                         }
                     });
-                    
+
                     map.put("list_item_main",friendCircleModel.getShareText());
                     map.put("list_item_time", TimeService.getIntervalTime(friendCircleModel.getShareTime()));
                     map.put("glorification_state",friendCircleModel.getProcessVoteText());
