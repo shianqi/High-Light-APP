@@ -25,10 +25,7 @@ import com.High365.HighLight.Util.BitmapUtil;
 import com.High365.HighLight.Util.ImageEncodeUtil;
 import com.High365.HighLight.Util.ToastManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 发现界面搭建
@@ -236,7 +233,10 @@ public class PageFour extends Fragment implements OnRefreshListener {
         rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ToastManager.toast(getActivity(),position+"");
                 Intent intent = new Intent(getActivity(), CommentaryActivity.class);
+                intent.putExtra("circleId",dateList.get(position-1).getCircleId());
+                intent.putExtra("sexFrameState",dateList.get(position-1).getSexFrameState());
                 getActivity().startActivity(intent);
             }
         });
@@ -255,7 +255,10 @@ public class PageFour extends Fragment implements OnRefreshListener {
             @Override
             protected Void doInBackground(Void... params) {
                 SystemClock.sleep(2000);
+
+
                 for (int i = 0; i < 2; i++) {
+                    Map<String,Objects>map = new HashMap<>();
                     //textList.add(0, "这是下拉刷新出来的数据" + i);
                 }
                 return null;

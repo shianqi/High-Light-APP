@@ -1,15 +1,22 @@
 package com.High365.HighLight.UI;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import com.High365.HighLight.Bean.CommentModel;
+import com.High365.HighLight.Interface.GetListListener;
 import com.High365.HighLight.R;
+import com.High365.HighLight.Service.CommentService;
+import com.High365.HighLight.Util.ImageEncodeUtil;
+import com.High365.HighLight.Util.ToastManager;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -24,6 +31,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * 详情及评论界面
@@ -34,12 +42,13 @@ public class CommentaryActivity extends Activity {
     private NoScrollListview listView;
     private ArrayList<HashMap<String,Object>> listItem;
     private SimpleAdapter listAdapter;
+    private CommentService commentService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.commentary_activity);
-
+        commentService = new CommentService();
         mChart = (LineChart)this.findViewById(R.id.commentary_chart);
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
@@ -129,27 +138,77 @@ public class CommentaryActivity extends Activity {
                 });
 
 
-        for(int i = 0; i<10;i++){
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("discovery_icon",R.drawable.ic_launcher);
-            map.put("discovery_username","信息1");
-            map.put("list_item_main","123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901");
-            listItem.add(map);
+//        for(int i = 0; i<10;i++){
+//            HashMap<String, Object> map = new HashMap<String, Object>();
+//            map.put("discovery_icon",R.drawable.ic_launcher);
+//            map.put("discovery_username","信息1");
+//            map.put("list_item_main","123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901");
+//            listItem.add(map);
+//        }
+
+        //获得上一个状态帧的朋友圈id数据
+        Bundle extras  = getIntent().getExtras();
+        Integer circleId = extras.getInt("circleId");
+        if (circleId != null){
+            commentService.getCommentList(circleId, this, new GetListListener() {
+                @Override
+                public void onSuccess(List list) {
+                    for(int i = 0; i<10;i++){
+                        CommentModel commentModel = (CommentModel)list.get(i);
+                        HashMap<String, Object> map = new HashMap<String, Object>();
+
+                        map.put("discovery_username",commentModel.getUserId());
+                        map.put("list_item_main",commentModel.getCommentText());
+                        //加载图片
+                        map.put("discovery_icon", ImageEncodeUtil.base64ToBitmap(commentModel.getUserPhoto()));
+                        listAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+                            @Override
+                            public boolean setViewValue(View view, Object data, String s) {
+                                if(view instanceof ImageView && data instanceof Bitmap){
+                                    ImageView i = (ImageView)view;
+                                    i.setImageBitmap((Bitmap) data);
+                                    return true;
+                                }
+                                return false;
+                            }
+                        });
+                        listItem.add(map);
+                    }
+                }
+
+                @Override
+                public void onFailure(String msg) {
+                    //ToastManager.toast(CommentaryActivity.this,msg);
+                }
+            });
         }
+
+
         listView.setAdapter(listAdapter);
     }
 
     private void setData(int position) {
         ArrayList<String> xVals = new ArrayList<String>();
-        for (int i = 0; i < 10; i++) {
+
+        //获得上一个activity的状态帧数据
+        Bundle extras  = getIntent().getExtras();
+        String sexFrameState = extras.getString("sexFrameState");
+
+        for (int i = 0; i < sexFrameState.length()/2; i++) {
             xVals.add(i + "");
         }
 
         ArrayList<Entry> yVals1 = new ArrayList<Entry>();
 
-        for (int i = 0; i < 10; i++) {
-            yVals1.add(new Entry(5, i));
+
+        if (sexFrameState!=null){
+            for (int i = 0; i < sexFrameState.length()/2; i++) {
+                Log.i("+++++ " , sexFrameState.substring(i*2,i*2+2));
+                yVals1.add(new Entry(Integer.parseInt(sexFrameState.substring(i*2,i*2+2)), i));
+            }
         }
+
+
 
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(yVals1, "DataSet 1");

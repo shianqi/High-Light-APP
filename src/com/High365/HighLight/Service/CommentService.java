@@ -13,6 +13,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import org.apache.http.Header;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
