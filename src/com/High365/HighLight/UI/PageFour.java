@@ -111,7 +111,6 @@ public class PageFour extends Fragment implements OnRefreshListener {
                             friendCircleModel.setUpvoteFlag(1);
                             //ToastManager.toast(getActivity(),"点击"+position+"个");
                             listAdatper.notifyDataSetChanged();
-
                         }
 
                         @Override
@@ -139,8 +138,6 @@ public class PageFour extends Fragment implements OnRefreshListener {
         rListView = (RefreshListView)view.findViewById(R.id.refreshlistview);
         listItem = new ArrayList<HashMap<String, Object>>();
 
-
-
         listAdatper = new MyAdapter(getActivity(),listItem,
                 R.layout.list_item_discovery,
                 new String[]{
@@ -159,15 +156,29 @@ public class PageFour extends Fragment implements OnRefreshListener {
                         R.id.list_item_time,
                         R.id.glorification_state
                 });
+        getData();
+        rListView.setAdapter(listAdatper);
+        rListView.setOnRefreshListener(this);
+        rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ToastManager.toast(getActivity(),position+"");
+                Intent intent = new Intent(getActivity(), CommentaryActivity.class);
+                intent.putExtra("circleId",dateList.get(position-1).getCircleId());
+                intent.putExtra("sexFrameState",dateList.get(position-1).getSexFrameState());
+                getActivity().startActivity(intent);
+            }
+        });
+
+        return view;
+    }
 
 
-
-
-        //获取下拉刷新的内容
-
+    public void getData(){
         friendCircleService.getDownPullList(getActivity(), new GetListListener() {
             @Override
             public void onSuccess(List list) {
+                Log.i("数量",""+list.size());
                 for (int i=0;i<list.size();i++)  {
                     dateList  = list;
                     FriendCircleModel friendCircleModel = (FriendCircleModel) list.get(i);
@@ -216,54 +227,25 @@ public class PageFour extends Fragment implements OnRefreshListener {
                 //ToastManager.toast(getActivity(),msg);
             }
         });
-
-
-
-        rListView.setAdapter(listAdatper);
-        rListView.setOnRefreshListener(this);
-
-        rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastManager.toast(getActivity(),position+"");
-                Intent intent = new Intent(getActivity(), CommentaryActivity.class);
-                intent.putExtra("circleId",dateList.get(position-1).getCircleId());
-                intent.putExtra("sexFrameState",dateList.get(position-1).getSexFrameState());
-                getActivity().startActivity(intent);
-            }
-        });
-
-        return view;
     }
-
-
 
 
 
     @Override
     public void onDownPullRefresh() {
+        rListView.setEnabled(false);
         new AsyncTask<Void, Void, Void>() {
-
             @Override
             protected Void doInBackground(Void... params) {
-                SystemClock.sleep(2000);
-
-
-
-
-
-
-
-                for (int i = 0; i < 2; i++) {
-                    Map<String,Objects>map = new HashMap<>();
-                    //textList.add(0, "这是下拉刷新出来的数据" + i);
-                }
+                SystemClock.sleep(1000);
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void result) {
+                getData();
                 listAdatper.notifyDataSetChanged();
+                rListView.setEnabled(true);
                 rListView.hideHeaderView();
             }
         }.execute(new Void[] {});
