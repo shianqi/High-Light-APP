@@ -5,6 +5,10 @@ package com.High365.HighLight.Bean;
  * 这个是朋友圈的JavaBean对象
  */
 
+import android.content.Context;
+import com.High365.HighLight.Util.SharedPreferencesManager;
+
+import java.sql.Struct;
 import java.sql.Timestamp;
 
 /**
@@ -149,5 +153,32 @@ public class FriendCircleModel {
 
     public void setVoteText(String voteText) {
         this.voteText = voteText;
+    }
+
+    public String getProcessVoteText(){
+        if (Integer.parseInt(getVoteText().split(":")[1])>5){
+           return  getVoteText().split(":")[0] + "等" + Integer.parseInt(getVoteText().split(":")[1]) + "觉得很赞";
+        }else{
+            if (Integer.parseInt(getVoteText().split(":")[1]) == 0){
+                return  "成为第一个点赞的人吧";
+            }else{
+                return  getVoteText().split(":")[0] +  "觉得很赞";
+            }
+        }
+    }
+
+    public String getAddUserVoteText(Context context){
+        userId = new SharedPreferencesManager(context).readString("UserID");
+        Integer num = Integer.parseInt(getVoteText().split(":")[1]);
+        String text = getVoteText().split(":")[0];
+        if (num == 0){
+            text = userId  + text;
+        }else{
+            text = userId  + "、" + text;
+        }
+        num ++;
+
+        this.setVoteText(text + ":" + num);
+        return getProcessVoteText();
     }
 }

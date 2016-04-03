@@ -15,10 +15,12 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.High365.HighLight.Bean.FriendCircleModel;
 import com.High365.HighLight.Interface.GetListListener;
+import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Interface.OnRefreshListener;
 import com.High365.HighLight.R;
 import com.High365.HighLight.Service.FriendCircleService;
 import com.High365.HighLight.Service.TimeService;
+import com.High365.HighLight.Service.UpvoteService;
 import com.High365.HighLight.Util.BitmapUtil;
 import com.High365.HighLight.Util.ImageEncodeUtil;
 import com.High365.HighLight.Util.ToastManager;
@@ -38,6 +40,11 @@ public class PageFour extends Fragment implements OnRefreshListener {
      */
     private View view;
 
+    /**
+     * 存放在界面显示的列表
+     * */
+    List<FriendCircleModel>dateList;
+
     private ArrayList<HashMap<String,Object>> listItem;
     private RefreshListView rListView;
     /**
@@ -45,8 +52,15 @@ public class PageFour extends Fragment implements OnRefreshListener {
      */
     private MyAdapter listAdatper;
 
+    /**
+     * 朋友圈业务逻辑类
+     * */
     private FriendCircleService friendCircleService;
 
+    /**
+     * 投票业务逻辑
+     * */
+    private UpvoteService upvoteService;
     public class MyAdapter extends SimpleAdapter{
 
         /**
@@ -80,10 +94,37 @@ public class PageFour extends Fragment implements OnRefreshListener {
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     HashMap<String, Object> map = listItem.get(position);
-                    map.put("discovery_icon",R.drawable.glorification_true);
-                    listItem.set(position,map);
-                    ToastManager.toast(getActivity(),"点击"+position+"个");
-                    listAdatper.notifyDataSetChanged();
+
+                    FriendCircleModel friendCircleModel = dateList.get(position);
+
+
+                    //判断是否已经点赞过
+                    if (friendCircleModel.getUpvoteFlag() == 1){
+                        return;
+                    }
+
+                    map.put("glorification_state",friendCircleModel.getAddUserVoteText(getActivity()));
+
+                    //此处将点赞的动作发到服务器，将值重新设置
+                    upvoteService.addUpvote(dateList.get(position).getCircleId(), getActivity(), new Listener() {
+                        @Override
+                        public void onSuccess() {
+                            map.put("discovery_icon",R.drawable.glorification_true);
+                            listItem.set(position,map);
+                            friendCircleModel.setUpvoteFlag(1);
+                            //ToastManager.toast(getActivity(),"点击"+position+"个");
+                            listAdatper.notifyDataSetChanged();
+
+                        }
+
+                        @Override
+                        public void onFailure(String msg) {
+                            ToastManager.toast(getActivity(),msg);
+                        }
+                    });
+
+
+
                 }
             });
             return v;
@@ -96,6 +137,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
         Log.e("加载界面4","");
 
         friendCircleService = new FriendCircleService();
+        upvoteService = new UpvoteService();
 
         rListView = (RefreshListView)view.findViewById(R.id.refreshlistview);
         listItem = new ArrayList<HashMap<String, Object>>();
@@ -105,6 +147,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
         listAdatper = new MyAdapter(getActivity(),listItem,
                 R.layout.list_item_discovery,
                 new String[]{
+                        "user_img",
                         "discovery_icon",
                         "discovery_username",
                         "list_item_main",
@@ -112,6 +155,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
                         "glorification_state"
                 },
                 new int[]{
+                        R.id.user_img,
                         R.id.glorification,
                         R.id.discovery_username,
                         R.id.list_item_main,
@@ -136,30 +180,51 @@ public class PageFour extends Fragment implements OnRefreshListener {
             @Override
             public void onSuccess(List list) {
                 for (int i=0;i<list.size();i++)  {
+                    dateList  = list;
                     FriendCircleModel friendCircleModel = (FriendCircleModel) list.get(i);
                     HashMap<String, Object> map = new HashMap<String, Object>();
+
                     try{
-                        map.put("discovery_icon",ImageEncodeUtil.base64ToBitmap(friendCircleModel.getUserPhoto()));
+                        map.put("user_img",(ImageEncodeUtil.base64ToBitmap(friendCircleModel.getUserPhoto())));
                     }catch (Exception e){
-                        map.put("discovery_icon",R.drawable.glorification_false);
+                        map.put("user_img",R.drawable.ic_launcher);
                         e.printStackTrace();
                     }
 
-                    map.put("discovery_username",friendCircleModel.getUserId());
+                    //加载图片
+                    listAdatper.setViewBinder(new SimpleAdapter.ViewBinder() {
+                        @Override
+                        public boolean setViewValue(View view, Object data, String s) {
+                            if(view instanceof ImageView && data instanceof Bitmap){
+                                ImageView i = (ImageView)view;
+                                i.setImageBitmap((Bitmap) data);
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+
+
+
                     map.put("list_item_main",friendCircleModel.getShareText());
                     map.put("list_item_time", TimeService.getIntervalTime(friendCircleModel.getShareTime()));
-                    if (Integer.parseInt(friendCircleModel.getVoteText().split(":")[1])>5){
-                        map.put("glorification_state",friendCircleModel.getVoteText().split(":")[0] + "等" + Integer.parseInt(friendCircleModel.getVoteText().split(":")[1]) + "觉得很赞");
-                    }else{
-                        map.put("glorification_state",friendCircleModel.getVoteText().split(":")[0] + Integer.parseInt(friendCircleModel.getVoteText().split(":")[1]) + "觉得很赞");
+                    map.put("glorification_state",friendCircleModel.getProcessVoteText());
+
+                    //设置点赞按钮的图标
+                    if (friendCircleModel.getUpvoteFlag() == null || friendCircleModel.getUpvoteFlag() == 0){
+                        map.put("discovery_icon",R.drawable.glorification_false);
                     }
+                    else{
+                        map.put("discovery_icon",R.drawable.glorification_true);
+                    }
+
                     listItem.add(map);
                 }
             }
 
             @Override
             public void onFailure(String msg) {
-                ToastManager.toast(getActivity(),msg);
+                //ToastManager.toast(getActivity(),msg);
             }
         });
 
