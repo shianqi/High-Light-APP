@@ -220,7 +220,6 @@ public class PageFour extends Fragment implements OnRefreshListener {
                     else{
                         map.put("discovery_icon",R.drawable.glorification_true);
                     }
-
                     listItem.add(map);
                 }
                 rListView.hideHeaderView();
@@ -229,8 +228,65 @@ public class PageFour extends Fragment implements OnRefreshListener {
 
             @Override
             public void onFailure(String msg) {
-                //ToastManager.toast(getActivity(),msg);
-                state1 = -1;
+                ToastManager.toast(getActivity(),msg);
+                rListView.hideHeaderView();
+            }
+        });
+    }
+
+
+    public void upData(){
+        friendCircleService.getUpPulllist(getActivity(), new GetListListener() {
+            @Override
+            public void onSuccess(List list) {
+                Log.i("数量",""+list.size());
+                for (int i=listItem.size();i<listItem.size()+list.size();i++)  {
+                    dateList  = list;
+                    FriendCircleModel friendCircleModel = (FriendCircleModel) list.get(i);
+                    HashMap<String, Object> map = new HashMap<String, Object>();
+
+                    map.put("discovery_username",friendCircleModel.getUserId());
+                    try{
+                        map.put("user_img",(ImageEncodeUtil.base64ToBitmap(friendCircleModel.getUserPhoto())));
+                    }catch (Exception e){
+                        map.put("user_img",R.drawable.ic_launcher);
+                        e.printStackTrace();
+                    }
+
+                    //加载图片
+                    listAdatper.setViewBinder(new SimpleAdapter.ViewBinder() {
+                        @Override
+                        public boolean setViewValue(View view, Object data, String s) {
+                            if(view instanceof ImageView && data instanceof Bitmap){
+                                ImageView i = (ImageView)view;
+                                i.setImageBitmap((Bitmap) data);
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                    map.put("list_item_main",friendCircleModel.getShareText());
+                    map.put("list_item_time", TimeService.getIntervalTime(friendCircleModel.getShareTime()));
+                    map.put("glorification_state",friendCircleModel.getProcessVoteText());
+
+                    //设置点赞按钮的图标
+                    if (friendCircleModel.getUpvoteFlag() == null || friendCircleModel.getUpvoteFlag() == 0){
+                        map.put("discovery_icon",R.drawable.glorification_false);
+                    }
+                    else{
+                        map.put("discovery_icon",R.drawable.glorification_true);
+                    }
+
+                    listItem.add(map);
+                }
+                rListView.hideFooterView();
+                listAdatper.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                ToastManager.toast(getActivity(),msg);
+                rListView.hideFooterView();
             }
         });
     }
@@ -244,7 +300,6 @@ public class PageFour extends Fragment implements OnRefreshListener {
         asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
                 return null;
             }
 
@@ -258,21 +313,18 @@ public class PageFour extends Fragment implements OnRefreshListener {
 
     @Override
     public void onLoadingMore() {
+        rListView.setEnabled(false);
         new AsyncTask<Void, Void, Void>() {
 
             @Override
             protected Void doInBackground(Void... params) {
-                SystemClock.sleep(2000);
-
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void result) {
-                listAdatper.notifyDataSetChanged();
-
-                // 控制脚布局隐藏
-                rListView.hideFooterView();
+                upData();
+                rListView.setEnabled(true);
             }
         }.execute(new Void[] {});
     }
