@@ -8,6 +8,7 @@ import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Util.HttpRequest;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -90,7 +91,9 @@ public class CommentService {
                 responseStr = new String(bytes);
                 try {
                     //转会为实体
-                    List<CommentModel>list = new Gson().fromJson(responseStr,new TypeToken<List<CommentModel>>(){}.getType());
+                    List<CommentModel>list =  new GsonBuilder()
+                            .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .create().fromJson(responseStr,new TypeToken<List<CommentModel>>(){}.getType());
                     listListener.onSuccess(list);
                 }catch (Exception e){
                     listListener.onFailure("解析发生错误，原因" + e.getLocalizedMessage());

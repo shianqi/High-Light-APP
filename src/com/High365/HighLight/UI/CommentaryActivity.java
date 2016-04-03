@@ -14,6 +14,7 @@ import com.High365.HighLight.R;
 import com.High365.HighLight.Service.CommentService;
 import com.High365.HighLight.Service.UserInfoService;
 import com.High365.HighLight.Util.ImageEncodeUtil;
+import com.High365.HighLight.Util.ToastManager;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -155,7 +156,7 @@ public class CommentaryActivity extends Activity {
             commentService.getCommentList(circleId, this, new GetListListener() {
                 @Override
                 public void onSuccess(List list) {
-                    for(int i = 0; i<10;i++){
+                    for(int i = 0; i<list.size();i++){
                         CommentModel commentModel = (CommentModel)list.get(i);
                         HashMap<String, Object> map = new HashMap<String, Object>();
 
@@ -176,17 +177,18 @@ public class CommentaryActivity extends Activity {
                         });
                         listItem.add(map);
                     }
+                    listView.setAdapter(listAdapter);
                 }
 
                 @Override
                 public void onFailure(String msg) {
-                    //ToastManager.toast(CommentaryActivity.this,msg);
+                    ToastManager.toast(CommentaryActivity.this,msg);
                 }
             });
         }
 
 
-        listView.setAdapter(listAdapter);
+
 
 
         button = (Button)findViewById(R.id.sendButton);
@@ -196,27 +198,29 @@ public class CommentaryActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String commentaryText = editText.getText().toString();
+
+                UserInfoService userInfoService = new UserInfoService();
                 //提交评论
                 commentService.addComment(circleId, commentaryText, CommentaryActivity.this, new Listener() {
                     @Override
                     public void onSuccess() {
                         HashMap<String, Object> map = new HashMap<String, Object>();
 
-//                        map.put("discovery_username",new UserInfoService().getCurrentUserId(CommentaryActivity.this));
-//                        map.put("list_item_main",commentModel.getCommentText());
-//                        //加载图片
-//                        map.put("discovery_icon", ImageEncodeUtil.base64ToBitmap(commentModel.getUserPhoto()));
-//                        listAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
-//                            @Override
-//                            public boolean setViewValue(View view, Object data, String s) {
-//                                if(view instanceof ImageView && data instanceof Bitmap){
-//                                    ImageView i = (ImageView)view;
-//                                    i.setImageBitmap((Bitmap) data);
-//                                    return true;
-//                                }
-//                                return false;
-//                            }
-//                        });
+                        map.put("discovery_username",userInfoService.getCurrentUserId(CommentaryActivity.this));
+                        map.put("list_item_main",commentaryText);
+                        //加载图片
+                        map.put("discovery_icon",userInfoService.getUserPhoto(CommentaryActivity.this));
+                        listAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+                            @Override
+                            public boolean setViewValue(View view, Object data, String s) {
+                                if(view instanceof ImageView && data instanceof Bitmap){
+                                    ImageView i = (ImageView)view;
+                                    i.setImageBitmap((Bitmap) data);
+                                    return true;
+                                }
+                                return false;
+                            }
+                        });
                         listItem.add(map);
                     }
 
@@ -225,6 +229,7 @@ public class CommentaryActivity extends Activity {
 
                     }
                 });
+                editText.setText("");
             }
         });
     }
