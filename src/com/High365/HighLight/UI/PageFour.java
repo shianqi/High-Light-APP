@@ -179,6 +179,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
             @Override
             public void onSuccess(List list) {
                 Log.i("数量",""+list.size());
+                listItem.clear();
                 for (int i=0;i<list.size();i++)  {
                     dateList  = list;
                     FriendCircleModel friendCircleModel = (FriendCircleModel) list.get(i);
@@ -203,9 +204,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
                             return false;
                         }
                     });
-
-
-
+                    
                     map.put("list_item_main",friendCircleModel.getShareText());
                     map.put("list_item_time", TimeService.getIntervalTime(friendCircleModel.getShareTime()));
                     map.put("glorification_state",friendCircleModel.getProcessVoteText());
@@ -244,9 +243,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
 
             @Override
             protected void onPostExecute(Void result) {
-               listItem.clear();
                 getData();
-
                 rListView.setEnabled(true);
                 rListView.hideHeaderView();
             }
