@@ -43,6 +43,7 @@ public class CommentaryActivity extends Activity {
     private CommentService commentService;
 
     private Button button;
+    private TextView textView;
     private EditText editText;
 
     private Integer circleId;
@@ -52,6 +53,7 @@ public class CommentaryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.commentary_activity);
         commentService = new CommentService();
+        textView = (TextView)this.findViewById(R.id.tip_text);
         mChart = (LineChart)this.findViewById(R.id.commentary_chart);
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
@@ -156,6 +158,11 @@ public class CommentaryActivity extends Activity {
             commentService.getCommentList(circleId, this, new GetListListener() {
                 @Override
                 public void onSuccess(List list) {
+                    if(list.size()==0){
+                        textView.setText("暂时没有评论");
+                    }else{
+                        textView.setVisibility(View.INVISIBLE);
+                    }
                     for(int i = 0; i<list.size();i++){
                         CommentModel commentModel = (CommentModel)list.get(i);
                         HashMap<String, Object> map = new HashMap<String, Object>();
@@ -223,11 +230,12 @@ public class CommentaryActivity extends Activity {
                         });
                         listItem.add(map);
                         listAdapter.notifyDataSetChanged();
+                        ToastManager.toast(getApplication(),"评论成功");
                     }
 
                     @Override
                     public void onFailure(String msg) {
-
+                        ToastManager.toast(getApplication(),"评论失败");
                     }
                 });
                 editText.setText("");

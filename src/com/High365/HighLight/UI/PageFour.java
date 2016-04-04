@@ -165,7 +165,7 @@ public class PageFour extends Fragment implements OnRefreshListener {
         rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastManager.toast(getActivity(),position+"");
+                //ToastManager.toast(getActivity(),position+"");
                 Intent intent = new Intent(getActivity(), CommentaryActivity.class);
                 intent.putExtra("circleId",dateList.get(position-1).getCircleId());
                 intent.putExtra("sexFrameState",dateList.get(position-1).getSexFrameState());
