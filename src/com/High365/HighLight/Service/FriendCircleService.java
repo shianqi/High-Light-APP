@@ -167,7 +167,6 @@ public class FriendCircleService {
         params.add("begin",smallID+"");
         params.add("userId",userId);
 
-        ToastManager.toast(context,params.toString());
 
         try{
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
@@ -181,6 +180,10 @@ public class FriendCircleService {
                                 .create().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
                         if (list.size()!=0){
                            smallID = list.get(list.size()-1).getCircleId();
+                        }
+
+                        if (list.size() == 0){
+                            ToastManager.toast(context,"已经到底啦！");
                         }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
