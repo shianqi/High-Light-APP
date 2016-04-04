@@ -240,8 +240,9 @@ public class PageFour extends Fragment implements OnRefreshListener {
             @Override
             public void onSuccess(List list) {
                 Log.i("数量",""+list.size());
-                for (int i=listItem.size();i<listItem.size()+list.size();i++)  {
-                    dateList  = list;
+                dateList.addAll(list) ;
+                for (int i=0;i<list.size();i++)  {
+
                     FriendCircleModel friendCircleModel = (FriendCircleModel) list.get(i);
                     HashMap<String, Object> map = new HashMap<String, Object>();
 
@@ -258,8 +259,8 @@ public class PageFour extends Fragment implements OnRefreshListener {
                         @Override
                         public boolean setViewValue(View view, Object data, String s) {
                             if(view instanceof ImageView && data instanceof Bitmap){
-                                ImageView i = (ImageView)view;
-                                i.setImageBitmap((Bitmap) data);
+                                ImageView imageView = (ImageView)view;
+                                imageView.setImageBitmap((Bitmap) data);
                                 return true;
                             }
                             return false;

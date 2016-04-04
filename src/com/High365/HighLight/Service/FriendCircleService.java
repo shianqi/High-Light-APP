@@ -8,6 +8,7 @@ import com.High365.HighLight.Interface.GetListListener;
 import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Util.HttpRequest;
 import com.High365.HighLight.Util.SharedPreferencesManager;
+import com.High365.HighLight.Util.ToastManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -133,6 +134,7 @@ public class FriendCircleService {
                                 .create().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
                         if (list.size()!=0){
                             bigID = list.get(0).getCircleId();
+                            smallID = list.get(list.size()-1).getCircleId();
                         }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
@@ -161,9 +163,12 @@ public class FriendCircleService {
         //初始化请求参数
         url = "getFriendCircle.action";
         params = new RequestParams();
-        params.add("oper","0");
+        params.add("oper","1");
         params.add("begin",smallID+"");
         params.add("userId",userId);
+
+        ToastManager.toast(context,params.toString());
+
         try{
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
                 @Override
@@ -171,12 +176,15 @@ public class FriendCircleService {
                     try{
                         httpResponseStr = new String(bytes);
                         //将返回的对象转换成List
-                        List<FriendCircleModel>list = new Gson().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
+                        List<FriendCircleModel>list =new GsonBuilder()
+                                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .create().fromJson(httpResponseStr,new TypeToken<List<FriendCircleModel>>(){}.getType());
                         if (list.size()!=0){
                            smallID = list.get(list.size()-1).getCircleId();
                         }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
+                        e.printStackTrace();
                         getListListener.onFailure("网络请求失败");
                     }
                 }
