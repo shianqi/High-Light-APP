@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import com.High365.HighLight.Bean.FriendCircleModel;
 import com.High365.HighLight.Bean.LoveLogBean;
 import com.High365.HighLight.Bean.UserInfoBean;
 
@@ -29,12 +30,18 @@ public class SqlLiteManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE UserInfo (UserID varchar(100),UserPWD varchar(20),UserGesturePWD varchar(20),UserName varchar(20),UserEmail varchar(100),UserBirthDay Date,UserPhoto varchar(1000000),UserGender Int,UserSPhysiologicalDay Date,UserEPhysiologicalDay Date,UserPhone varchar(20))");
-        sqLiteDatabase.execSQL("CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000),SimpleSexFrameState varchar(100000),RecordFileName varchar(100),UpdateFlag integer)");
+        sqLiteDatabase.execSQL("CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000),SimpleSexFrameState varchar(1000000),RecordFileName varchar(100),UpdateFlag integer)");
+        sqLiteDatabase.execSQL("CREATE TABLE FriendCircle (CircleId INTEGER ,UserId varchar(20),SexTime timestamp,SexSubjectiveScore INTEGER,SexObjectiveScore INTEGER,SexFrameState varchar(1000000) ,City varchar(20) , ShareText varchar(100) , ShareTime timestamp , UserPhoto varchar(1000000) ,UpvoteFlag INTEGER ,VoteText   varchar(1000) )");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("drop table if exists person");
+        sqLiteDatabase.execSQL("drop table if exists UserInfo");
+        sqLiteDatabase.execSQL("drop table if exists LoveLog");
+        sqLiteDatabase.execSQL("drop table if exists FriendCircle");
+        //sqLiteDatabase.execSQL("CREATE TABLE UserInfo (UserID varchar(100),UserPWD varchar(20),UserGesturePWD varchar(20),UserName varchar(20),UserEmail varchar(100),UserBirthDay Date,UserPhoto varchar(1000000),UserGender Int,UserSPhysiologicalDay Date,UserEPhysiologicalDay Date,UserPhone varchar(20))");
+        //sqLiteDatabase.execSQL("CREATE TABLE LoveLog (LogID INTEGER PRIMARY KEY AUTOINCREMENT,UserID varchar(100),SexStartTime timestamp,SexEndTime timestamp,SexTime timestamp,SexHighTime timestamp,SexSubjectiveScore integer,SexObjectiveScore integer,SexFrameState varchar(100000),SimpleSexFrameState varchar(1000000),RecordFileName varchar(100),UpdateFlag integer)");
+        //sqLiteDatabase.execSQL("CREATE TABLE FriendCircle (CircleId INTEGER ,UserId varchar(20),SexTime timestamp,SexSubjectiveScore INTEGER,SexObjectiveScore INTEGER,SexFrameState varchar(1000000) ,City varchar(20) , ShareText varchar(100) , ShareTime timestamp , UserPhoto varchar(1000000) ,UpvoteFlag INTEGER ,VoteText   varchar(1000) )");
         onCreate(sqLiteDatabase);
     }
 
@@ -308,5 +315,96 @@ public class SqlLiteManager extends SQLiteOpenHelper {
         }else{
             return null;
         }
+    }
+
+    public void updateOrInsertFriendCircle(FriendCircleModel friendCircleModel){
+        if (friendCircleModel == null){
+            return;
+        }
+        ContentValues cv = new ContentValues();
+        cv.put("CircleId",friendCircleModel.getCircleId());
+        cv.put("UserId",friendCircleModel.getUserId());
+        cv.put("SexTime",friendCircleModel.getSexTime().getTime());
+        cv.put("SexSubjectiveScore",friendCircleModel.getSexSubjectiveScore());
+        cv.put("SexObjectiveScore",friendCircleModel.getSexObjectiveScore());
+        cv.put("SexFrameState",friendCircleModel.getSexFrameState());
+        cv.put("City",friendCircleModel.getCity());
+        cv.put("ShareText",friendCircleModel.getShareText());
+        cv.put("ShareTime",friendCircleModel.getShareTime().getTime());
+        cv.put("UserPhoto",friendCircleModel.getUserPhoto());
+        cv.put("UpvoteFlag",friendCircleModel.getUpvoteFlag());
+        cv.put("VoteText",friendCircleModel.getVoteText());
+        SQLiteDatabase highLightDB = getWritableDatabase();
+        //判断应该插入还是更新
+        if (getFriendCircleCountByCircleId(friendCircleModel.getCircleId())==0){
+            //inseer
+            highLightDB.insert("friendCircle",null,cv);
+        }else{
+            highLightDB.update("friendCircle",cv,"CircleId=?",new String[]{friendCircleModel.getCircleId()+""});
+
+        }
+
+    }
+
+    public Integer getFriendCircleCountByCircleId(Integer circleId){
+        List<LoveLogBean> list = new ArrayList<LoveLogBean>();
+        SQLiteDatabase highLightDB = getReadableDatabase();
+        String sql = "select * from FriendCircle where circleId = " + circleId + ";";
+        Cursor cursor = highLightDB.rawQuery(sql,null);
+        int count = cursor.getCount();
+        return count;
+    }
+
+    public void deleteAllFriendCircles(){
+        SQLiteDatabase highLightDB = getReadableDatabase();
+        String sql = "delete from FriendCircle ";
+        highLightDB.execSQL(sql);
+    }
+
+    public FriendCircleModel getFriendModelByCircleId(Integer circleId){
+        FriendCircleModel friendCircleModel = new FriendCircleModel();
+        String sql = "select * from friendCircle where circleId = ?;";
+        SQLiteDatabase highLightDB = getReadableDatabase();
+        Cursor cursor = highLightDB.rawQuery(sql,new String[]{circleId+""});
+        if (cursor.getCount() == 0){
+            return null;
+        }
+        cursor.moveToFirst();
+
+        friendCircleModel.setCircleId(cursor.getInt(cursor.getColumnIndex("CircleId")));
+        friendCircleModel.setUserId(cursor.getString(cursor.getColumnIndex("UserId")));
+        friendCircleModel.setSexTime(new Timestamp(cursor.getLong(cursor.getColumnIndex("SexTime"))));
+        friendCircleModel.setSexSubjectiveScore(cursor.getInt(cursor.getColumnIndex("SexSubjectiveScore")));
+        friendCircleModel.setSexObjectiveScore(cursor.getInt(cursor.getColumnIndex("SexObjectiveScore")));
+        friendCircleModel.setSexFrameState(cursor.getString(cursor.getColumnIndex("SexFrameState")));
+        friendCircleModel.setCity(cursor.getString(cursor.getColumnIndex("City")));
+        friendCircleModel.setShareText(cursor.getString(cursor.getColumnIndex("ShareText")));
+        friendCircleModel.setShareTime(new Timestamp(cursor.getLong(cursor.getColumnIndex("ShareTime"))));
+        friendCircleModel.setUserPhoto(cursor.getString(cursor.getColumnIndex("UserPhoto")));
+        friendCircleModel.setUpvoteFlag(cursor.getInt(cursor.getColumnIndex("UpvoteFlag")));
+        friendCircleModel.setVoteText(cursor.getString(cursor.getColumnIndex("VoteText")));
+        return  friendCircleModel;
+    }
+
+    public List<FriendCircleModel> getFriendCircles(){
+        List<FriendCircleModel>list = new ArrayList<>();
+        String sql = "SELECT * FROM FRIENDCIRCLE ";
+        SQLiteDatabase highLightDB = getReadableDatabase();
+        Cursor cursor = highLightDB.rawQuery(sql,new String[]{});
+        if (cursor.getCount() == 0){
+            return list;
+        }
+        //cursor.moveToFirst();
+        while(cursor.moveToNext()){
+            Integer circleId = cursor.getInt(cursor.getColumnIndex("CircleId"));
+            FriendCircleModel friendCircleModel = getFriendModelByCircleId(circleId);
+            list.add(friendCircleModel);
+        }
+        return list;
+    }
+
+    public void closeDB(){
+        SQLiteDatabase highLightDB = getReadableDatabase();
+        highLightDB.close();
     }
 }

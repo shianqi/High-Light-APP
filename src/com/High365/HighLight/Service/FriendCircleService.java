@@ -8,6 +8,7 @@ import com.High365.HighLight.Interface.GetListListener;
 import com.High365.HighLight.Interface.Listener;
 import com.High365.HighLight.Util.HttpRequest;
 import com.High365.HighLight.Util.SharedPreferencesManager;
+import com.High365.HighLight.Util.SqlLiteManager;
 import com.High365.HighLight.Util.ToastManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,6 +47,7 @@ public class FriendCircleService {
      * */
     private Integer smallID;
 
+    private SqlLiteManager sqlLiteManager;
 
     /**
      * 构造函数,初始化一些参数
@@ -116,6 +118,10 @@ public class FriendCircleService {
     public void getDownPullList(Context context,GetListListener getListListener){
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(context);
         String userId = sharedPreferencesManager.readString("UserID");
+        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
+        List<FriendCircleModel>old_list = sqlLiteManager.getFriendCircles();
+
+
         //初始化请求参数
         url = "getFriendCircle.action";
         params = new RequestParams();
@@ -136,16 +142,22 @@ public class FriendCircleService {
                             bigID = list.get(0).getCircleId();
                             smallID = list.get(list.size()-1).getCircleId();
                         }
+                        sqlLiteManager.deleteAllFriendCircles();
+                        for (int j=0;j<list.size();j++){
+                            sqlLiteManager.updateOrInsertFriendCircle(list.get(j));
+                        }
                         getListListener.onSuccess(list);
                     }catch (Exception e){
                         e.printStackTrace();
-                        getListListener.onFailure("网络请求失败");
+                        //getListListener.onFailure("网络请求失败");
+                        getListListener.onSuccess(old_list);
                     }
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                    getListListener.onFailure(throwable.getMessage());
+                    //getListListener.onFailure(throwable.getMessage());
+                    getListListener.onSuccess(old_list);
                 }
             });
         }catch (Exception e){
@@ -166,7 +178,7 @@ public class FriendCircleService {
         params.add("oper","1");
         params.add("begin",smallID+"");
         params.add("userId",userId);
-
+        SqlLiteManager sqlLiteManager = new SqlLiteManager(context);
 
         try{
             HttpRequest.post(context, url, params, new AsyncHttpResponseHandler() {
@@ -186,6 +198,9 @@ public class FriendCircleService {
                             ToastManager.toast(context,"已经到底啦！");
                         }
                         getListListener.onSuccess(list);
+                        for (int j=0;j<list.size();j++){
+                            sqlLiteManager.updateOrInsertFriendCircle(list.get(j));
+                        }
                     }catch (Exception e){
                         e.printStackTrace();
                         getListListener.onFailure("网络请求失败");
@@ -218,5 +233,7 @@ public class FriendCircleService {
         friendCircleModel.setShareText(shareText);
         return friendCircleModel;
     }
+
+
 
 }
