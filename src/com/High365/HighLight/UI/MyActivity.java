@@ -1,11 +1,9 @@
 package com.High365.HighLight.UI;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.app.*;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -120,6 +118,8 @@ public class MyActivity extends Activity {
         }
         LoveLogService loveLogService = new LoveLogService();
         loveLogService.getLast10LoveLogs(MyActivity.this);
+
+        findNowVersion();
     }
 
     /**
@@ -261,6 +261,24 @@ public class MyActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void findNowVersion(){
+        new AlertDialog.Builder(this)
+                .setTitle("发现新版本，是否立即更新")
+                .setNegativeButton("暂不更新", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
 
     /**
      * 去用户信息界面
