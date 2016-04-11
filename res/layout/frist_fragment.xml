@@ -13,12 +13,13 @@
                     android:id="@+id/light1"
                     android:layout_width="260dip"
                     android:layout_height="260dip"
+                    android:layout_marginTop="40dip"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/moon_2"/>
             <RelativeLayout
                     android:layout_centerHorizontal="true"
                     android:layout_width="wrap_content"
-                    android:layout_marginTop="300dip"
+                    android:layout_marginTop="340dip"
                     android:layout_height="wrap_content">
                 <ImageView
                         android:id="@+id/play_button"

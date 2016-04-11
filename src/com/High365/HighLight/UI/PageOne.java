@@ -222,7 +222,7 @@ public class PageOne extends Fragment{
     public void changeBrightness(int brightness){
         state=brightness;
         light1=(ImageView)view.findViewById(R.id.light1);
-        brightness+=60;
+        brightness+=120;
         brightness = brightness>255?255:brightness;
         light1.getBackground().setAlpha(brightness);
     }
