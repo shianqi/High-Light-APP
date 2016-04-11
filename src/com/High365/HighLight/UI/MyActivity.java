@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -12,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import com.High365.HighLight.Interface.VersionListener;
 import com.High365.HighLight.R;
 import com.High365.HighLight.Service.LoveLogService;
 import com.High365.HighLight.Service.UserInfoService;
+import com.High365.HighLight.Service.VersionService;
 import com.High365.HighLight.Util.SharedPreferencesManager;
 import com.High365.HighLight.Util.ToastManager;
 
@@ -84,7 +87,7 @@ public class MyActivity extends Activity {
 
     private final int MYINFORMATION = 1000;
     private final int EXIT = 1003;
-
+    private static int updateFlag = 1;
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -118,8 +121,10 @@ public class MyActivity extends Activity {
         }
         LoveLogService loveLogService = new LoveLogService();
         loveLogService.getLast10LoveLogs(MyActivity.this);
+        if (updateFlag == 1){
+            findNowVersion();
+        }
 
-        findNowVersion();
     }
 
     /**
@@ -262,22 +267,38 @@ public class MyActivity extends Activity {
     }
 
     public void findNowVersion(){
-        new AlertDialog.Builder(this)
-                .setTitle("发现新版本，是否立即更新")
-                .setNegativeButton("暂不更新", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        //VersionService.getAppVersionName(getApplication());
+        updateFlag = 0;
+        VersionService versionService = new VersionService();
+        versionService.updateVersionListener(MyActivity.this, new VersionListener() {
+            @Override
+            public void onSuccess(String url) {
+                new AlertDialog.Builder(MyActivity.this)
+                        .setTitle("发现新版本，是否立即更新")
+                        .setNegativeButton("暂不更新", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                })
-                .setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+                            }
+                        })
+                        .setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final Uri uri = Uri.parse(url);
+                                final Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(it);
+                            }
+                        })
+                        .show();
+            }
 
-                    }
-                })
-                .show();
+            @Override
+            public void onFailure(String msg) {
+                //ToastManager.toast(getApplication(),msg);
+            }
+        });
+
     }
 
     /**
