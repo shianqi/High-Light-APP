@@ -177,7 +177,12 @@ public class UserInformationActivity extends Activity {
         phoneEditText.setText(userInfoBean.getUserPhone());
         try{
             Bitmap bitmap = ImageEncodeUtil.base64ToBitmap(userInfoBean.getUserPhoto());
-            userPhoto.setImageDrawable(new BitmapDrawable(bitmap));
+            if (bitmap != null){
+                userPhoto.setImageDrawable(new BitmapDrawable(bitmap));
+            }else{
+                userPhoto.setImageDrawable(getResources().getDrawable(R.drawable.mini_avatar));
+            }
+
         }catch (Exception e){
             userPhoto.setImageDrawable(getResources().getDrawable(R.drawable.mini_avatar));
             e.printStackTrace();

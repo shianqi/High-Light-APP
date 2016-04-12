@@ -119,7 +119,7 @@ public class UserInfoService{
         url= "register.action";
         userInfoBean = new UserInfoBean();
         userInfoBean.setUserId(userID);
-        userInfoBean.setUserPwd(password);
+        userInfoBean.setUserPwd(new MD5().encryptPassword(password));
         try {
             userInfoBean.setUserEmail(email);
         }catch (Exception e){
